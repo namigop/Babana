@@ -1,0 +1,199 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:PlaywrightTest.ViewModels"
+             xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PlaywrightTest.Views.ReqRespTraceControl">
+    <Design.DataContext>
+        <viewModels:ReqRespTraceViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *">
+        <Border BorderBrush="Black" BorderThickness="0 0 0 0">
+            <Grid Grid.Row="0" Margin="0 6 0 0" Background="WhiteSmoke">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="6 0 0 0">
+                    <TextBlock VerticalAlignment="Center" Text="url filter:" Foreground="DimGray"></TextBlock>
+                    <TextBox Text="{Binding UriFilter}" VerticalAlignment="Center" Margin="6" MinWidth="150"></TextBox>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowGet}" Content="Get"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPut}" Content="Put" Margin="0 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPost}" Content="Post" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowDelete}" Content="Delete" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPatch}" Content="Patch" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowOptions}" Content="Options" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowHead}" Content="Head" Margin="6 0 0 0"></CheckBox>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid ColumnDefinitions="350, Auto, *" Grid.Row="1">
+            <Grid.Styles>
+                <Style Selector="TextBlock">
+                    <Setter Property="FontSize" Value="13"></Setter>
+                </Style>
+            </Grid.Styles>
+            <!-- Display the list -->
+            <Grid Grid.Column="0">
+                <ListBox Items="{Binding TraceItems}" SelectedItem="{Binding SelectedTraceItem}" Background="White">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="4" />
+                            <Setter Property="IsVisible" Value="{Binding IsVisible}"></Setter>
+
+                        </Style>
+                    </ListBox.Styles>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto, *" ToolTip.Tip="{Binding RequestUri}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Border BorderThickness="0" CornerRadius="4" Margin="5 0 0 0"
+                                            Padding="0">
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" FontSize="11"
+                                                   Foreground="{Binding StatusColor}"
+                                                   Margin="5" Text="{Binding  StatusCode}" />
+                                    </Border>
+
+                                    <Border BorderThickness="1" BorderBrush="{Binding Color}" CornerRadius="4" Margin="5 0 0 0"
+                                            Width="60" Padding="0">
+                                        <TextBlock HorizontalAlignment="Center" FontWeight="SemiBold"
+                                                   VerticalAlignment="Center" FontSize="12"
+                                                   Margin="5" Text="{Binding  RequestMethod}" />
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding PathAndQuery}" Margin="5 0 0 0"
+                                           VerticalAlignment="Center"
+                                           ToolTip.Tip="{Binding PathAndQuery}">
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
+            <GridSplitter Grid.Column="1" Width="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="WhiteSmoke"></GridSplitter>
+
+            <!-- Display the selectedItem -->
+            <Grid Grid.Column="2">
+                <Grid IsVisible="{Binding SelectedTraceItem.CanShowScreenshot}">
+                    <ScrollViewer>
+                        <Image Source="{Binding SelectedTraceItem.Screenshot}" Stretch="{Binding ImageStretch}"></Image>
+                    </ScrollViewer>
+                    <ToggleSwitch Background="White" Margin="6" OffContent="auto" OnContent="normal" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  Command="{Binding ToggleImageCommand}"
+                    ></ToggleSwitch>
+                </Grid>
+
+                <Grid IsVisible="{Binding !SelectedTraceItem.CanShowScreenshot}" ColumnDefinitions="*, Auto, *">
+                    <!-- Request Column -->
+                    <Grid Column="0" RowDefinitions="Auto, *, Auto, 2*">
+
+                        <TextBlock Grid.Row="0" Text="Request" FontSize="18" Margin="10" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding SelectedTraceItem.Timestamp, StringFormat='{}{0:R}'}"
+                                   ToolTip.Tip="{Binding SelectedTraceItem.RequestUri}"
+                                   FontSize="11" HorizontalAlignment="Right"
+                                   VerticalAlignment="Center" Foreground="DimGray">
+                        </TextBlock>
+
+                        <!-- Request Headers -->
+                        <DataGrid AlternatingRowBackground="WhiteSmoke" HeadersVisibility="None" Grid.Row="1" Items="{Binding SelectedTraceItem.RequestHeaders}" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Key}"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0 0 10 0" HorizontalAlignment="Right">
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+
+                                </DataGridTemplateColumn>
+                                <!-- <DataGridTextColumn Binding="{Binding Value}"> -->
+                                <!--      -->
+                                <!-- </DataGridTextColumn> -->
+                                <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock  Text="{Binding Value}" ToolTip.Tip="{Binding Value}"
+                                                   VerticalAlignment="Center"
+                                                   Margin="10 0 0 0" HorizontalAlignment="Left">
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Value}"
+                                                       VerticalAlignment="Center"
+                                                       Margin="10 0 0 0" HorizontalAlignment="Left">
+                                            </TextBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellEditingTemplate>
+
+                                </DataGridTemplateColumn>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8" Background="WhiteSmoke"></GridSplitter>
+
+                        <!-- Request Body -->
+                        <Border Grid.Row="3" BorderThickness="0 0 0 0" Padding="0">
+                            <avaloniaEdit:TextEditor Background="#FFFFF7" x:Name="ReqEditor" FontSize="13" ShowLineNumbers="True" />
+                        </Border>
+                    </Grid>
+
+                    <GridSplitter   Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="8" Background="WhiteSmoke"></GridSplitter>
+
+
+                    <!-- Response Column -->
+                    <Grid Column="2" RowDefinitions="Auto, *, Auto, 2*">
+
+                        <TextBlock Grid.Row="0" Text="Response" FontSize="18" Margin="10" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="{Binding SelectedTraceItem.ElapsedMsec, StringFormat='{}{0} msec'}"
+                                   VerticalAlignment="Center" Foreground="DimGray" Margin="0 0 10 0"
+                                   FontSize="12" HorizontalAlignment="Right" MaxWidth="400">
+                        </TextBlock>
+
+                        <!-- Headers -->
+                        <DataGrid AlternatingRowBackground="WhiteSmoke" Grid.Row="1" HeadersVisibility="None" Items="{Binding SelectedTraceItem.ResponseHeaders}" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Key}" Margin="0 0 10 0"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Right">
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Binding="{Binding Value}"></DataGridTextColumn>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8" Background="WhiteSmoke"></GridSplitter>
+
+                        <!-- Response Body -->
+                        <Border Grid.Row="3" BorderThickness="0 0 0 0" Padding="0">
+                            <avaloniaEdit:TextEditor Background="#FFFFF7" x:Name="RespEditor" FontSize="13" ShowLineNumbers="True" />
+                        </Border>
+                    </Grid>
+                </Grid>
+
+            </Grid>
+
+
+
+        </Grid>
+
+        <Grid Grid.Row="1" Background="LightGray" Name="Overlay" Opacity="0.5" IsVisible="{Binding !HasItems}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <TextBlock FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center">Start the script to capture the network trace</TextBlock>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,19 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:PlaywrightTest"
+             Name="NoName"
+             x:Class="PlaywrightTest.App">
+    <Application.DataTemplates>
+        <local:ViewLocator />
+    </Application.DataTemplates>
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem Header="About BeeRock" Click="AboutMenuItem_OnClick" />
+        </NativeMenu>
+    </NativeMenu.Menu>
+    <Application.Styles>
+        <FluentTheme Mode="Light" />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+        <StyleInclude Source="avares://AvaloniaEdit/AvaloniaEdit.xaml" />
+    </Application.Styles>
+</Application>
