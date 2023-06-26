@@ -33,6 +33,9 @@ public partial class MainWindow : Window {
         this.AttachDevTools(new DevToolsOptions());
 #endif
         MessageHub.Sub += (sender, arg) => { this.LogEditor.ScrollToEnd(); };
+        if (Util.IsWindows()) {
+            this.ExtendClientAreaToDecorationsHint = false;
+        }
     }
 
 
@@ -69,7 +72,7 @@ public partial class MainWindow : Window {
         };
 
         var files = await dg.ShowAsync(this);
-        if ((bool)files?.Any()) {
+        if (files != null && files.Any()) {
 
             this.ViewModel.ScriptViewModel.Model.FromFile(files[0]);
             this.ViewModel.Hello = System.IO.Path.GetFileName(files[0]);
