@@ -12,7 +12,7 @@ using PlaywrightTest.Core;
 using PlaywrightTest.ScriptingExtensions;
 using PlaywrightTest.Views;
 
-
+using  PlaywrightTest.ScriptingExtensions;
 namespace PlaywrightTest.Models;
 
 public class ScriptRunner {
@@ -42,12 +42,16 @@ public class ScriptRunner {
 
         try {
             ctx.Start();
-            MessageHub.Publish(new Message(){ Content = new RunStateMessage() { IsRunning = true} });
+            MessageHub.Publish(new Message() { Content = new RunStateMessage() { IsRunning = true } });
             await CSharpScript.RunAsync(script, options, globals: ctx);
         }
         catch (CompilationErrorException e) {
             var compileErrors = string.Join(Environment.NewLine, e.Diagnostics);
             Console.WriteLine(compileErrors);
+        }
+        catch (TimeoutException exc) {
+            await ScriptFunctions.screenshot(ctx.TestEnv.CurrentPage, "(timeout) screenshot");
+            Console.WriteLine(exc.ToString());
         }
         catch (Exception exc) {
             Console.WriteLine(exc.ToString());

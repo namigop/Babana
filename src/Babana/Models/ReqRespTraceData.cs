@@ -5,6 +5,7 @@ namespace PlaywrightTest.Models;
 public record ReqRespTraceData
 {
     public byte[] Screenshot { get; set; }
+    public string ScreenshotName { get; set; }
     public uint ElapsedMsec { get; set; }
     public DateTime Timestamp { get; set; }
     public string RequestBody { get; set; }

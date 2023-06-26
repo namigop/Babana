@@ -29,7 +29,7 @@ public class ReqRespTraceItem : ViewModelBase {
             var bmp = new Bitmap(new MemoryStream(dto.Screenshot));
             Screenshot = bmp;
             CanShowScreenshot = true;
-            PathAndQuery = "screenshot";
+            PathAndQuery = dto.ScreenshotName;
         }
 
         _elapsedMsec = dto.ElapsedMsec;

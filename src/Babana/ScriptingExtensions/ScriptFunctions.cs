@@ -176,7 +176,10 @@ public static class ScriptFunctions {
     #endregion
 
 
-    public static async Task screenshot(IPage? page) {
+    public static async Task screenshot(IPage? page, string name="screenshot") {
+        if (page == null)
+            return;
+
         var bytes = await page.ScreenshotAsync(new() { FullPage = true });
         var dto = new ReqRespTraceData() {
             Timestamp = DateTime.Now,
@@ -189,7 +192,8 @@ public static class ScriptFunctions {
             RequestMethod = "IMG",
             RequestHeaders = new(),
             ResponseHeaders = new(),
-            Screenshot = bytes
+            Screenshot = bytes,
+            ScreenshotName = name
         };
 
         ReqRespTracer.Instance.Value.Trace(dto);
