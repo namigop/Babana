@@ -18,6 +18,7 @@
         <CFBundleSignature>com.erik.Babana</CFBundleSignature>
         <CFBundleExecutable>Babana</CFBundleExecutable>
         <CFBundleIconFile>Resources/ldb.icns</CFBundleIconFile>
+        <ApplicationIcon>Assets\babana.ico</ApplicationIcon>
 <!--        <ApplicationIcon>Assets\ldb.ico</ApplicationIcon> &lt;!&ndash; Will be copied from output directory &ndash;&gt;-->
         <!--        <NSPrincipalClass>NSApplication</NSPrincipalClass>-->
         <!--        <NSHighResolutionCapable>true</NSHighResolutionCapable>-->
@@ -29,6 +30,9 @@
         <Folder Include="Models\" />
         <AvaloniaResource Include="Assets\**" />
         <None Remove=".gitignore" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="Assets\babana.ico" />
     </ItemGroup>
     <ItemGroup>
         <!--This helps with theme dll-s trimming.
