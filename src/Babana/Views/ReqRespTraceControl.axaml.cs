@@ -1,9 +1,7 @@
 using System;
 using System.Reactive.Linq;
 using System.Xml;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using AvaloniaEdit;
@@ -23,8 +21,8 @@ public partial class ReqRespTraceControl : UserControl {
     public ReqRespTraceControl() {
         InitializeComponent();
 
-        this.ViewModel = new ReqRespTraceViewModel();
-        this.DataContext = this.ViewModel;
+        ViewModel = new ReqRespTraceViewModel();
+        DataContext = ViewModel;
         ReqRespTracer.Instance.Value.Traced += OnTraced;
 
         _reqEditor = this.FindControl<TextEditor>("ReqEditor");
@@ -40,12 +38,11 @@ public partial class ReqRespTraceControl : UserControl {
     }
 
     private void DisplayReqResp() {
-        if (this.ViewModel.SelectedTraceItem != null) {
+        if (ViewModel.SelectedTraceItem != null)
             Dispatcher.UIThread.Post(() => {
                 _reqEditor.Document = new TextDocument() { Text = ViewModel.SelectedTraceItem.RequestBody };
                 _respEditor.Document = new TextDocument() { Text = ViewModel.SelectedTraceItem.ResponseBody };
             });
-        }
     }
 
     public ReqRespTraceViewModel ViewModel { get; private set; }
@@ -60,7 +57,7 @@ public partial class ReqRespTraceControl : UserControl {
 
     private void OnTraced(object sender, ReqRespTraceData e) {
         Dispatcher.UIThread.Post(() => {
-            var vm = (ReqRespTraceViewModel)this.DataContext;
+            var vm = (ReqRespTraceViewModel)DataContext;
             vm.AddTrace(e);
         });
     }

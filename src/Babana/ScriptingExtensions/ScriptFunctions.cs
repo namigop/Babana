@@ -1,10 +1,8 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Media.Imaging;
 using Microsoft.Playwright;
 using PlaywrightTest.Models;
 
@@ -17,7 +15,7 @@ public static class ScriptFunctions {
 
     public static async Task open(this IPage? page, string url, Cancel cancel = null) {
         cancel?.TryCancel();
-        await page.GotoAsync(url, new PageGotoOptions(){ Timeout = 60*1000});
+        await page.GotoAsync(url, new PageGotoOptions() { Timeout = 60 * 1000 });
     }
 
     public static async Task refresh(this IPage? page, Cancel cancel = null) {
@@ -40,7 +38,7 @@ public static class ScriptFunctions {
     public static async Task waitFor(this IPage? page, string pattern, Cancel cancel = null) {
         cancel?.TryCancel();
         var regex = new Regex(pattern);
-        await page?.WaitForURLAsync(regex, new PageWaitForURLOptions(){ Timeout = 60*1000});
+        await page?.WaitForURLAsync(regex, new PageWaitForURLOptions() { Timeout = 60 * 1000 });
     }
 
     #endregion
@@ -73,7 +71,7 @@ public static class ScriptFunctions {
     public static async Task fillMany(this ILocator? locator, string arg, Cancel cancel = null) {
         cancel?.TryCancel();
         var parts = arg.ToCharArray().Select(c => c.ToString()).ToArray();
-        int counter = 0;
+        var counter = 0;
         foreach (var l in await locator?.AllAsync()) {
             await l.FillAsync(parts[counter]);
             counter++;
@@ -176,11 +174,11 @@ public static class ScriptFunctions {
     #endregion
 
 
-    public static async Task screenshot(IPage? page, string name="screenshot") {
+    public static async Task screenshot(IPage? page, string name = "screenshot") {
         if (page == null)
             return;
 
-        var bytes = await page.ScreenshotAsync(new() { FullPage = true });
+        var bytes = await page.ScreenshotAsync(new PageScreenshotOptions { FullPage = true });
         var dto = new ReqRespTraceData() {
             Timestamp = DateTime.Now,
             ElapsedMsec = 0,
@@ -190,8 +188,8 @@ public static class ScriptFunctions {
             RequestUri = "",
             StatusCode = "418",
             RequestMethod = "IMG",
-            RequestHeaders = new(),
-            ResponseHeaders = new(),
+            RequestHeaders = new Dictionary<string, string>(),
+            ResponseHeaders = new Dictionary<string, string>(),
             Screenshot = bytes,
             ScreenshotName = name
         };

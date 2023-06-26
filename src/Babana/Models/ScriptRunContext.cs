@@ -15,23 +15,22 @@ public class ScriptRunContext {
     public Cancel CancelToken { get; private set; }
 
     public void Start() {
-        this.TestEnv = new TestEnvironment();
-        this.startTime = DateTime.Now;
-        this.tcs = new CancellationTokenSource();
-        this.CancelToken = new Cancel(this.tcs.Token);
-        this.pauseCs = new TaskCompletionSource();
+        TestEnv = new TestEnvironment();
+        startTime = DateTime.Now;
+        tcs = new CancellationTokenSource();
+        CancelToken = new Cancel(tcs.Token);
+        pauseCs = new TaskCompletionSource();
     }
 
     public void Stop() {
-        this.Elapsed = DateTime.Now - startTime;
-        this.tcs.Cancel();
+        Elapsed = DateTime.Now - startTime;
+        tcs.Cancel();
     }
 
     //this method is available to the script
     public async Task pause() {
-        MessageHub.Publish(new Message(){ Content = new RunStateMessage() { IsPaused = true} });
-        await this.pauseCs.Task;
-
+        MessageHub.Publish(new Message() { Content = new RunStateMessage() { IsPaused = true } });
+        await pauseCs.Task;
     }
 
     public static ScriptSetup setup() {
@@ -39,16 +38,16 @@ public class ScriptRunContext {
     }
 
     public void Unpause() {
-        this.pauseCs.SetResult();
-        this.pauseCs = new TaskCompletionSource();
+        pauseCs.SetResult();
+        pauseCs = new TaskCompletionSource();
     }
 
     public async Task ForceClose() {
-        await this.TestEnv.Teardown();
+        await TestEnv.Teardown();
     }
 
     public void PrintOrderInfo() {
-        var order = this.TestEnv.TestOrder;
+        var order = TestEnv.TestOrder;
         Console.WriteLine($"");
         Console.WriteLine($"{nameof(order.PhoneNumber)} : {order.PhoneNumber}");
         Console.WriteLine($"{nameof(order.Email)} : {order.Email}");

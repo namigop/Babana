@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Xml;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Diagnostics;
 using Avalonia.Interactivity;
 using AvaloniaEdit;
@@ -18,26 +16,21 @@ using PlaywrightTest.ViewModels;
 namespace PlaywrightTest.Views;
 
 public partial class MainWindow : Window {
-
-
     public MainWindow() {
         InitializeComponent();
 
-        this.Editor.TextChanged += OnTextChanged;
-        this.Activated += OnActivated;
+        Editor.TextChanged += OnTextChanged;
+        Activated += OnActivated;
         SetupSyntaxHighlighting();
-        var intercept = new ConsoleIntercept(this.LogEditor);
+        var intercept = new ConsoleIntercept(LogEditor);
         Console.SetOut(intercept);
 
 #if DEBUG
         this.AttachDevTools(new DevToolsOptions());
 #endif
-        MessageHub.Sub += (sender, arg) => { this.LogEditor.ScrollToEnd(); };
-        if (Util.IsWindows()) {
-            this.ExtendClientAreaToDecorationsHint = false;
-        }
+        MessageHub.Sub += (sender, arg) => { LogEditor.ScrollToEnd(); };
+        if (Util.IsWindows()) ExtendClientAreaToDecorationsHint = false;
     }
-
 
 
     private void SetupSyntaxHighlighting() {
@@ -48,19 +41,15 @@ public partial class MainWindow : Window {
         }
     }
 
-    public MainWindowViewModel ViewModel => (MainWindowViewModel)this.DataContext;
+    public MainWindowViewModel ViewModel => (MainWindowViewModel)DataContext;
 
     private void OnActivated(object? sender, EventArgs e) {
-        if (this.Editor.Document.TextLength == 0) {
-            this.Editor.Document = new TextDocument() { Text = ViewModel.ScriptViewModel.Model.ScriptContent };
-        }
+        if (Editor.Document.TextLength == 0) Editor.Document = new TextDocument() { Text = ViewModel.ScriptViewModel.Model.ScriptContent };
     }
 
     private void OnTextChanged(object? sender, EventArgs e) {
-        ViewModel.ScriptViewModel.Model.ScriptContent = this.Editor.Document.Text;
-        if (!this.ViewModel.Hello.EndsWith("*")) {
-            this.ViewModel.Hello += "*";
-        }
+        ViewModel.ScriptViewModel.Model.ScriptContent = Editor.Document.Text;
+        if (!ViewModel.Hello.EndsWith("*")) ViewModel.Hello += "*";
     }
 
     private async void OnOpenFileClick(object? sender, RoutedEventArgs e) {
@@ -73,13 +62,11 @@ public partial class MainWindow : Window {
 
         var files = await dg.ShowAsync(this);
         if (files != null && files.Any()) {
-
-            this.ViewModel.ScriptViewModel.Model.FromFile(files[0]);
-            this.ViewModel.Hello = System.IO.Path.GetFileName(files[0]);
-            this.ViewModel.MyFortuneCookie = files[0];
-            this.Editor.Document.Text = this.ViewModel.ScriptViewModel.Model.ScriptContent;
-            this.ViewModel.Hello = this.ViewModel.Hello.TrimEnd('*');
+            ViewModel.ScriptViewModel.Model.FromFile(files[0]);
+            ViewModel.Hello = System.IO.Path.GetFileName(files[0]);
+            ViewModel.MyFortuneCookie = files[0];
+            Editor.Document.Text = ViewModel.ScriptViewModel.Model.ScriptContent;
+            ViewModel.Hello = ViewModel.Hello.TrimEnd('*');
         }
-
     }
 }

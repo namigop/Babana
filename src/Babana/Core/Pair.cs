@@ -2,17 +2,17 @@ using ReactiveUI;
 
 namespace PlaywrightTest.Core;
 
-public class Pair<K,V> : ReactiveObject {
+public class Pair<K, V> : ReactiveObject {
     private K _key;
     private V _value;
 
     public K Key {
         get => _key;
-        set => this.RaiseAndSetIfChanged(ref _key , value);
+        set => this.RaiseAndSetIfChanged(ref _key, value);
     }
 
     public V Value {
         get => _value;
-        set => this.RaiseAndSetIfChanged(ref _value , value);
+        set => this.RaiseAndSetIfChanged(ref _value, value);
     }
 }

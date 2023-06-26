@@ -14,17 +14,17 @@
         <Border BorderBrush="Black" BorderThickness="0 0 0 0">
             <Grid Grid.Row="0" Margin="0 6 0 0" Background="WhiteSmoke">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="6 0 0 0">
-                    <TextBlock VerticalAlignment="Center" Text="url filter:" Foreground="DimGray"></TextBlock>
-                    <TextBox Text="{Binding UriFilter}" VerticalAlignment="Center" Margin="6" MinWidth="150"></TextBox>
+                    <TextBlock VerticalAlignment="Center" Text="url filter:" Foreground="DimGray" />
+                    <TextBox Text="{Binding UriFilter}" VerticalAlignment="Center" Margin="6" MinWidth="150" />
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowGet}" Content="Get"></CheckBox>
-                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPut}" Content="Put" Margin="0 0 0 0"></CheckBox>
-                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPost}" Content="Post" Margin="6 0 0 0"></CheckBox>
-                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowDelete}" Content="Delete" Margin="6 0 0 0"></CheckBox>
-                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPatch}" Content="Patch" Margin="6 0 0 0"></CheckBox>
-                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowOptions}" Content="Options" Margin="6 0 0 0"></CheckBox>
-                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowHead}" Content="Head" Margin="6 0 0 0"></CheckBox>
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowGet}" Content="Get" />
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPut}" Content="Put" Margin="0 0 0 0" />
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPost}" Content="Post" Margin="6 0 0 0" />
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowDelete}" Content="Delete" Margin="6 0 0 0" />
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowPatch}" Content="Patch" Margin="6 0 0 0" />
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowOptions}" Content="Options" Margin="6 0 0 0" />
+                    <CheckBox IsChecked="{Binding DisplayOptions.CanShowHead}" Content="Head" Margin="6 0 0 0" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -32,7 +32,7 @@
         <Grid ColumnDefinitions="350, Auto, *" Grid.Row="1">
             <Grid.Styles>
                 <Style Selector="TextBlock">
-                    <Setter Property="FontSize" Value="13"></Setter>
+                    <Setter Property="FontSize" Value="13" />
                 </Style>
             </Grid.Styles>
             <!-- Display the list -->
@@ -41,7 +41,7 @@
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
                             <Setter Property="Padding" Value="4" />
-                            <Setter Property="IsVisible" Value="{Binding IsVisible}"></Setter>
+                            <Setter Property="IsVisible" Value="{Binding IsVisible}" />
 
                         </Style>
                     </ListBox.Styles>
@@ -66,37 +66,34 @@
                                 </StackPanel>
                                 <TextBlock Grid.Column="1" Text="{Binding PathAndQuery}" Margin="5 0 0 0"
                                            VerticalAlignment="Center"
-                                           ToolTip.Tip="{Binding PathAndQuery}">
-                                </TextBlock>
+                                           ToolTip.Tip="{Binding PathAndQuery}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
 
-            <GridSplitter Grid.Column="1" Width="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="WhiteSmoke"></GridSplitter>
+            <GridSplitter Grid.Column="1" Width="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="WhiteSmoke" />
 
             <!-- Display the selectedItem -->
             <Grid Grid.Column="2">
                 <Grid IsVisible="{Binding SelectedTraceItem.CanShowScreenshot}">
                     <ScrollViewer>
-                        <Image Source="{Binding SelectedTraceItem.Screenshot}" Stretch="{Binding ImageStretch}"></Image>
+                        <Image Source="{Binding SelectedTraceItem.Screenshot}" Stretch="{Binding ImageStretch}" />
                     </ScrollViewer>
                     <ToggleSwitch Background="White" Margin="6" OffContent="auto" OnContent="normal" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                  Command="{Binding ToggleImageCommand}"
-                    ></ToggleSwitch>
+                                  Command="{Binding ToggleImageCommand}" />
                 </Grid>
 
                 <Grid IsVisible="{Binding !SelectedTraceItem.CanShowScreenshot}" ColumnDefinitions="*, Auto, *">
                     <!-- Request Column -->
                     <Grid Column="0" RowDefinitions="Auto, *, Auto, 2*">
 
-                        <TextBlock Grid.Row="0" Text="Request" FontSize="18" Margin="10" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Row="0" Text="Request" FontSize="18" Margin="10" VerticalAlignment="Center" />
                         <TextBlock Text="{Binding SelectedTraceItem.Timestamp, StringFormat='{}{0:R}'}"
                                    ToolTip.Tip="{Binding SelectedTraceItem.RequestUri}"
                                    FontSize="11" HorizontalAlignment="Right"
-                                   VerticalAlignment="Center" Foreground="DimGray">
-                        </TextBlock>
+                                   VerticalAlignment="Center" Foreground="DimGray" />
 
                         <!-- Request Headers -->
                         <DataGrid AlternatingRowBackground="WhiteSmoke" HeadersVisibility="None" Grid.Row="1" Items="{Binding SelectedTraceItem.RequestHeaders}" AutoGenerateColumns="False">
@@ -106,8 +103,7 @@
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Key}"
                                                        VerticalAlignment="Center"
-                                                       Margin="0 0 10 0" HorizontalAlignment="Right">
-                                            </TextBlock>
+                                                       Margin="0 0 10 0" HorizontalAlignment="Right" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
 
@@ -116,20 +112,18 @@
                                 <!--      -->
                                 <!-- </DataGridTextColumn> -->
                                 <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock  Text="{Binding Value}" ToolTip.Tip="{Binding Value}"
-                                                   VerticalAlignment="Center"
-                                                   Margin="10 0 0 0" HorizontalAlignment="Left">
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Value}" ToolTip.Tip="{Binding Value}"
+                                                       VerticalAlignment="Center"
+                                                       Margin="10 0 0 0" HorizontalAlignment="Left" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
                                     <DataGridTemplateColumn.CellEditingTemplate>
                                         <DataTemplate>
                                             <TextBox Text="{Binding Value}"
-                                                       VerticalAlignment="Center"
-                                                       Margin="10 0 0 0" HorizontalAlignment="Left">
-                                            </TextBox>
+                                                     VerticalAlignment="Center"
+                                                     Margin="10 0 0 0" HorizontalAlignment="Left" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
 
@@ -138,7 +132,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8" Background="WhiteSmoke"></GridSplitter>
+                        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8" Background="WhiteSmoke" />
 
                         <!-- Request Body -->
                         <Border Grid.Row="3" BorderThickness="0 0 0 0" Padding="0">
@@ -146,17 +140,16 @@
                         </Border>
                     </Grid>
 
-                    <GridSplitter   Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="8" Background="WhiteSmoke"></GridSplitter>
+                    <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="8" Background="WhiteSmoke" />
 
 
                     <!-- Response Column -->
                     <Grid Column="2" RowDefinitions="Auto, *, Auto, 2*">
 
-                        <TextBlock Grid.Row="0" Text="Response" FontSize="18" Margin="10" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Grid.Row="0" Text="Response" FontSize="18" Margin="10" VerticalAlignment="Center" />
                         <TextBlock Text="{Binding SelectedTraceItem.ElapsedMsec, StringFormat='{}{0} msec'}"
                                    VerticalAlignment="Center" Foreground="DimGray" Margin="0 0 10 0"
-                                   FontSize="12" HorizontalAlignment="Right" MaxWidth="400">
-                        </TextBlock>
+                                   FontSize="12" HorizontalAlignment="Right" MaxWidth="400" />
 
                         <!-- Headers -->
                         <DataGrid AlternatingRowBackground="WhiteSmoke" Grid.Row="1" HeadersVisibility="None" Items="{Binding SelectedTraceItem.ResponseHeaders}" AutoGenerateColumns="False">
@@ -166,18 +159,17 @@
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Key}" Margin="0 0 10 0"
                                                        VerticalAlignment="Center"
-                                                       HorizontalAlignment="Right">
-                                            </TextBlock>
+                                                       HorizontalAlignment="Right" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
 
                                 </DataGridTemplateColumn>
-                                <DataGridTextColumn Binding="{Binding Value}"></DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Value}" />
 
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8" Background="WhiteSmoke"></GridSplitter>
+                        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8" Background="WhiteSmoke" />
 
                         <!-- Response Body -->
                         <Border Grid.Row="3" BorderThickness="0 0 0 0" Padding="0">
@@ -187,7 +179,6 @@
                 </Grid>
 
             </Grid>
-
 
 
         </Grid>

@@ -23,9 +23,9 @@
     <Grid RowDefinitions="Auto,*" Margin="0 0 6 6" ColumnDefinitions="Auto, *">
         <Grid.Styles>
             <Style Selector="Border">
-                <Setter Property="BorderBrush" Value="LightGray"></Setter>
-                <Setter Property="BorderThickness" Value="1"></Setter>
-                <Setter Property="CornerRadius" Value="4"></Setter>
+                <Setter Property="BorderBrush" Value="LightGray" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="4" />
             </Style>
         </Grid.Styles>
 
@@ -38,47 +38,47 @@
                 <StackPanel.Styles>
 
                     <Style Selector="Button">
-                        <Setter Property="BorderBrush" Value="Transparent"></Setter>
-                        <Setter Property="BorderThickness" Value="2 0 0 0"></Setter>
-                        <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
-                        <Setter Property="Background" Value="Transparent"></Setter>
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="2 0 0 0" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="Background" Value="Transparent" />
                     </Style>
                     <Style Selector="Button:pointerover /template/ ContentPresenter">
-                        <Setter Property="BorderBrush" Value="#F8B528"></Setter>
+                        <Setter Property="BorderBrush" Value="#F8B528" />
                     </Style>
 
                     <Style Selector="Viewbox">
-                        <Setter Property="Height" Value="28"></Setter>
-                        <Setter Property="Width" Value="28"></Setter>
+                        <Setter Property="Height" Value="28" />
+                        <Setter Property="Width" Value="28" />
                     </Style>
-                     <Style Selector="Button > StackPanel > TextBlock">
-                        <Setter Property="Foreground" Value="LightGray"></Setter>
-                        <Setter Property="VerticalAlignment" Value="Center"></Setter>
-                        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-                        <Setter Property="FontSize" Value="12"></Setter>
-                        <Setter Property="FontWeight" Value="Light"></Setter>
-                        <Setter Property="Margin" Value="4"></Setter>
+                    <Style Selector="Button > StackPanel > TextBlock">
+                        <Setter Property="Foreground" Value="LightGray" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="12" />
+                        <Setter Property="FontWeight" Value="Light" />
+                        <Setter Property="Margin" Value="4" />
 
                     </Style>
 
                     <Style Selector="Button > StackPanel > Viewbox > Canvas > Path">
-                        <Setter Property="Fill" Value="#CFDCEC"></Setter>
+                        <Setter Property="Fill" Value="#CFDCEC" />
 
                     </Style>
 
 
                 </StackPanel.Styles>
 
-                <Border Height="0" BorderBrush="#151C35" BorderThickness="0.5" Margin="0 2 0 0" HorizontalAlignment="Stretch"></Border>
+                <Border Height="0" BorderBrush="#151C35" BorderThickness="0.5" Margin="0 2 0 0" HorizontalAlignment="Stretch" />
 
                 <Button Command="{Binding StartCommand}" IsEnabled="{Binding CanStart}" ToolTip.Tip="Run the script">
                     <StackPanel>
                         <Viewbox>
                             <Canvas Width="24" Height="24">
-                                <Path  Data="M8,5.14V19.14L19,12.14L8,5.14Z" />
+                                <Path Data="M8,5.14V19.14L19,12.14L8,5.14Z" />
                             </Canvas>
                         </Viewbox>
-                        <TextBlock Text="run"></TextBlock>
+                        <TextBlock Text="run" />
                     </StackPanel>
                 </Button>
                 <!-- <Button Command="{Binding StopCommand}"> -->
@@ -97,46 +97,47 @@
                         <Viewbox>
                             <Canvas Width="24" Height="24">
                                 <Path
-                                      Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M14.59,8L12,10.59L9.41,8L8,9.41L10.59,12L8,14.59L9.41,16L12,13.41L14.59,16L16,14.59L13.41,12L16,9.41L14.59,8Z" />
+                                    Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M14.59,8L12,10.59L9.41,8L8,9.41L10.59,12L8,14.59L9.41,16L12,13.41L14.59,16L16,14.59L13.41,12L16,9.41L14.59,8Z" />
                             </Canvas>
                         </Viewbox>
-                        <TextBlock Text="stop"></TextBlock>
+                        <TextBlock Text="stop" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding ResumeCommand}" IsEnabled="{Binding CanResume}" ToolTip.Tip="Resume execution of the script">
                     <StackPanel>
                         <Viewbox>
                             <Canvas Width="24" Height="24">
-                                <Path  Data="M3,5V19L11,12M13,19H16V5H13M18,5V19H21V5" />
+                                <Path Data="M3,5V19L11,12M13,19H16V5H13M18,5V19H21V5" />
                             </Canvas>
                         </Viewbox>
-                        <TextBlock Text="resume"></TextBlock>
+                        <TextBlock Text="resume" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding ScreenshotCommand}" ToolTip.Tip="Resume execution of the script">
                     <StackPanel>
                         <Viewbox>
-                            <Canvas   Width="24" Height="24">
-                                <Path  Data="M20,4H16.83L15,2H9L7.17,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4M20,18H4V6H8.05L9.88,4H14.12L15.95,6H20V18M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15Z" />
+                            <Canvas Width="24" Height="24">
+                                <Path
+                                    Data="M20,4H16.83L15,2H9L7.17,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4M20,18H4V6H8.05L9.88,4H14.12L15.95,6H20V18M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15Z" />
                             </Canvas>
 
                         </Viewbox>
-                        <TextBlock Text="screenshot"></TextBlock>
+                        <TextBlock Text="screenshot" />
                     </StackPanel>
                 </Button>
 
 
-                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch"></Border>
+                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
 
                 <Button Click="OnOpenFileClick" ToolTip.Tip="Open a script file">
                     <StackPanel>
                         <Viewbox>
                             <Canvas Width="24" Height="24">
                                 <Path
-                                      Data="M4 18H11V20H4C2.9 20 2 19.11 2 18V6C2 4.89 2.89 4 4 4H10L12 6H20C21.1 6 22 6.89 22 8V10.17L20.41 8.59L20 8.17V8H4V18M23 14V21C23 22.11 22.11 23 21 23H15C13.9 23 13 22.11 13 21V12C13 10.9 13.9 10 15 10H19L23 14M21 15H18V12H15V21H21V15Z" />
+                                    Data="M4 18H11V20H4C2.9 20 2 19.11 2 18V6C2 4.89 2.89 4 4 4H10L12 6H20C21.1 6 22 6.89 22 8V10.17L20.41 8.59L20 8.17V8H4V18M23 14V21C23 22.11 22.11 23 21 23H15C13.9 23 13 22.11 13 21V12C13 10.9 13.9 10 15 10H19L23 14M21 15H18V12H15V21H21V15Z" />
                             </Canvas>
                         </Viewbox>
-                        <TextBlock Text="open"></TextBlock>
+                        <TextBlock Text="open" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding SaveFileCommand}" ToolTip.Tip="Save the script">
@@ -144,25 +145,25 @@
                         <Viewbox>
                             <Canvas Width="24" Height="24">
                                 <Path
-                                      Data="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3M19 19H5V5H16.17L19 7.83V19M12 12C10.34 12 9 13.34 9 15S10.34 18 12 18 15 16.66 15 15 13.66 12 12 12M6 6H15V10H6V6Z" />
+                                    Data="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3M19 19H5V5H16.17L19 7.83V19M12 12C10.34 12 9 13.34 9 15S10.34 18 12 18 15 16.66 15 15 13.66 12 12 12M6 6H15V10H6V6Z" />
                             </Canvas>
                         </Viewbox>
-                        <TextBlock Text="save"></TextBlock>
+                        <TextBlock Text="save" />
                     </StackPanel>
                 </Button>
 
-                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch"></Border>
+                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
 
                 <Button Command="{Binding  ClearTracesCommand}" ToolTip.Tip="Clear network traces">
                     <StackPanel>
                         <Viewbox Height="24" Width="24">
                             <Canvas Width="24" Height="24">
                                 <Path
-                                      Data="M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12L19,15.59M22,3A2,2 0 0,1 24,5V19A2,2 0 0,1 22,21H7C6.31,21 5.77,20.64 5.41,20.11L0,12L5.41,3.88C5.77,3.35 6.31,3 7,3H22M22,5H7L2.28,12L7,19H22V5Z" />
+                                    Data="M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12L19,15.59M22,3A2,2 0 0,1 24,5V19A2,2 0 0,1 22,21H7C6.31,21 5.77,20.64 5.41,20.11L0,12L5.41,3.88C5.77,3.35 6.31,3 7,3H22M22,5H7L2.28,12L7,19H22V5Z" />
                             </Canvas>
 
                         </Viewbox>
-                        <TextBlock Text="clear traces"></TextBlock>
+                        <TextBlock Text="clear traces" />
                     </StackPanel>
                 </Button>
 
@@ -170,28 +171,28 @@
                     <StackPanel>
                         <Viewbox Height="24" Width="24">
                             <Canvas Width="24" Height="24">
-                                <Path  Data="M23,12L19,8V11H10V13H19V16M1,18V6C1,4.89 1.9,4 3,4H15A2,2 0 0,1 17,6V9H15V6H3V18H15V15H17V18A2,2 0 0,1 15,20H3A2,2 0 0,1 1,18Z" />
+                                <Path Data="M23,12L19,8V11H10V13H19V16M1,18V6C1,4.89 1.9,4 3,4H15A2,2 0 0,1 17,6V9H15V6H3V18H15V15H17V18A2,2 0 0,1 15,20H3A2,2 0 0,1 1,18Z" />
                             </Canvas>
                             <!-- <Canvas Width="24" Height="24"> -->
                             <!--     <Path Fill="#CFDCEC" -->
                             <!--           Data="M17 3H5C3.89 3 3 3.9 3 5V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3M19 19H5V5H16.17L19 7.83V19M12 12C10.34 12 9 13.34 9 15S10.34 18 12 18 15 16.66 15 15 13.66 12 12 12M6 6H15V10H6V6Z" /> -->
                             <!-- </Canvas> -->
                         </Viewbox>
-                        <TextBlock Text="save trace"></TextBlock>
+                        <TextBlock Text="save trace" />
                     </StackPanel>
                 </Button>
-                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch"></Border>
+                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
 
                 <Button Command="{Binding  InstallBrowserCommand}" ToolTip.Tip="Install the browsers needed by playwright">
                     <StackPanel>
                         <Viewbox Height="24" Width="24">
                             <Canvas Width="24" Height="24">
                                 <Path
-                                      Data="M16.5 12C16.5 11.32 16.44 10.66 16.36 10H19.74C19.9 10.64 20 11.31 20 12C20 12.37 19.97 12.73 19.92 13.08C20.61 13.18 21.25 13.4 21.84 13.72C21.94 13.16 22 12.59 22 12C22 6.5 17.5 2 12 2C6.47 2 2 6.5 2 12C2 17.5 6.5 22 12 22C12.59 22 13.16 21.94 13.72 21.84C13.26 21 13 20.03 13 19C13 18.71 13.03 18.43 13.07 18.15C12.75 18.78 12.4 19.39 12 19.96C11.17 18.76 10.5 17.43 10.09 16H13.81C14.41 14.96 15.31 14.12 16.4 13.6C16.46 13.07 16.5 12.54 16.5 12M12 4.03C12.83 5.23 13.5 6.57 13.91 8H10.09C10.5 6.57 11.17 5.23 12 4.03M4.26 14C4.1 13.36 4 12.69 4 12S4.1 10.64 4.26 10H7.64C7.56 10.66 7.5 11.32 7.5 12S7.56 13.34 7.64 14H4.26M5.08 16H8C8.35 17.25 8.8 18.45 9.4 19.56C7.57 18.93 6.03 17.65 5.08 16M8 8H5.08C6.03 6.34 7.57 5.06 9.4 4.44C8.8 5.55 8.35 6.75 8 8M14.34 14H9.66C9.56 13.34 9.5 12.68 9.5 12S9.56 10.65 9.66 10H14.34C14.43 10.65 14.5 11.32 14.5 12S14.43 13.34 14.34 14M14.59 4.44C16.43 5.07 17.96 6.34 18.92 8H15.97C15.65 6.75 15.19 5.55 14.59 4.44M22.5 17.25L17.75 22L15 19L16.16 17.84L17.75 19.43L21.34 15.84L22.5 17.25Z" />
+                                    Data="M16.5 12C16.5 11.32 16.44 10.66 16.36 10H19.74C19.9 10.64 20 11.31 20 12C20 12.37 19.97 12.73 19.92 13.08C20.61 13.18 21.25 13.4 21.84 13.72C21.94 13.16 22 12.59 22 12C22 6.5 17.5 2 12 2C6.47 2 2 6.5 2 12C2 17.5 6.5 22 12 22C12.59 22 13.16 21.94 13.72 21.84C13.26 21 13 20.03 13 19C13 18.71 13.03 18.43 13.07 18.15C12.75 18.78 12.4 19.39 12 19.96C11.17 18.76 10.5 17.43 10.09 16H13.81C14.41 14.96 15.31 14.12 16.4 13.6C16.46 13.07 16.5 12.54 16.5 12M12 4.03C12.83 5.23 13.5 6.57 13.91 8H10.09C10.5 6.57 11.17 5.23 12 4.03M4.26 14C4.1 13.36 4 12.69 4 12S4.1 10.64 4.26 10H7.64C7.56 10.66 7.5 11.32 7.5 12S7.56 13.34 7.64 14H4.26M5.08 16H8C8.35 17.25 8.8 18.45 9.4 19.56C7.57 18.93 6.03 17.65 5.08 16M8 8H5.08C6.03 6.34 7.57 5.06 9.4 4.44C8.8 5.55 8.35 6.75 8 8M14.34 14H9.66C9.56 13.34 9.5 12.68 9.5 12S9.56 10.65 9.66 10H14.34C14.43 10.65 14.5 11.32 14.5 12S14.43 13.34 14.34 14M14.59 4.44C16.43 5.07 17.96 6.34 18.92 8H15.97C15.65 6.75 15.19 5.55 14.59 4.44M22.5 17.25L17.75 22L15 19L16.16 17.84L17.75 19.43L21.34 15.84L22.5 17.25Z" />
                             </Canvas>
 
                         </Viewbox>
-                        <TextBlock Text="install browser"></TextBlock>
+                        <TextBlock Text="install browser" />
                     </StackPanel>
                 </Button>
 
@@ -206,10 +207,10 @@
                         <Style.Animations>
                             <Animation Duration="0:0:2" IterationCount="INFINITE">
                                 <KeyFrame Cue="0%">
-                                    <Setter Property="Opacity" Value="0.0"/>
+                                    <Setter Property="Opacity" Value="0.0" />
                                 </KeyFrame>
                                 <KeyFrame Cue="100%">
-                                    <Setter Property="Opacity" Value="1.0"/>
+                                    <Setter Property="Opacity" Value="1.0" />
                                 </KeyFrame>
                             </Animation>
                         </Style.Animations>
@@ -217,11 +218,10 @@
                 </Grid.Styles>
                 <TextBlock FontSize="14" Foreground="White" Text="{Binding Hello}"
                            ToolTip.Tip="{Binding MyFortuneCookie}"
-                           VerticalAlignment="Center" HorizontalAlignment="Center">
-                </TextBlock>
+                           VerticalAlignment="Center" HorizontalAlignment="Center" />
 
                 <Border Margin="6" Padding="6" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="4" BorderThickness="0" Background="{Binding ToastBackground}">
-                    <TextBlock Classes="callout" FontWeight="Light"  Text="{Binding ToastMessage}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"></TextBlock>
+                    <TextBlock Classes="callout" FontWeight="Light" Text="{Binding ToastMessage}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" />
                 </Border>
             </Grid>
         </Grid>
@@ -233,28 +233,27 @@
 
                     <!-- Main Area - Script and Network -->
                     <Grid ColumnDefinitions="Auto, 6*, Auto, 1*" Grid.Column="1">
-                        <Grid Grid.Column="0" Width="0">
-                        </Grid>
+                        <Grid Grid.Column="0" Width="0" />
                         <Border Grid.Column="1" BorderThickness="2 0 0 0" CornerRadius="10 10 0 0" BorderBrush="White" Background="White" Padding="4" x:Name="EditorBorder">
                             <Grid RowDefinitions="Auto, *">
-                                <TextBlock Text="Script" FontSize="18" Margin="10"></TextBlock>
+                                <TextBlock Text="Script" FontSize="18" Margin="10" />
                                 <avalonEdit:TextEditor Background="#FFFFF7" x:Name="Editor" FontSize="13" ShowLineNumbers="True" Grid.Row="1" />
                             </Grid>
                         </Border>
-                        <GridSplitter Grid.Column="2" Width="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#071222"></GridSplitter>
-                        <Border Grid.Column="3" BorderThickness="2" CornerRadius="10 10 0 0"  Padding="4" BorderBrush="White"  Background="White" >
+                        <GridSplitter Grid.Column="2" Width="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#071222" />
+                        <Border Grid.Column="3" BorderThickness="2" CornerRadius="10 10 0 0" Padding="4" BorderBrush="White" Background="White">
                             <Grid RowDefinitions="Auto, *">
-                                <TextBlock Text="Network" FontSize="18" Margin="10"></TextBlock>
+                                <TextBlock Text="Network" FontSize="18" Margin="10" />
                                 <views:ReqRespTraceControl Grid.Row="1" Name="TraceControl" />
                             </Grid>
                         </Border>
                     </Grid>
 
-                    <GridSplitter Grid.Row="1" Grid.Column="1" Height="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#071222"></GridSplitter>
+                    <GridSplitter Grid.Row="1" Grid.Column="1" Height="8" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#071222" />
 
-                    <Grid Grid.Row="2" Grid.Column="1"   >
-                        <Border BorderThickness="2" CornerRadius="0 0 10 10"  Padding="4" BorderBrush="WhiteSmoke"  Background="WhiteSmoke" >
-                            <avalonEdit:TextEditor FontFamily="Consolas" FontSize="13" Name="LogEditor" Foreground="#26282A"></avalonEdit:TextEditor>
+                    <Grid Grid.Row="2" Grid.Column="1">
+                        <Border BorderThickness="2" CornerRadius="0 0 10 10" Padding="4" BorderBrush="WhiteSmoke" Background="WhiteSmoke">
+                            <avalonEdit:TextEditor FontFamily="Consolas" FontSize="13" Name="LogEditor" Foreground="#26282A" />
                         </Border>
                         <!-- <TextBox Text="{Binding ScriptViewModel.Model.ExecutionLog}" FontSize="13" Margin="5"></TextBox> -->
 

@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ReactiveUI;
 
-namespace PlaywrightTest.ViewModels; 
+namespace PlaywrightTest.ViewModels;
 
 public class ViewModelBase : ReactiveObject {
+    protected ViewModelBase() {
+    }
 
-    protected ViewModelBase(){}
     protected ICommand CreateCommand(Func<Task> doThis) {
         return ReactiveCommand.Create(async () => {
             try {

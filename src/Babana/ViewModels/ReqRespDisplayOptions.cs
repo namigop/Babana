@@ -2,7 +2,6 @@ using ReactiveUI;
 
 namespace PlaywrightTest.ViewModels;
 
-
 public class ReqRespDisplayOptions : ReactiveObject {
     private bool _canShowPost = true;
     private bool _canShowPut = true;

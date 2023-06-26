@@ -2,7 +2,7 @@
 using Avalonia;
 using Avalonia.ReactiveUI;
 
-namespace PlaywrightTest; 
+namespace PlaywrightTest;
 
 internal class Program {
     // Initialization code. Don't use any Avalonia, third-party APIs or any
@@ -10,7 +10,6 @@ internal class Program {
     // yet and stuff might break.
     [STAThread]
     public static void Main(string[] args) {
-
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
     }

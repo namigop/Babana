@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using Avalonia.Threading;
 using AvaloniaEdit;
-using AvaloniaEdit.Document;
 
 namespace PlaywrightTest.Views;
 

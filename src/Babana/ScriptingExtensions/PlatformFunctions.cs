@@ -5,11 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Avalonia.Styling;
-using Microsoft.Playwright;
 using Newtonsoft.Json;
 using PlaywrightTest.Core;
-using PlaywrightTest.Core.Platform;
 using PlaywrightTest.Core.Platform.KycService;
 using PlaywrightTest.Core.Platform.LogisticsService;
 using PlaywrightTest.Models;
@@ -29,12 +26,11 @@ public static class PlatformFunctions {
         ReqRespTracer.Trace(new Uri(url), "GET", "", responseContent, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
         var root = JsonConvert.DeserializeObject<NotificationRoot>(responseContent);
-        foreach (var l in root?.Logs) {
+        foreach (var l in root?.Logs)
             if (mobile == l.Mobile && l.RequestData.ActivityId == "mnp_number_check") {
                 Console.WriteLine($"Found OTP {l.RequestData.Payload.OtpCode} for {mobile}");
                 return l.RequestData.Payload.OtpCode;
             }
-        }
 
         throw new Exception("MNP : OTP not found");
     }
@@ -51,12 +47,11 @@ public static class PlatformFunctions {
 
         ReqRespTracer.Trace(new Uri(url), "GET", "", responseContent, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
-        foreach (var l in root?.Logs) {
+        foreach (var l in root?.Logs)
             if (email.ToLowerInvariant() == l.Email.ToLowerInvariant() && l.RequestData.ActivityId == "activate_app") {
                 Console.WriteLine($"Found OTP {l.RequestData.Payload.OtpCode} for {l.Email}");
                 return l.RequestData.Payload.OtpCode;
             }
-        }
 
         throw new Exception("Activate App : OTP not found");
     }
@@ -122,9 +117,7 @@ public static class PlatformFunctions {
         ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
-        if (response.StatusCode != HttpStatusCode.OK) {
-            throw new Exception($"Unable to perform KYC for {orderRef} to status {kycStatus}. {(int)response.StatusCode} {response.StatusCode}");
-        }
+        if (response.StatusCode != HttpStatusCode.OK) throw new Exception($"Unable to perform KYC for {orderRef} to status {kycStatus}. {(int)response.StatusCode} {response.StatusCode}");
     }
 
     public static async Task<string> getShipmentRef(string laasUrl, string orderRef, Cancel cancel = null) {
@@ -148,9 +141,7 @@ public static class PlatformFunctions {
         ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
-        if (root.Success) {
-            return root.Result.Shipments[0].ShipmentReference;
-        }
+        if (root.Success) return root.Result.Shipments[0].ShipmentReference;
 
         throw new Exception($"Unable to retrieve the shipment reference for order {orderRef}. {(int)response.StatusCode} {response.StatusCode}");
     }
@@ -173,11 +164,10 @@ public static class PlatformFunctions {
         ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
-        if (root.Success && root.Result.ProductVariantIdentifiers.Any()) {
+        if (root.Success && root.Result.ProductVariantIdentifiers.Any())
             return root.Result.ProductVariantIdentifiers
                 .First(i => i.IdentifierKey1 == "iccid")
                 .IdentifierValue1;
-        }
 
         throw new Exception($"Unable to retrieve the ICCId. {(int)response.StatusCode} {response.StatusCode}");
     }
@@ -200,9 +190,7 @@ public static class PlatformFunctions {
         ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
-        if (root.Success) {
-            return root.Result.RefNum;
-        }
+        if (root.Success) return root.Result.RefNum;
 
         throw new Exception($"Unable to retrieve the Refnum reference for ShipmentRef {shipmentRef}. {(int)response.StatusCode} {response.StatusCode}");
     }

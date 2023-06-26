@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using PlaywrightTest.ViewModels;
 
-namespace PlaywrightTest; 
+namespace PlaywrightTest;
 
 public class ViewLocator : IDataTemplate {
     public IControl Build(object data) {

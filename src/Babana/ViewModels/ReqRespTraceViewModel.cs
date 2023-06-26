@@ -11,7 +11,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
-using Microsoft.Playwright;
 using PlaywrightTest.Core;
 using PlaywrightTest.Models;
 using ReactiveUI;
@@ -29,10 +28,10 @@ public class ReqRespTraceViewModel : ViewModelBase {
 
     //for the designer
     public ReqRespTraceViewModel() {
-        this.ClearTracesCommand = ReactiveCommand.Create(OnClear);
-        this.SaveTraceCommand = ReactiveCommand.Create(OnSave);
-        this.DisplayOptions = new ReqRespDisplayOptions();
-        this.ToggleImageCommand = ReactiveCommand.Create(OnToggleImage);
+        ClearTracesCommand = ReactiveCommand.Create(OnClear);
+        SaveTraceCommand = ReactiveCommand.Create(OnSave);
+        DisplayOptions = new ReqRespDisplayOptions();
+        ToggleImageCommand = ReactiveCommand.Create(OnToggleImage);
 
         this.WhenAnyValue(
                 t => t.DisplayOptions.CanShowGet,
@@ -52,17 +51,16 @@ public class ReqRespTraceViewModel : ViewModelBase {
             .Subscribe(t => Load());
         //.Void(d => disposable.Add(d));
 
-        this.TraceItems.CollectionChanged += OnCollectionChanged;
+        TraceItems.CollectionChanged += OnCollectionChanged;
         _imageStretch = Stretch.Uniform;
         _isStretched = true;
     }
 
     private void OnToggleImage() {
         if (_isStretched)
-            this.ImageStretch = ImageStretch = Stretch.None;
-        else {
-            this.ImageStretch = ImageStretch = Stretch.Uniform;
-        }
+            ImageStretch = ImageStretch = Stretch.None;
+        else
+            ImageStretch = ImageStretch = Stretch.Uniform;
 
         _isStretched = !_isStretched;
     }
@@ -85,7 +83,7 @@ public class ReqRespTraceViewModel : ViewModelBase {
     public ICommand SaveTraceCommand { get; }
     public ICommand ClearTracesCommand { get; }
 
-    public bool HasItems => this.TraceItems.Any();
+    public bool HasItems => TraceItems.Any();
 
     public string UriFilter {
         get => _uriFilter;
@@ -94,37 +92,35 @@ public class ReqRespTraceViewModel : ViewModelBase {
 
     public ICommand ToggleImageCommand { get; }
 
-    public Avalonia.Media.Stretch ImageStretch {
+    public Stretch ImageStretch {
         get => _imageStretch;
         private set => this.RaiseAndSetIfChanged(ref _imageStretch, value);
     }
 
 
     private void OnClear() {
-        this.TraceItems.Clear();
-        this.SelectedTraceItem = null;
+        TraceItems.Clear();
+        SelectedTraceItem = null;
         ReqRespTracer.Instance.Value.ClearAll();
     }
 
     private async Task OnSave() {
-        if (this.SelectedTraceItem != null) {
+        if (SelectedTraceItem != null) {
             var lifetime = (IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime;
             var window = lifetime.MainWindow;
 
-            if (this.SelectedTraceItem.CanShowScreenshot) {
+            if (SelectedTraceItem.CanShowScreenshot) {
                 var sd = new SaveFileDialog {
                     InitialFileName = "screenshot.png"
                 };
 
                 var imgFile = await sd.ShowAsync(window);
-                if (!string.IsNullOrEmpty(imgFile)) {
-                    this.SelectedTraceItem.Screenshot.Save(imgFile);
-                }
+                if (!string.IsNullOrEmpty(imgFile)) SelectedTraceItem.Screenshot.Save(imgFile);
 
                 return;
             }
 
-            var json = this.SelectedTraceItem.ToJson();
+            var json = SelectedTraceItem.ToJson();
             var dg = new SaveFileDialog {
                 DefaultExtension = ".json",
                 InitialFileName = "trace.json"
@@ -146,33 +142,19 @@ public class ReqRespTraceViewModel : ViewModelBase {
                 return false;
         }
 
-        if (DisplayOptions.CanShowGet && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Get) {
-            return true;
-        }
+        if (DisplayOptions.CanShowGet && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Get) return true;
 
-        if (DisplayOptions.CanShowPost && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Post) {
-            return true;
-        }
+        if (DisplayOptions.CanShowPost && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Post) return true;
 
-        if (DisplayOptions.CanShowPut && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Put) {
-            return true;
-        }
+        if (DisplayOptions.CanShowPut && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Put) return true;
 
-        if (DisplayOptions.CanShowDelete && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Delete) {
-            return true;
-        }
+        if (DisplayOptions.CanShowDelete && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Delete) return true;
 
-        if (DisplayOptions.CanShowOptions && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Options) {
-            return true;
-        }
+        if (DisplayOptions.CanShowOptions && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Options) return true;
 
-        if (DisplayOptions.CanShowPatch && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Patch) {
-            return true;
-        }
+        if (DisplayOptions.CanShowPatch && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Patch) return true;
 
-        if (DisplayOptions.CanShowHead && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Head) {
-            return true;
-        }
+        if (DisplayOptions.CanShowHead && HttpUtil.GetMethod(i.RequestMethod) == HttpMethod.Head) return true;
 
         if (i.RequestMethod == "IMG")
             return true;
@@ -181,26 +163,25 @@ public class ReqRespTraceViewModel : ViewModelBase {
         return false;
     }
 
-    private static object sync = new object();
+    private static object sync = new();
 
     public void AddTrace(ReqRespTraceData i) {
         var item = new ReqRespTraceItem(i) { IsVisible = CheckIfCanShow(i) };
-        lock (sync)
-            this.TraceItems.Add(item);
+        lock (sync) {
+            TraceItems.Add(item);
+        }
 
         if (SelectedTraceItem == null && item.IsVisible)
-            this.SelectedTraceItem = item;
+            SelectedTraceItem = item;
     }
 
     public void Load() {
         //var all = ReqRespTracer.Instance.Value.GetAll().Where(CheckIfCanShow);
         lock (sync) {
-            foreach (var i in TraceItems) {
-                i.IsVisible = CheckIfCanShow(i.Dto);
-            }
+            foreach (var i in TraceItems) i.IsVisible = CheckIfCanShow(i.Dto);
         }
 
-        if (this.TraceItems.Any())
-            this.SelectedTraceItem = this.TraceItems.First();
+        if (TraceItems.Any())
+            SelectedTraceItem = TraceItems.First();
     }
 }

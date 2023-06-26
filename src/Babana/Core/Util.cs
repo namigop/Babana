@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ObjectiveC;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -81,15 +80,16 @@ public static class Util {
         doc = doc.TrimStart();
         if (doc.StartsWith('{') || doc.StartsWith('['))
             try {
-                dynamic parsedJson = JsonConvert.DeserializeObject(doc) ?? new {Info="Invalid json"};
+                dynamic parsedJson = JsonConvert.DeserializeObject(doc) ?? new { Info = "Invalid json" };
                 doc = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
             }
             catch (Exception exc) {
-               // C.Warn($"Unable to prettify json. {exc}");
+                // C.Warn($"Unable to prettify json. {exc}");
             }
 
         return doc;
     }
+
     public static object? Deserialize(string value, Type type) {
         return JsonConvert.DeserializeObject(value, type);
     }

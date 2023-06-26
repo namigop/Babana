@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 
 namespace PlaywrightTest.Models;
-public record ReqRespTraceData
-{
+
+public record ReqRespTraceData {
     public byte[] Screenshot { get; set; }
     public string ScreenshotName { get; set; }
     public uint ElapsedMsec { get; set; }

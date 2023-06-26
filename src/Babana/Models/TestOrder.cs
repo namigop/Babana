@@ -10,5 +10,4 @@ public class TestEnvOrder {
     public string Iccid { get; set; }
 
     public string Email { get; set; }
-
 }

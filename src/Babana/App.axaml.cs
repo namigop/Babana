@@ -5,7 +5,7 @@ using Avalonia.Markup.Xaml;
 using PlaywrightTest.ViewModels;
 using PlaywrightTest.Views;
 
-namespace PlaywrightTest; 
+namespace PlaywrightTest;
 
 public class App : Application {
     public override void Initialize() {
@@ -23,6 +23,5 @@ public class App : Application {
     }
 
     private void AboutMenuItem_OnClick(object? sender, EventArgs e) {
-
     }
 }

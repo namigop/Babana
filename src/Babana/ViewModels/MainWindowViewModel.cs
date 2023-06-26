@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Reactive.Subjects;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Microsoft.CodeAnalysis;
-using Microsoft.Playwright;
 using PlaywrightTest.Core;
 using PlaywrightTest.Models;
 using PlaywrightTest.Views;
@@ -41,9 +36,9 @@ public class MainWindowViewModel : ViewModelBase {
         InstallBrowserCommand = CreateCommand(OnInstallBrowser);
         ScreenshotCommand = CreateCommand(OnScreenshot);
         var model = new ScriptTabModel();
-            model.FromText(ScriptTabModel.scriptTest, "TODO");
+        model.FromText(ScriptTabModel.scriptTest, "TODO");
         ScriptViewModel = new TabItemViewModel(model);
-        this.CanStart = true;
+        CanStart = true;
 
         MessageHub.Sub += OnSubscribed;
     }
@@ -61,8 +56,8 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     private void HandleRunStates(RunStateMessage info) {
-        this.CanStart = !info.IsRunning;
-        this.CanResume = info.IsPaused;
+        CanStart = !info.IsRunning;
+        CanResume = info.IsPaused;
         ToastMessage = "";
         ToastBackground = "Transparent";
         if (info.IsRunning) {
@@ -134,8 +129,8 @@ public class MainWindowViewModel : ViewModelBase {
 
 
     private async Task OnStart() {
-        await this.OnForceClose();
-        this.CanStart = false;
+        await OnForceClose();
+        CanStart = false;
         _runner = new ScriptRunner(ScriptViewModel.Model);
         await _runner.Run();
     }
@@ -145,16 +140,14 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     private async Task OnForceClose() {
-        this.CanStart = true;
-        if (_runner != null) {
-            await _runner.ForceClose();
-        }
+        CanStart = true;
+        if (_runner != null) await _runner.ForceClose();
     }
 
     private async Task OnInstallBrowser() {
         Console.WriteLine("Installing Browsers for playwright. Please wait...");
 
-        bool done = false;
+        var done = false;
 
         var printTask = Task.Run(async () => {
             while (!done) {
@@ -167,12 +160,10 @@ public class MainWindowViewModel : ViewModelBase {
             var exitCode = Microsoft.Playwright.Program.Main(new[] { "install" });
             done = true;
             Console.WriteLine();
-            if (exitCode != 0) {
+            if (exitCode != 0)
                 Console.WriteLine($"Browser installation failed. Playwright exited with code {exitCode}");
-            }
-            else {
+            else
                 Console.WriteLine($"Browser installation was successful :)");
-            }
         });
 
         await Task.WhenAll(downloadTask, printTask);
@@ -191,19 +182,19 @@ public class MainWindowViewModel : ViewModelBase {
 
         var files = await dg.ShowAsync(window);
         if ((bool)files?.Any()) {
-            this.ScriptViewModel.Model.FromFile(files[0]);
-            this.Hello = Path.GetFileName(files[0]);
-            this.MyFortuneCookie = files[0];
+            ScriptViewModel.Model.FromFile(files[0]);
+            Hello = Path.GetFileName(files[0]);
+            MyFortuneCookie = files[0];
         }
     }
 
     private void OnResume() {
-        this.CanResume = false;
+        CanResume = false;
         _runner.Resume();
     }
 
     private async Task OnScreenshot() {
-        var ctx = this._runner.RunContext;
+        var ctx = _runner.RunContext;
         var page = ctx.TestEnv.CurrentPage;
         await ScriptingExtensions.ScriptFunctions.screenshot(page);
     }
@@ -214,7 +205,7 @@ public class MainWindowViewModel : ViewModelBase {
         if (!string.IsNullOrWhiteSpace(model.ScriptFile)) {
             if (File.Exists(model.ScriptFile)) {
                 await File.WriteAllTextAsync(model.ScriptFile, model.ScriptContent);
-                this.Hello = this.Hello.TrimEnd('*');
+                Hello = Hello.TrimEnd('*');
             }
         }
         else {
@@ -227,9 +218,9 @@ public class MainWindowViewModel : ViewModelBase {
             var file = await dg.ShowAsync(window);
             if (!string.IsNullOrWhiteSpace(file)) {
                 await File.WriteAllTextAsync(file, model.ScriptContent);
-                this.ScriptViewModel.Model.FromFile(file);
-                this.Hello = Path.GetFileName(file);
-                this.MyFortuneCookie = file;
+                ScriptViewModel.Model.FromFile(file);
+                Hello = Path.GetFileName(file);
+                MyFortuneCookie = file;
             }
         }
     }

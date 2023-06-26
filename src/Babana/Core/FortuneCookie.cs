@@ -4,7 +4,7 @@ using System.Linq;
 namespace PlaywrightTest.Core;
 
 public static class FortuneCookie {
-    const string VALUES= @"The greatest risk is not taking one.
+    private const string VALUES = @"The greatest risk is not taking one.
                          A short stranger will soon enter your life with blessings to share.
                          It's better to be alone sometimes.
                          Do not mistake temptation for opportunity.

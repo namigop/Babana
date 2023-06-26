@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls.Primitives;
 using Microsoft.Playwright;
 using PlaywrightTest.Core;
 using PlaywrightTest.Core.Platform;
@@ -41,7 +39,6 @@ public class TestEnvironment {
     }
 
     private async void OnResponse(object? sender, IResponse resp) {
-
         if (resp.Headers.TryGetValue("content-type", out var contentType)) {
             var isJson = contentType.ToLower().Contains("/json") || contentType.ToLower().Contains("+json");
             var isText = contentType.ToLower().Contains("/text") || contentType.ToLower().Contains("+text");
@@ -72,19 +69,19 @@ public class TestEnvironment {
         }
     }
 
-    public IPage CurrentPage {
-        get => _page;
-    }
+    public IPage CurrentPage => _page;
 
     public async Task Teardown() {
         if (_context != null) {
             await _context.DisposeAsync();
             _context = null;
         }
+
         if (_browser != null) {
             await _browser.DisposeAsync();
             _browser = null;
         }
+
         _playwright?.Dispose();
         _playwright = null;
     }
@@ -92,22 +89,19 @@ public class TestEnvironment {
     public async Task<IPage> Setup(ScriptSetup setup) {
         var opts = new BrowserTypeLaunchOptions {
             Headless = setup.IsHeadless,
-            SlowMo = setup.SlomoMsec,
+            SlowMo = setup.SlomoMsec
         };
 
         _playwright = await Playwright.CreateAsync();
 
-        if (setup.Browser == ScriptSetup.EDGE) {
+        if (setup.Browser == ScriptSetup.EDGE)
             _browser = await _playwright.Chromium.LaunchAsync(opts);
-        }
-        else if (setup.Browser == ScriptSetup.FIREFOX) {
+        else if (setup.Browser == ScriptSetup.FIREFOX)
             _browser = await _playwright.Firefox.LaunchAsync(opts);
-        }
-        else {
+        else
             _browser = await _playwright.Chromium.LaunchAsync(opts);
-        }
 
-        _context = await _browser.NewContextAsync(new() {
+        _context = await _browser.NewContextAsync(new BrowserNewContextOptions {
             ViewportSize = ViewportSize.NoViewport
         });
 
