@@ -55,6 +55,9 @@ public partial class MainWindow : Window {
 
     private void OnTextChanged(object? sender, EventArgs e) {
         ViewModel.ScriptViewModel.Model.ScriptContent = this.Editor.Document.Text;
+        if (!this.ViewModel.Hello.EndsWith("*")) {
+            this.ViewModel.Hello += "*";
+        }
     }
 
     private async void OnOpenFileClick(object? sender, RoutedEventArgs e) {
@@ -65,7 +68,6 @@ public partial class MainWindow : Window {
             new() { Extensions = new List<string>() { "csx" }, Name = "csx" }
         };
 
-
         var files = await dg.ShowAsync(this);
         if ((bool)files?.Any()) {
 
@@ -73,6 +75,7 @@ public partial class MainWindow : Window {
             this.ViewModel.Hello = System.IO.Path.GetFileName(files[0]);
             this.ViewModel.MyFortuneCookie = files[0];
             this.Editor.Document.Text = this.ViewModel.ScriptViewModel.Model.ScriptContent;
+            this.ViewModel.Hello = this.ViewModel.Hello.TrimEnd('*');
         }
 
     }

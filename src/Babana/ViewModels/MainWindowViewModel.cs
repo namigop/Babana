@@ -214,6 +214,7 @@ public class MainWindowViewModel : ViewModelBase {
         if (!string.IsNullOrWhiteSpace(model.ScriptFile)) {
             if (File.Exists(model.ScriptFile)) {
                 await File.WriteAllTextAsync(model.ScriptFile, model.ScriptContent);
+                this.Hello = this.Hello.TrimEnd('*');
             }
         }
         else {
