@@ -19,14 +19,19 @@ using PlaywrightTest.Platform.Rider;
 namespace PlaywrightTest.ScriptingExtensions;
 
 public static class PlatformFunctions {
-    public static async Task<string> getPortinOtp(string url, string mobile,  Cancel cancel = null) {
+    public static async Task<string> getPortinOtp(string url, string mobile, Cancel cancel = null) {
         cancel?.TryCancel();
         using var client = new HttpClient();
+        var sw = Stopwatch.StartNew();
         using var response = await client.GetAsync(url);
+        sw.Stop();
         var responseContent = await response.Content.ReadAsStringAsync();
+        ReqRespTracer.Trace(new Uri(url), "GET", "", responseContent, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
+
         var root = JsonConvert.DeserializeObject<NotificationRoot>(responseContent);
         foreach (var l in root?.Logs) {
             if (mobile == l.Mobile && l.RequestData.ActivityId == "mnp_number_check") {
+                Console.WriteLine($"Found OTP {l.RequestData.Payload.OtpCode} for {mobile}");
                 return l.RequestData.Payload.OtpCode;
             }
         }
@@ -34,14 +39,21 @@ public static class PlatformFunctions {
         throw new Exception("MNP : OTP not found");
     }
 
-    public static async Task<string> getOtp(string url, string email,  Cancel cancel = null) {
+    public static async Task<string> getOtp(string url, string email, Cancel cancel = null) {
         cancel?.TryCancel();
+
         using var client = new HttpClient();
+        var sw = Stopwatch.StartNew();
         using var response = await client.GetAsync(url);
+        sw.Stop();
         var responseContent = await response.Content.ReadAsStringAsync();
         var root = JsonConvert.DeserializeObject<NotificationRoot>(responseContent);
+
+        ReqRespTracer.Trace(new Uri(url), "GET", "", responseContent, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
+
         foreach (var l in root?.Logs) {
-            if (email == l.Email && l.RequestData.ActivityId == "activate_app") {
+            if (email.ToLowerInvariant() == l.Email.ToLowerInvariant() && l.RequestData.ActivityId == "activate_app") {
+                Console.WriteLine($"Found OTP {l.RequestData.Payload.OtpCode} for {l.Email}");
                 return l.RequestData.Payload.OtpCode;
             }
         }
@@ -68,7 +80,6 @@ public static class PlatformFunctions {
             OriginCityId = 1,
             RefNum = Convert.ToInt32(refNum),
             Reason = "Sim delivery"
-
         };
 
         using var client = new HttpClient();
@@ -80,9 +91,7 @@ public static class PlatformFunctions {
         var reqBody = Util.Serialize(req);
         var respBody = await response.Content?.ReadAsStringAsync();
 
-        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers  , response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
-
-
+        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
     }
 
     public static async Task doKyc(string kycUrl, string kycStatus, string orderRef, string number, string cnic, Cancel cancel = null) {
@@ -103,21 +112,19 @@ public static class PlatformFunctions {
         using var client = new HttpClient();
         var sw = Stopwatch.StartNew();
         using var response = await client.PostAsJsonAsync(kycUrl, kycReq);
-          sw.Stop();
+        sw.Stop();
 
         var uri = new Uri(kycUrl);
         var reqMethod = "POST";
         var reqBody = Util.Serialize(kycReq);
         var respBody = await response.Content?.ReadAsStringAsync();
 
-        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers  , response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
-
+        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
         if (response.StatusCode != HttpStatusCode.OK) {
             throw new Exception($"Unable to perform KYC for {orderRef} to status {kycStatus}. {(int)response.StatusCode} {response.StatusCode}");
         }
-
     }
 
     public static async Task<string> getShipmentRef(string laasUrl, string orderRef, Cancel cancel = null) {
@@ -138,8 +145,7 @@ public static class PlatformFunctions {
         var reqBody = "";
         var respBody = responseContent;
 
-        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers  , response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
-
+        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
         if (root.Success) {
@@ -164,7 +170,7 @@ public static class PlatformFunctions {
         var reqBody = "";
         var respBody = responseContent;
 
-        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers  , response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
+        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
         if (root.Success && root.Result.ProductVariantIdentifiers.Any()) {
@@ -177,27 +183,27 @@ public static class PlatformFunctions {
     }
 
     public static async Task<string> getRefNum(string riderUrl, string shipmentRef, Cancel cancel = null) {
-       // http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum
-       cancel?.TryCancel();
-       using var client = new HttpClient();
+        // http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum
+        cancel?.TryCancel();
+        using var client = new HttpClient();
 
-       var sw = Stopwatch.StartNew();
-       using var response = await client.GetAsync(riderUrl);
-       var responseContent = await response.Content.ReadAsStringAsync();
-       var root = JsonConvert.DeserializeObject<GetRiderRefnumResponse>(responseContent);
+        var sw = Stopwatch.StartNew();
+        using var response = await client.GetAsync(riderUrl);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var root = JsonConvert.DeserializeObject<GetRiderRefnumResponse>(responseContent);
 
-       var uri = new Uri(riderUrl);
-       var reqMethod = "GET";
-       var reqBody = "";
-       var respBody = responseContent;
+        var uri = new Uri(riderUrl);
+        var reqMethod = "GET";
+        var reqBody = "";
+        var respBody = responseContent;
 
-       ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers  , response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
+        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
-       if (root.Success) {
-           return root.Result.RefNum;
-       }
+        if (root.Success) {
+            return root.Result.RefNum;
+        }
 
-       throw new Exception($"Unable to retrieve the Refnum reference for ShipmentRef {shipmentRef}. {(int)response.StatusCode} {response.StatusCode}");
+        throw new Exception($"Unable to retrieve the Refnum reference for ShipmentRef {shipmentRef}. {(int)response.StatusCode} {response.StatusCode}");
     }
 }
