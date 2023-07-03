@@ -9,13 +9,13 @@ var BROWSER_HEIGHT = 880;
 var BROWSER_WIDTH = 1512;
 
 var r = new Random();
-var email = $"{Environment.UserName}{r.Next(50, 1000)}@bar.com";
-var deliveryDate = "Su/08/2023";
-var deliveryTime = "4:30 PM - 11:59 PM"; 
-var plan = "30 GB";
-var cnic =  getRandomCnic();
+var email = $"t{Environment.UserName}{r.Next(50, 1000)}@bar.com";
+var deliveryDate = "We/07/2023";
+var deliveryTime = "10:00 AM - 10:00 PM"; 
+var plan = "Get 200 SMS and 1000MB Data";
+var cnic = getRandomCnic();
 var contactNumber = getRandomMobile("03");
-var nationality = "Pakistani";
+var nationality = "pakistani";
 
 var firstName = "Foo";
 var middleName = "Bar";
@@ -33,7 +33,7 @@ var address1 = "22 Henderson Road";
 var address2 = "Ugly building";
 var province = "Federal Capital";
 var city = "Islamabad";
-var area = "17 Mile";
+var area = "ALI PUR FRASH";
 var landmark = "Red door with a golden door knob";
 var deliveryInstruction = "Ring the doorbell and sing";
 
@@ -41,13 +41,13 @@ var kycStatus = "109";
 // ---------------------------------
 
 //--- Constants ------------------
-var CHECKOUT_URL = "https://qpkvc-webfront.onic.com.pk/web/pre-checkout?reset=true"; 
-var OTP_URL = "http://qpkvc-notify.onic.com.pk/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=10";
-var KYC_URL = "http://qpkvc-kyc-bvs.onic.com.pk/mno/conn/v1/kyc/notif";
-var LAAS_URL = "http://qpkvc-logistics-singpost.onic.com.pk/v1/internal/shipments?orderReference={{orderRef}}";
-var RIDER_URL = "http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum";
-var IMS_URL = "http://qpkvc-inventory.onic.com.pk/v2/internal/product-variant-identifiers?pviType=physicalSim&limit=10&page=1&status=available";
-var RIDER_NOTIF_URL = "http://qpkvc-logistics-riders.onic.com.pk/v1/external/notification";
+var CHECKOUT_URL = "https://scl-webfrontek.cxos.tech/web/pre-checkout?reset=true"; 
+var OTP_URL = "http://scl-notify.cxos.tech/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=10";
+var KYC_URL = "http://scl-kyc-bvs.cxos.tech/mno/conn/v1/kyc/notif";
+var LAAS_URL = "http://scl-logistics-singpost.cxos.tech/v1/internal/shipments?orderReference={{orderRef}}";
+var RIDER_URL = "http://scl-logistics-riders.cxos.tech/v1/internal/shipments/{{shipmentReference}}/refnum";
+var IMS_URL = "http://scl-inventory.cxos.tech/v2/internal/product-variant-identifiers?pviType=physicalSim&limit=10&page=1&status=available";
+var RIDER_NOTIF_URL = "http://scl-logistics-riders.cxos.tech/v1/external/notification";
 
 var NEXT ="Next";
 var CONTINUE = "Continue";
@@ -77,9 +77,9 @@ var TEST_ID_CNIC_DOB_MONTH = "document_dobMonth";
 var TEST_ID_CNIC_DOB_YEAR = "document_dobYear"; 
 var TEST_ID_ADDRESS1 = "delivery_address_line_1";
 var TEST_ID_ADDRESS2 = "delivery_address_line_2";
-var TEST_ID_PROVINCE = "province";
-var TEST_ID_CITY = "city"; 
-var TEST_ID_AREA = "area"; 
+var TEST_ID_PROVINCE = "delivery_province";
+var TEST_ID_CITY = "delivery_city"; 
+var TEST_ID_AREA = "delivery_area"; 
 var TEST_ID_ZIPCODE = "delivery_zip_code"; 
 var TEST_ID_LANDMARK = "delivery_landmark"; 
 var TEST_ID_DELIVERY_INSTRUCTION = "delivery_instructions"; 
@@ -116,10 +116,25 @@ await page.findButton()
 //3. Signup page
 await page.findTextBox()
           .fill(email);
+          
+await page.findById("agreed_to_terms")
+          .findByText("I agree to the ")
+          .First
+          .click();
+await page.MouseWheel(0, 1000);
+await page.findById("terms-privacy-button").click();
+
+await page.findById("agreed_to_policy")
+           .findByText("I agree to the ")
+          .First
+          .click();
+await page.MouseWheel(0, 1000);
+await page.findById("terms-privacy-button").click();
+
+
 await page.findButton()
           .filterByText(page, CONTINUE)
           .click();
-
 
 //4. OTP page
 await sleep(300);
@@ -133,14 +148,12 @@ await page.findButton()
 
 //5. New Number page
 await sleep(1000);
-await page.findById("modal-button")
-          .filterByText(page, OK)
-          .click();
 await page.findByText("Standard").click();
 await page.findById("number-select-button").First.click();
 await page.findButton()
           .filterByText(page, NEXT)
           .click();
+
 
 //6. Personal Details page
 await page.waitFor("http.*web/personal-details", CancelToken);
@@ -159,7 +172,7 @@ await page.findById(TEST_ID_CONTACT_NUMBER).findTextBox().fill(contactNumber);
 await page.findById(TEST_ID_NATIONALITY).click();
 await page.keyboard(nationality);   
 await page.findById(TEST_ID_CNIC).findTextBox().fill(cnic);
-await page.findById(TEST_ID_CNIC_RECONFIRM).findTextBox().fill(cnic);
+//await page.findById(TEST_ID_CNIC_RECONFIRM).findTextBox().fill(cnic);
 
 await page.findById(TEST_ID_CNIC_DOB_DAY).click();
 await page.keyboard(cnic_dobDay);   
@@ -193,10 +206,16 @@ await page.findButton().filterByText(page, NEXT).click();
 await page.waitFor("http.*web/order-summary", CancelToken);
 await page.findButton().filterByText(page, PLACE_ORDER).click();
 
-//8. Payfast Page
-await page.waitFor("http.*Payfast/CardInfo", CancelToken);
-await page.findListItem().filterByText(page, "Card Payment").Locator("nth=1").click();
-await page.findButton().filterByText(page, "Make Payment").click();
+//8. stripe Page
+await page.waitFor("http.*web/payment", CancelToken);
+var frame = page.findFrame("stripe.com");
+await pause();
+await frame.findByName("cardnumber").fill("4222222222222");
+await frame.findByName("exp-date").click();
+await page.keyboard("1030");
+await frame.findByName("cvc").fill("123");
+
+await pause();
 
 //9. Emulator page
 await page.waitFor("http.*mastercard/v2/prompt", CancelToken);
@@ -282,7 +301,8 @@ foreach (var i in Enumerable.Range(1,10)){
 string getRandomMobile(string prefix){
      var sb = new StringBuilder(prefix);
      var r = new Random();
-     for (int i = 0; i < 9; i++) {
+     var length = 11 - prefix.Length;
+     for (int i = 0; i < length; i++) {
          sb.Append(r.Next(1, 10));
      }
         

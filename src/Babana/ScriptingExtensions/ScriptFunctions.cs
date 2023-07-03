@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Avalonia.Input;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Playwright;
 using PlaywrightTest.Models;
 
@@ -43,12 +45,27 @@ public static class ScriptFunctions {
 
     #endregion
 
-    #region Click functions
+    #region locator functions
 
     public static Task click(this ILocator? locator, Cancel cancel = null) {
         cancel?.TryCancel();
         return locator?.ClickAsync();
     }
+
+    public static Task check(this ILocator? locator, Cancel cancel = null) {
+        cancel?.TryCancel();
+        return locator?.SetCheckedAsync(true);
+    }
+    public static Task uncheck(this ILocator? locator, Cancel cancel = null) {
+        cancel?.TryCancel();
+        return locator?.SetCheckedAsync(false);
+
+    }
+
+    public static async Task MouseWheel(this IPage? page, float deltaX, float deltaY ) {
+        await page.Mouse.WheelAsync(deltaX, deltaY);
+    }
+
 
     #endregion
 
@@ -109,6 +126,11 @@ public static class ScriptFunctions {
         var ret = locator?.GetByTestId(arg);
         return ret;
     }
+    public static ILocator? findById(this IFrameLocator? locator, string arg, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = locator?.GetByTestId(arg);
+        return ret;
+    }
 
     public static ILocator? findByPlaceholder(this IPage? page, string arg, Cancel cancel = null) {
         cancel?.TryCancel();
@@ -117,6 +139,12 @@ public static class ScriptFunctions {
     }
 
     public static ILocator? findByPlaceholder(this ILocator? locator, string arg, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = locator?.GetByPlaceholder(arg);
+        return ret;
+    }
+
+    public static ILocator? findByPlaceholder(this IFrameLocator? locator, string arg, Cancel cancel = null) {
         cancel?.TryCancel();
         var ret = locator?.GetByPlaceholder(arg);
         return ret;
@@ -133,6 +161,29 @@ public static class ScriptFunctions {
         var ret = locator?.GetByText(arg);
         return ret;
     }
+    public static ILocator? findByText(this IFrameLocator? locator, string arg, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = locator?.GetByText(arg);
+        return ret;
+    }
+
+    public static ILocator? findCheckbox(this IPage? page, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = page?.GetByRole(AriaRole.Checkbox);
+        return ret;
+    }
+
+    public static ILocator? findCheckbox(this ILocator? locator, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = locator?.GetByRole(AriaRole.Checkbox);
+        return ret;
+    }
+
+    public static ILocator? findCheckbox(this IFrameLocator? locator, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = locator?.GetByRole(AriaRole.Checkbox);
+        return ret;
+    }
 
 
     public static ILocator? findButton(this IPage? page, Cancel cancel = null) {
@@ -142,6 +193,12 @@ public static class ScriptFunctions {
     }
 
     public static ILocator? findButton(this ILocator? locator, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = locator?.GetByRole(AriaRole.Button);
+        return ret;
+    }
+
+    public static ILocator? findButton(this IFrameLocator? locator, Cancel cancel = null) {
         cancel?.TryCancel();
         var ret = locator?.GetByRole(AriaRole.Button);
         return ret;
@@ -159,6 +216,12 @@ public static class ScriptFunctions {
         return ret;
     }
 
+    public static ILocator? findListItem(this IFrameLocator? locator, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = locator?.GetByRole(AriaRole.Listitem);
+        return ret;
+    }
+
     public static ILocator? findTextBox(this IPage? page, Cancel cancel = null) {
         cancel?.TryCancel();
         var ret = page?.GetByRole(AriaRole.Textbox);
@@ -168,6 +231,31 @@ public static class ScriptFunctions {
     public static ILocator? findTextBox(this ILocator? locator, Cancel cancel = null) {
         cancel?.TryCancel();
         var ret = locator?.GetByRole(AriaRole.Textbox);
+        return ret;
+    }
+
+    public static ILocator? findTextBox(this IFrameLocator? locator, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = locator?.GetByRole(AriaRole.Textbox);
+        return ret;
+    }
+
+    public static IFrame? findFrame(this IPage? page, string urlFragment, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = page?.FrameByUrl(url => url.Contains(urlFragment));
+
+        return ret;
+    }
+
+    public static ILocator? findByName(this IPage? page, string name, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = page?.Locator($"[name={name}]");
+
+        return ret;
+    }
+    public static ILocator? findByName(this IFrameLocator? frame, string name, Cancel cancel = null) {
+        cancel?.TryCancel();
+        var ret = frame?.Locator($"[name={name}]");
         return ret;
     }
 
