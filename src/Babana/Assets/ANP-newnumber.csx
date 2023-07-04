@@ -208,21 +208,14 @@ await page.findButton().filterByText(page, PLACE_ORDER).click();
 
 //8. stripe Page
 await page.waitFor("http.*web/payment", CancelToken);
-var frame = page.findFrame("stripe.com");
-await pause();
-await frame.findByName("cardnumber").fill("4222222222222");
+var frame = page.findFrame("stripe.com").First;
+await frame.findByName("cardnumber").fill("424242424242424242");
 await frame.findByName("exp-date").click();
 await page.keyboard("1030");
 await frame.findByName("cvc").fill("123");
+await page.findById("stripe-checkout-form").findButton().click();
 
-await pause();
-
-//9. Emulator page
-await page.waitFor("http.*mastercard/v2/prompt", CancelToken);
-await page.findByText("Submit").click();
-await sleep(1000);
-await page.findByText("Back to Merchant").click();
-
+ 
 //10.  Order Status Page - Success
 await page.waitFor("http.*/web/payment-pending.*", CancelToken);
 await page.waitFor("http.*/web/payment-success.*", CancelToken);
@@ -234,6 +227,10 @@ await sleep(1000);
 print("Starting KYC...");
 var orderRef = TestEnv.TestOrder.OrderRef;
 var number = TestEnv.TestOrder.PhoneNumber;
+await page.findButton().filterByText(page, "Confirm your identity").click();
+
+await pause();
+
 await doKyc(KYC_URL, kycStatus, orderRef, number, cnic);
 await sleep(1000);
 

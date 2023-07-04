@@ -240,10 +240,10 @@ public static class ScriptFunctions {
         return ret;
     }
 
-    public static IFrame? findFrame(this IPage? page, string urlFragment, Cancel cancel = null) {
+    public static IFrameLocator? findFrame(this IPage? page, string urlFragment, Cancel cancel = null) {
         cancel?.TryCancel();
-        var ret = page?.FrameByUrl(url => url.Contains(urlFragment));
-
+        //var ret = page?.FrameByUrl(url => url.Contains(urlFragment));
+        var ret = page.FrameLocator("iFrame");
         return ret;
     }
 
