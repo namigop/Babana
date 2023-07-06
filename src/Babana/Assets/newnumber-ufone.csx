@@ -8,16 +8,17 @@
 var BROWSER_HEIGHT = 880;
 var BROWSER_WIDTH = 1512;
 var HEADLESS = false;
-var SLOMO_MSEC = 300;
 
 var r = new Random();
-var email = $"t{Environment.UserName}{r.Next(50, 1000)}@bar.com";
-var deliveryDate = "We/07/2023";
-var deliveryTime = "10:00 AM - 10:00 PM"; 
-var plan = "Get 200 SMS and 1000MB Data";
-var cnic = getRandomCnic();
-var contactNumber = getRandomMobile("03");
-var nationality = "pakistani";
+var email = $"{Environment.UserName}{r.Next(50, 1000)}@bar.com";
+var deliveryDate = "07/07/2023";
+var deliveryTime = "4:30 PM - 11:59 PM"; 
+var plan = "One day Bundle";
+var kycStatus = "109"; //Ok = 109, Failed = 110
+
+var cnic = GetRandomCnic();
+var contactNumber = GetRandomMobile("03");
+var nationality = "Pakistani";
 
 var firstName = "Foo";
 var middleName = "Bar";
@@ -35,26 +36,25 @@ var address1 = "22 Henderson Road";
 var address2 = "Ugly building";
 var province = "Federal Capital";
 var city = "Islamabad";
-var area = "ALI PUR FRASH";
+var area = "17 Mile";
 var landmark = "Red door with a golden door knob";
 var deliveryInstruction = "Ring the doorbell and sing";
 
-var kycStatus = "109";
+
 // ---------------------------------
 
 //--- Constants ------------------
-var CHECKOUT_URL = "https://scl-webfrontek.cxos.tech/web/pre-checkout?reset=true"; 
-var OTP_URL = "http://scl-notify.cxos.tech/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=10";
-var KYC_URL = "http://scl-kyc-bvs.cxos.tech/mno/conn/v1/kyc/notif";
-var LAAS_URL = "http://scl-logistics-singpost.cxos.tech/v1/internal/shipments?orderReference={{orderRef}}";
-var RIDER_URL = "http://scl-logistics-riders.cxos.tech/v1/internal/shipments/{{shipmentReference}}/refnum";
-var IMS_URL = "http://scl-inventory.cxos.tech/v2/internal/product-variant-identifiers?pviType=physicalSim&limit=10&page=1&status=available";
-var RIDER_NOTIF_URL = "http://scl-logistics-riders.cxos.tech/v1/external/notification";
+var CHECKOUT_URL = "https://qpkvc-webfront.onic.com.pk/web/pre-checkout?reset=true"; 
+var OTP_URL = "http://qpkvc-notify.onic.com.pk/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=10";
+var KYC_URL = "http://qpkvc-kyc-bvs.onic.com.pk/mno/conn/v1/kyc/notif";
+var LAAS_URL = "http://qpkvc-logistics-singpost.onic.com.pk/v1/internal/shipments?orderReference={{orderRef}}";
+var RIDER_URL = "http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum";
+var IMS_URL = "http://qpkvc-inventory.onic.com.pk/v2/internal/product-variant-identifiers?pviType=physicalSim&limit=10&page=1&status=available";
+var RIDER_NOTIF_URL = "http://qpkvc-logistics-riders.onic.com.pk/v1/external/notification";
 
 var NEXT ="Next";
 var CONTINUE = "Continue";
-
-
+var SLOMO_MSEC = 100;
 var OK = "OK";
 var PLACE_ORDER = "Place order";
 
@@ -79,9 +79,9 @@ var TEST_ID_CNIC_DOB_MONTH = "document_dobMonth";
 var TEST_ID_CNIC_DOB_YEAR = "document_dobYear"; 
 var TEST_ID_ADDRESS1 = "delivery_address_line_1";
 var TEST_ID_ADDRESS2 = "delivery_address_line_2";
-var TEST_ID_PROVINCE = "delivery_province";
-var TEST_ID_CITY = "delivery_city"; 
-var TEST_ID_AREA = "delivery_area"; 
+var TEST_ID_PROVINCE = "province";
+var TEST_ID_CITY = "city"; 
+var TEST_ID_AREA = "area"; 
 var TEST_ID_ZIPCODE = "delivery_zip_code"; 
 var TEST_ID_LANDMARK = "delivery_landmark"; 
 var TEST_ID_DELIVERY_INSTRUCTION = "delivery_instructions"; 
@@ -118,25 +118,10 @@ await page.FindButton()
 //3. Signup page
 await page.FindTextBox()
           .Fill(email);
-          
-await page.FindById("agreed_to_terms")
-          .FindByText("I agree to the ")
-          .First
-          .Click();
-await page.MouseWheel(0, 1000);
-await page.FindById("terms-privacy-button").Click();
-
-await page.FindById("agreed_to_policy")
-          .FindByText("I agree to the ")
-          .First
-          .Click();
-await page.MouseWheel(0, 1000);
-await page.FindById("terms-privacy-button").Click();
-
-
 await page.FindButton()
           .FilterByText(page, CONTINUE)
           .Click();
+
 
 //4. OTP page
 await Sleep(300);
@@ -150,12 +135,14 @@ await page.FindButton()
 
 //5. New Number page
 await Sleep(1000);
+await page.FindById("modal-button")
+          .FilterByText(page, OK)
+          .Click();
 await page.FindByText("Standard").Click();
 await page.FindById("number-select-button").First.Click();
 await page.FindButton()
           .FilterByText(page, NEXT)
           .Click();
-
 
 //6. Personal Details page
 await page.WaitFor("http.*web/personal-details", CancelToken);
@@ -174,7 +161,7 @@ await page.FindById(TEST_ID_CONTACT_NUMBER).FindTextBox().Fill(contactNumber);
 await page.FindById(TEST_ID_NATIONALITY).Click();
 await page.Keyboard(nationality);   
 await page.FindById(TEST_ID_CNIC).FindTextBox().Fill(cnic);
-//await page.FindById(TEST_ID_CNIC_RECONFIRM).FindTextBox().Fill(cnic);
+await page.FindById(TEST_ID_CNIC_RECONFIRM).FindTextBox().Fill(cnic);
 
 await page.FindById(TEST_ID_CNIC_DOB_DAY).Click();
 await page.Keyboard(cnic_dobDay);   
@@ -197,6 +184,7 @@ await page.FindById(TEST_ID_DELIVERY_SLOTS)
           .FindButton()
           .FilterByText(page, deliveryDate)
           .Click();
+          
 
 await page.FindById(TEST_ID_DELIVERY_SLOTS)
           .FindButton()
@@ -208,16 +196,17 @@ await page.FindButton().FilterByText(page, NEXT).Click();
 await page.WaitFor("http.*web/order-summary", CancelToken);
 await page.FindButton().FilterByText(page, PLACE_ORDER).Click();
 
-//8. stripe Page
-await page.WaitFor("http.*web/payment", CancelToken);
-var frame = page.FindFrame("stripe.com").First;
-await frame.FindByName("cardnumber").Fill("424242424242424242");
-await frame.FindByName("exp-date").Click();
-await page.Keyboard("1030");
-await frame.FindByName("cvc").Fill("123");
-await page.FindById("stripe-checkout-form").FindButton().Click();
+//8. Payfast Page
+await page.WaitFor("http.*Payfast/CardInfo", CancelToken);
+await page.FindListItem().FilterByText(page, "Card Payment").Locator("nth=1").Click();
+await page.FindButton().FilterByText(page, "Make Payment").Click();
 
- 
+//9. Emulator page
+await page.WaitFor("http.*mastercard/v2/prompt", CancelToken);
+await page.FindByText("Submit").Click();
+await Sleep(1000);
+await page.FindByText("Back to Merchant").Click();
+
 //10.  Order Status Page - Success
 await page.WaitFor("http.*/web/payment-pending.*", CancelToken);
 await page.WaitFor("http.*/web/payment-success.*", CancelToken);
@@ -225,14 +214,10 @@ await Sleep(1000);
 await Screenshot(page);
 
 //11.  Kyc approval
-await Sleep(1000);
+await Sleep(5000);
 Print("Starting KYC...");
 var orderRef = TestEnv.TestOrder.OrderRef;
 var number = TestEnv.TestOrder.PhoneNumber;
-await page.FindButton().FilterByText(page, "Confirm your identity").Click();
-
-await Pause();
-
 await DoKyc(KYC_URL, kycStatus, orderRef, number, cnic);
 await Sleep(1000);
 
@@ -287,7 +272,7 @@ await page.FindButton().FilterByText(page, "Activate Sim Card").Click();
 
 //14. Refresh the page to get the Sim activate button
 foreach (var i in Enumerable.Range(1,10)){
-    Print("Sleeping for 5 sec before Refreshing page to check if the sim was activated");
+    Print("Sleeping for 5 sec before refreshing page to check if the sim was activated");
     await Sleep(5000);
     page.Refresh();
     var t = page.FindByText("SIM Activated");
@@ -297,18 +282,17 @@ foreach (var i in Enumerable.Range(1,10)){
 
 //-------------- Utility functions -----------------------
 
-string getRandomMobile(string prefix){
+string GetRandomMobile(string prefix){
      var sb = new StringBuilder(prefix);
      var r = new Random();
-     var length = 11 - prefix.Length;
-     for (int i = 0; i < length; i++) {
+     for (int i = 0; i < 9; i++) {
          sb.Append(r.Next(1, 10));
      }
         
     return sb.ToString();
 }
 
-string getRandomCnic(){
+string GetRandomCnic(){
 //1234512345671
   var sb = new StringBuilder();
   var r = new Random();

@@ -65,7 +65,7 @@ public class TestEnvironment {
 
         if (resp.Status is >= 400 and < 600) {
             await Task.Delay(1500); //wait 1 sec before taking a screenshot of the page to give it time to render
-            await ScriptFunctions.screenshot(_page);
+            await ScriptFunctions.Screenshot(_page);
         }
     }
 
@@ -112,7 +112,7 @@ public class TestEnvironment {
         _page = await _browser.NewPageAsync();
         _page.Request += OnRequest;
         _page.Response += OnResponse;
-        _page.SetViewportSizeAsync(setup.BrowserWidth, setup.BrowserHeight);
+        _page.SetViewportSizeAsync(setup.BrowserWidth2, setup.BrowserHeight2);
 
         return _page;
     }

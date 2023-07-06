@@ -16,7 +16,7 @@ using PlaywrightTest.Platform.Rider;
 namespace PlaywrightTest.ScriptingExtensions;
 
 public static class PlatformFunctions {
-    public static async Task<string> getPortinOtp(string url, string mobile, Cancel cancel = null) {
+    public static async Task<string> GetPortinOtp(string url, string mobile, Cancel cancel = null) {
         cancel?.TryCancel();
         using var client = new HttpClient();
         var sw = Stopwatch.StartNew();
@@ -35,7 +35,7 @@ public static class PlatformFunctions {
         throw new Exception("MNP : OTP not found");
     }
 
-    public static async Task<string> getOtp(string url, string email, Cancel cancel = null) {
+    public static async Task<string> GetOtp(string url, string email, Cancel cancel = null) {
         cancel?.TryCancel();
 
         using var client = new HttpClient();
@@ -56,7 +56,7 @@ public static class PlatformFunctions {
         throw new Exception("Activate App : OTP not found");
     }
 
-    public static async Task shipmentUpdate(string riderUrl, string status, int statusId, string iccid, string refNum, Cancel cancel = null) {
+    public static async Task ShipmentUpdate(string riderUrl, string status, int statusId, string iccid, string refNum, Cancel cancel = null) {
         cancel?.TryCancel();
 
         var today = "";
@@ -89,9 +89,13 @@ public static class PlatformFunctions {
         ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
     }
 
-    public static async Task doKyc(string kycUrl, string kycStatus, string orderRef, string number, string cnic, Cancel cancel = null) {
+    public static async Task DoKyc(string kycUrl, string kycStatus, string orderRef, string number, string cnic, Cancel cancel = null, int tries=0) {
         cancel?.TryCancel();
+        if (tries > 2) {
+            return;
+        }
 
+        await Task.Delay(500);
         var kycReq = new KycApprovalRequest() {
             Msisdn = number,
             DeviceId = Guid.NewGuid().ToString(),
@@ -106,21 +110,30 @@ public static class PlatformFunctions {
 
         using var client = new HttpClient();
         var sw = Stopwatch.StartNew();
-        using var response = await client.PostAsJsonAsync(kycUrl, kycReq);
-        sw.Stop();
 
-        var uri = new Uri(kycUrl);
-        var reqMethod = "POST";
-        var reqBody = Util.Serialize(kycReq);
-        var respBody = await response.Content?.ReadAsStringAsync();
+        try {
+            using var response = await client.PostAsJsonAsync(kycUrl, kycReq);
+            sw.Stop();
 
-        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
+            var uri = new Uri(kycUrl);
+            var reqMethod = "POST";
+            var reqBody = Util.Serialize(kycReq);
+            var respBody = await response.Content?.ReadAsStringAsync();
+
+            ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
-        if (response.StatusCode != HttpStatusCode.OK) throw new Exception($"Unable to perform KYC for {orderRef} to status {kycStatus}. {(int)response.StatusCode} {response.StatusCode}");
+            if (response.StatusCode != HttpStatusCode.OK) {
+                throw new Exception($"Unable to perform KYC for {orderRef} to status {kycStatus}. {(int)response.StatusCode} {response.StatusCode}");
+            }
+        }
+        catch (HttpRequestException exc) {
+            //the kyc server sucks balls. flaky.
+            await DoKyc(kycUrl, kycStatus, orderRef, number, cnic, cancel, tries + 1);
+        }
     }
 
-    public static async Task<string> getShipmentRef(string laasUrl, string orderRef, Cancel cancel = null) {
+    public static async Task<string> GetShipmentRef(string laasUrl, string orderRef, Cancel cancel = null) {
         cancel?.TryCancel();
 
         //http://qpkvc-logistics-singpost.onic.com.pk/v1/internal/shipments?orderReference=CXO-AMN4BN33QB
@@ -146,7 +159,7 @@ public static class PlatformFunctions {
         throw new Exception($"Unable to retrieve the shipment reference for order {orderRef}. {(int)response.StatusCode} {response.StatusCode}");
     }
 
-    public static async Task<string> getIccid(string imsUrl, Cancel cancel = null) {
+    public static async Task<string> GetIccid(string imsUrl, Cancel cancel = null) {
         cancel?.TryCancel();
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Add("Service-ID", "CXOMS");
@@ -172,7 +185,7 @@ public static class PlatformFunctions {
         throw new Exception($"Unable to retrieve the ICCId. {(int)response.StatusCode} {response.StatusCode}");
     }
 
-    public static async Task<string> getRefNum(string riderUrl, string shipmentRef, Cancel cancel = null) {
+    public static async Task<string> GetRefNum(string riderUrl, string shipmentRef, Cancel cancel = null) {
         // http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum
         cancel?.TryCancel();
         using var client = new HttpClient();

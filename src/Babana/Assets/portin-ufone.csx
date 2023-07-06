@@ -7,13 +7,15 @@
 //modify these settings to match your screen resolution
 var BROWSER_HEIGHT = 880;
 var BROWSER_WIDTH = 1512;
+var HEADLESS = false;
+var SLOMO_MSEC = 300;
 
 var r = new Random();
 var email = $"boo{r.Next(50, 1000)}@bar.com";
-var deliveryDate = "Sa/06/2023";
-var deliveryTime = "12:00 AM - 11:59 PM"; 
+var deliveryDate = "06/07/2023";
+var deliveryTime = "4:30 PM - 11:59 PM"; 
 var plan = "30 GB";
-var cnic = "9999999999999"; //"1234512345671";
+var cnic = "9999999999999"; //"getRandomCnic()";
 var contactNumber = getRandomMobile("03");
 var currentPrepaidNumber=getRandomMobile("053");
 var nationality = "Pakistani";
@@ -52,8 +54,6 @@ var RIDER_NOTIF_URL = "http://qpkvc-logistics-riders.onic.com.pk/v1/external/not
 
 var NEXT ="Next";
 var CONTINUE = "Continue";
-var SLOMO_MSEC = 300;
-var HEADLESS = false;
 var OK = "OK";
 var PLACE_ORDER = "Place order";
 
@@ -88,210 +88,210 @@ var TEST_ID_DELIVERY_SLOTS = "delivery_date,delivery_slot_full_data";
 
 //---- start of test execution ---------
 
-print("Test is starting...");
+Print("Test is starting...");
 TestEnv.TestOrder.Email = email;
-var run = setup()
-          .slomo(SLOMO_MSEC)
-          .headless(HEADLESS)
-          .browserHeight(BROWSER_HEIGHT)
-          .browserWidth(BROWSER_WIDTH)
-          .chromium();
+var run = Setup()
+          .Slomo(SLOMO_MSEC)
+          .Headless(HEADLESS)
+          .BrowserHeight(BROWSER_HEIGHT)
+          .BrowserWidth(BROWSER_WIDTH)
+          .Chromium();
 
-var page = await run.begin(TestEnv);
+var page = await run.Begin(TestEnv);
 
 //1. Checkout Page
-await page.open(CHECKOUT_URL);
-await page.findById(TEST_ID_PLANCARD)
-          .filterByText(page, plan)
-          .findButton()
-          .click();
+await page.Open(CHECKOUT_URL);
+await page.FindById(TEST_ID_PLANCARD)
+          .FilterByText(page, plan)
+          .FindButton()
+          .Click();
 
-await sleep(1000);
+await Sleep(1000);
 
 //2. Addon Page
-await page.waitFor("http.*/addon-selection");
-await page.findButton()
-          .filterByText(page, NEXT)
-          .click();
+await page.WaitFor("http.*/addon-selection");
+await page.FindButton()
+          .FilterByText(page, NEXT)
+          .Click();
 
 //3. Signup page
-await page.findTextBox()
-          .fill(email);
-await page.findButton()
-          .filterByText(page, CONTINUE)
-          .click();
+await page.FindTextBox()
+          .Fill(email);
+await page.FindButton()
+          .FilterByText(page, CONTINUE)
+          .Click();
 
 
 //4. OTP page
-await sleep(300);
-var otp = await getOtp(OTP_URL, email);
-page.findTextBox()
-    .fillMany(otp);
-await page.findButton()
-          .filterByText(page, NEXT)
-          .click();
+await Sleep(300);
+var otp = await GetOtp(OTP_URL, email);
+page.FindTextBox()
+    .FillMany(otp);
+await page.FindButton()
+          .FilterByText(page, NEXT)
+          .Click();
 
 //5. Portin Number page
-await sleep(1000);
-await page.findById("modal-button")
-          .filterByText(page, OK)
-          .click();
-await page.findByText("Transfer Number")
-          .click();
+await Sleep(1000);
+await page.FindById("modal-button")
+          .FilterByText(page, OK)
+          .Click();
+await page.FindByText("Transfer Number")
+          .Click();
 
           
-await page.findById("port_number").findTextBox() .click();
-await page.keyboard(currentPrepaidNumber);   
+await page.FindById("port_number").FindTextBox() .Click();
+await page.Keyboard(currentPrepaidNumber);   
 
-await page.findById("telco").findByText("Select...").click();
-await page.keyboard(donorTelco);
-await page.findButton()
-          .filterByText(page, NEXT)
-          .click();
+await page.FindById("telco").FindByText("Select...").Click();
+await page.Keyboard(donorTelco);
+await page.FindButton()
+          .FilterByText(page, NEXT)
+          .Click();
           
 //6. Personal Details page
-await page.waitFor("http.*web/personal-details", CancelToken);
-await page.findByPlaceholder(PLACEHOLDER_FIRSTNAME).fill(firstName);
-await page.findByPlaceholder(PLACEHOLDER_MIDDLENAME).fill(middleName);
-await page.findByPlaceholder(PLACEHOLDER_LASTNAME).fill(lastName);
+await page.WaitFor("http.*web/personal-details", CancelToken);
+await page.FindByPlaceholder(PLACEHOLDER_FIRSTNAME).Fill(firstName);
+await page.FindByPlaceholder(PLACEHOLDER_MIDDLENAME).Fill(middleName);
+await page.FindByPlaceholder(PLACEHOLDER_LASTNAME).Fill(lastName);
 
-await page.findById(TEST_ID_DOB_DAY).findByText(PLACEHOLDER_DAY).click();
-await page.keyboard(dobDay);
-await page.findById(TEST_ID_DOB_MONTH).findByText(PLACEHOLDER_MONTH).click();
-await page.keyboard(dobMonth);
-await page.findById(TEST_ID_DOB_YEAR).findByText(PLACEHOLDER_YEAR).click();
-await page.keyboard(dobYear);
+await page.FindById(TEST_ID_DOB_DAY).FindByText(PLACEHOLDER_DAY).Click();
+await page.Keyboard(dobDay);
+await page.FindById(TEST_ID_DOB_MONTH).FindByText(PLACEHOLDER_MONTH).Click();
+await page.Keyboard(dobMonth);
+await page.FindById(TEST_ID_DOB_YEAR).FindByText(PLACEHOLDER_YEAR).Click();
+await page.Keyboard(dobYear);
  
-await page.findById(TEST_ID_CONTACT_NUMBER).findTextBox().fill(contactNumber);   
-await page.findById(TEST_ID_NATIONALITY).click();
-await page.keyboard(nationality);   
-await page.findById(TEST_ID_CNIC).findTextBox().fill(cnic);
-await page.findById(TEST_ID_CNIC_RECONFIRM).findTextBox().fill(cnic);
+await page.FindById(TEST_ID_CONTACT_NUMBER).FindTextBox().Fill(contactNumber);   
+await page.FindById(TEST_ID_NATIONALITY).Click();
+await page.Keyboard(nationality);   
+await page.FindById(TEST_ID_CNIC).FindTextBox().Fill(cnic);
+await page.FindById(TEST_ID_CNIC_RECONFIRM).FindTextBox().Fill(cnic);
 
-await page.findById(TEST_ID_CNIC_DOB_DAY).click();
-await page.keyboard(cnic_dobDay);   
-await page.findById(TEST_ID_CNIC_DOB_MONTH).click();
-await page.keyboard(cnic_dobMonth);   
-await page.findById(TEST_ID_CNIC_DOB_YEAR).click();
-await page.keyboard(cnic_dobYear);   
+await page.FindById(TEST_ID_CNIC_DOB_DAY).Click();
+await page.Keyboard(cnic_dobDay);   
+await page.FindById(TEST_ID_CNIC_DOB_MONTH).Click();
+await page.Keyboard(cnic_dobMonth);   
+await page.FindById(TEST_ID_CNIC_DOB_YEAR).Click();
+await page.Keyboard(cnic_dobYear);   
 
-await page.findById(TEST_ID_ADDRESS1).findTextBox().fill(address1);
-await page.findById(TEST_ID_ADDRESS2).findTextBox().fill(address2);
-await page.findById(TEST_ID_PROVINCE).click();
-await page.keyboard(province);
-await page.findById(TEST_ID_CITY).click();
-await page.keyboard(city);
-await page.findById(TEST_ID_AREA).click();
-await page.keyboard(area);
-await page.findById(TEST_ID_LANDMARK).findTextBox().fill(landmark);
-await page.findById(TEST_ID_DELIVERY_INSTRUCTION).findTextBox().fill(deliveryInstruction);
-await page.findById(TEST_ID_DELIVERY_SLOTS)
-          .findButton()
-          .filterByText(page, deliveryDate)
-          .click();
+await page.FindById(TEST_ID_ADDRESS1).FindTextBox().Fill(address1);
+await page.FindById(TEST_ID_ADDRESS2).FindTextBox().Fill(address2);
+await page.FindById(TEST_ID_PROVINCE).Click();
+await page.Keyboard(province);
+await page.FindById(TEST_ID_CITY).Click();
+await page.Keyboard(city);
+await page.FindById(TEST_ID_AREA).Click();
+await page.Keyboard(area);
+await page.FindById(TEST_ID_LANDMARK).FindTextBox().Fill(landmark);
+await page.FindById(TEST_ID_DELIVERY_INSTRUCTION).FindTextBox().Fill(deliveryInstruction);
+await page.FindById(TEST_ID_DELIVERY_SLOTS)
+          .FindButton()
+          .FilterByText(page, deliveryDate)
+          .Click();
 
-await page.findById(TEST_ID_DELIVERY_SLOTS)
-          .findButton()
-          .filterByText(page, deliveryTime)
-          .click();
-await page.findButton().filterByText(page, NEXT).click();
+await page.FindById(TEST_ID_DELIVERY_SLOTS)
+          .FindButton()
+          .FilterByText(page, deliveryTime)
+          .Click();
+await page.FindButton().FilterByText(page, NEXT).Click();
 
 
 //7. Order Summary Page
-await page.waitFor("http.*web/order-summary", CancelToken);
-await page.findButton().filterByText(page, PLACE_ORDER).click();
+await page.WaitFor("http.*web/order-summary", CancelToken);
+await page.FindButton().FilterByText(page, PLACE_ORDER).Click();
 
 
 //4. Portin OTP page
-await sleep(300);
-var portinOtp = await getPortinOtp(OTP_URL, currentPrepaidNumber);
-page.findById("smart-render")
-    .findTextBox()
-    .fillMany(portinOtp);
-await page.findButton()
-          .filterByText(page, CONTINUE)
-          .click();
+await Sleep(300);
+var portinOtp = await GetPortinOtp(OTP_URL, currentPrepaidNumber);
+page.FindById("smart-render")
+    .FindTextBox()
+    .FillMany(portinOtp);
+await page.FindButton()
+          .FilterByText(page, CONTINUE)
+          .Click();
 
 //8. Payfast Page
-await page.waitFor("http.*Payfast/CardInfo", CancelToken);
-await page.findListItem().filterByText(page, "Card Payment").Locator("nth=1").click();
-await page.findButton().filterByText(page, "Make Payment").click();
+await page.WaitFor("http.*Payfast/CardInfo", CancelToken);
+await page.FindListItem().FilterByText(page, "Card Payment").Locator("nth=1").Click();
+await page.FindButton().FilterByText(page, "Make Payment").Click();
 
 //9. Emulator page
-await page.waitFor("http.*mastercard/v2/prompt", CancelToken);
-await page.findByText("Submit").click();
-await sleep(1000);
-await page.findByText("Back to Merchant").click();
+await page.WaitFor("http.*mastercard/v2/prompt", CancelToken);
+await page.FindByText("Submit").Click();
+await Sleep(1000);
+await page.FindByText("Back to Merchant").Click();
 
 //10.  Order Status Page - Success
-await page.waitFor("http.*/web/payment-pending.*", CancelToken);
-await page.waitFor("http.*/web/payment-success.*", CancelToken);
-await sleep(1000);
-await screenshot(page);
+await page.WaitFor("http.*/web/payment-pending.*", CancelToken);
+await page.WaitFor("http.*/web/payment-success.*", CancelToken);
+await Sleep(1000);
+await Screenshot(page);
 
 //11.  Kyc approval
-await sleep(1000);
-print("Starting KYC...");
+await Sleep(1000);
+Print("Starting KYC...");
 var orderRef = TestEnv.TestOrder.OrderRef;
 var number = TestEnv.TestOrder.PhoneNumber;
-await doKyc(KYC_URL, kycStatus, orderRef, number, cnic);
-await sleep(1000);
+await DoKyc(KYC_URL, kycStatus, orderRef, number, cnic);
+await Sleep(1000);
 
 //12. Shipment
-await sleep(1000);
-print("Starting Delivery...");
+await Sleep(1000);
+Print("Starting Delivery...");
 var laas = LAAS_URL.Replace("{{orderRef}}", orderRef);
-var shipmentRef = await getShipmentRef(laas, orderRef);
+var shipmentRef = await GetShipmentRef(laas, orderRef);
 TestEnv.TestOrder.ShipmentReference = shipmentRef;
-print($"Shipment reference : {shipmentRef}");
+Print($"Shipment reference : {shipmentRef}");
 
-await sleep(1000);
+await Sleep(1000);
 var riderUrl = RIDER_URL.Replace("{{shipmentReference}}", shipmentRef);
-var refNum = await getRefNum(riderUrl,  shipmentRef);
-print($"RefNum : {refNum}");
+var refNum = await GetRefNum(riderUrl,  shipmentRef);
+Print($"RefNum : {refNum}");
 TestEnv.TestOrder.RefNum = refNum;
 
-await sleep(1000);
-var iccid = await getIccid(IMS_URL);
+await Sleep(1000);
+var iccid = await GetIccid(IMS_URL);
 TestEnv.TestOrder.Iccid = iccid;
-print($"ICCID : {iccid}");
+Print($"ICCID : {iccid}");
 
-print("Updating status to READY");
+Print("Updating status to READY");
 var status = "READY";
 var statusId = 8;
-await shipmentUpdate(RIDER_NOTIF_URL, status, statusId, iccid, refNum);
-await sleep(3000);
+await ShipmentUpdate(RIDER_NOTIF_URL, status, statusId, iccid, refNum);
+await Sleep(3000);
 
-print("Updating status to SHIPPED");
+Print("Updating status to SHIPPED");
 status = "SHIPPED";
 statusId = 18;
-await shipmentUpdate(RIDER_NOTIF_URL, status, statusId, iccid, refNum);
-await sleep(3000);
+await ShipmentUpdate(RIDER_NOTIF_URL, status, statusId, iccid, refNum);
+await Sleep(3000);
 
-print("Updating status to DELIVERED");
+Print("Updating status to DELIVERED");
 status = "DELIVERED";
 statusId = 10;
-await shipmentUpdate(RIDER_NOTIF_URL, status, statusId, iccid, refNum);
-await sleep(1500);
+await ShipmentUpdate(RIDER_NOTIF_URL, status, statusId, iccid, refNum);
+await Sleep(1500);
 
-await screenshot(page);
+await Screenshot(page);
 
 //13. Refresh the page to get the Sim activate button
-print("Refreshing page to check if the sim can be activated");
-await sleep(1500);
-page.refresh();
+Print("Refreshing page to check if the sim can be activated");
+await Sleep(1500);
+page.Refresh();
 
-await page.findButton().filterByText(page, "Activate your SIM").click();
+await page.FindButton().FilterByText(page, "Activate your SIM").Click();
 
-await page.findById("icc_id").findTextBox().fill(iccid);
-await page.findButton().filterByText(page, "Activate Sim Card").click();
+await page.FindById("icc_id").FindTextBox().Fill(iccid);
+await page.FindButton().FilterByText(page, "Activate Sim Card").Click();
 
 //14. Refresh the page to get the Sim activate button
 foreach (var i in Enumerable.Range(1,10)){
-    print("Sleeping for 5 sec before refreshing page to check if the sim was activated");
-    await sleep(5000);
-    page.refresh();
-    var t = page.findByText("Number Transfer Completed & SIM Activated");
+    Print("Sleeping for 5 sec before refreshing page to check if the sim was activated");
+    await Sleep(5000);
+    page.Refresh();
+    var t = page.FindByText("Number Transfer Completed & SIM Activated");
     if (t != null)
        break;
 }

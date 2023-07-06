@@ -44,7 +44,7 @@ public class ScriptRunner {
             Console.WriteLine(compileErrors);
         }
         catch (TimeoutException exc) {
-            await ScriptFunctions.screenshot(ctx.TestEnv.CurrentPage, "(timeout) screenshot");
+            await ScriptFunctions.Screenshot(ctx.TestEnv.CurrentPage, "(timeout) screenshot");
             Console.WriteLine(exc.ToString());
         }
         catch (Exception exc) {

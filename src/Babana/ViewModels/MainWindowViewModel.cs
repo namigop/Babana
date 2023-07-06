@@ -36,7 +36,7 @@ public class MainWindowViewModel : ViewModelBase {
         InstallBrowserCommand = CreateCommand(OnInstallBrowser);
         ScreenshotCommand = CreateCommand(OnScreenshot);
         var model = new ScriptTabModel();
-        model.FromText(ScriptTabModel.scriptTest, "TODO");
+        model.FromText("//Click the \"Open\" menu to select a *.csx script", "TODO");
         ScriptViewModel = new TabItemViewModel(model);
         CanStart = true;
 
@@ -196,7 +196,7 @@ public class MainWindowViewModel : ViewModelBase {
     private async Task OnScreenshot() {
         var ctx = _runner.RunContext;
         var page = ctx.TestEnv.CurrentPage;
-        await ScriptingExtensions.ScriptFunctions.screenshot(page);
+        await ScriptingExtensions.ScriptFunctions.Screenshot(page);
     }
 
     private async Task OnSave() {

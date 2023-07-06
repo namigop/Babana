@@ -28,12 +28,12 @@ public class ScriptRunContext {
     }
 
     //this method is available to the script
-    public async Task pause() {
+    public async Task Pause() {
         MessageHub.Publish(new Message() { Content = new RunStateMessage() { IsPaused = true } });
         await pauseCs.Task;
     }
 
-    public static ScriptSetup setup() {
+    public static ScriptSetup Setup() {
         return new ScriptSetup();
     }
 

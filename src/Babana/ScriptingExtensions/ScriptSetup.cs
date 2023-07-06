@@ -10,46 +10,46 @@ public class ScriptSetup {
     public const string EDGE = "EDGE";
 
 
-    public ScriptSetup headless(bool headless) {
+    public ScriptSetup Headless(bool headless) {
         IsHeadless = headless;
-        BrowserHeight = 880;
-        BrowserWidth = 1512;
+        BrowserHeight2 = 880;
+        BrowserWidth2 = 1512;
         return this;
     }
 
-    public int BrowserWidth { get; set; }
+    public int BrowserWidth2 { get; set; }
 
-    public int BrowserHeight { get; set; }
+    public int BrowserHeight2 { get; set; }
 
-    public ScriptSetup slomo(int slomo) {
+    public ScriptSetup Slomo(int slomo) {
         SlomoMsec = slomo;
         return this;
     }
 
-    public ScriptSetup chromium() {
+    public ScriptSetup Chromium() {
         Browser = CHROMIUM;
         return this;
     }
 
-    public ScriptSetup firefox() {
+    public ScriptSetup Firefox() {
         Browser = FIREFOX;
         return this;
     }
 
-    public ScriptSetup edge() {
+    public ScriptSetup Edge() {
         Browser = EDGE;
         return this;
     }
 
     public string Browser { get; set; }
 
-    public ScriptSetup browserHeight(int height) {
-        BrowserHeight = height;
+    public ScriptSetup BrowserHeight(int height) {
+        BrowserHeight2 = height;
         return this;
     }
 
-    public ScriptSetup browserWidth(int width) {
-        BrowserWidth = width;
+    public ScriptSetup BrowserWidth(int width) {
+        BrowserWidth2 = width;
         return this;
     }
 
@@ -58,7 +58,7 @@ public class ScriptSetup {
     public int SlomoMsec { get; private set; }
 
 
-    public async Task<IPage> begin(TestEnvironment env) {
+    public async Task<IPage> Begin(TestEnvironment env) {
         return await env.Setup(this);
     }
 
