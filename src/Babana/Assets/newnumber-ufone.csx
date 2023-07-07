@@ -11,9 +11,9 @@ var HEADLESS = false;
 
 var r = new Random();
 var email = $"{Environment.UserName}{r.Next(50, 1000)}@bar.com";
-var deliveryDate = "07/07/2023";
+var deliveryDate = "08/07/2023";
 var deliveryTime = "4:30 PM - 11:59 PM"; 
-var plan = "One day Bundle";
+var plan = "10DaysVoice";
 var kycStatus = "109"; //Ok = 109, Failed = 110
 
 var cnic = GetRandomCnic();

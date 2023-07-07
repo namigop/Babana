@@ -1,0 +1,74 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:PlaywrightTest.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Babana.Views.PerfWindow"
+        Background="#071222"
+        WindowState="Normal"
+        TransparencyLevelHint="AcrylicBlur"
+        Width="1024"
+        Title="Perf test"
+        Height="800"
+        ExtendClientAreaToDecorationsHint="True">
+
+    <Design.DataContext>
+        <vm:PerfViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*, Auto, Auto" ColumnDefinitions="*, Auto, 2*" Margin="4 40 4 4" Background="Transparent">
+        <Grid Grid.Row="0" Grid.Column="0">
+            <!-- table -->
+            <Border CornerRadius="4" Background="White"></Border>
+        </Grid>
+        <GridSplitter Grid.Row="0" Grid.Column="1" Width="8"></GridSplitter>
+        <Grid Grid.Row="0" Grid.Column="2">
+            <!-- Graph -->
+            <Border CornerRadius="4" Background="White"></Border>
+        </Grid>
+
+        <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Height="8"></GridSplitter>
+        <!-- Bottom controls -->
+        <Grid Grid.Row="2" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel.Styles>
+                    <Style Selector="TextBlock">
+                        <Setter Property="Foreground" Value="LightGray" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="12" />
+                        <Setter Property="FontWeight" Value="Light" />
+                        <Setter Property="Margin" Value="4" />
+
+                    </Style>
+                    <Style Selector="TextBox">
+
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="FontSize" Value="12" />
+                        <Setter Property="FontWeight" Value="Light" />
+                        <Setter Property="Margin" Value="4" />
+
+                    </Style>
+                </StackPanel.Styles>
+                <TextBlock Text="Virtual Users :"></TextBlock>
+                <TextBox Text="{Binding VirtualUsers}"></TextBox>
+                <TextBlock Text="Duration (sec) :"></TextBlock>
+                <TextBox Text="{Binding DurationSec}"></TextBox>
+                <TextBlock Text="Rampup (sec) :"></TextBlock>
+                <TextBox Text="{Binding RampupSec}"></TextBox>
+
+                <Border Background="LightGray" Margin="4" Width="2"></Border>
+
+                <Button Command="{Binding StartCommand}" Margin="4">
+                    <TextBlock Text="Start"></TextBlock>
+                </Button>
+                <Button Command="{Binding StopCommand}" Margin="4">
+                    <TextBlock Text="Start"></TextBlock>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</Window>

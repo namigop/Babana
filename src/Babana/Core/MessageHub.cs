@@ -8,4 +8,8 @@ public static class MessageHub {
     public static void Publish(Message msg, object sender = null) {
         Sub?.Invoke(sender, msg);
     }
+    public static void Publish(IMessageContent content, object sender = null) {
+        var msg = new Message(){ Content = content};
+        Publish(msg, sender);
+    }
 }

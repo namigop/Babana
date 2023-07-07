@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Babana.Views;
 using PlaywrightTest.Core;
 using PlaywrightTest.Models;
 using PlaywrightTest.Views;
@@ -35,6 +36,7 @@ public class MainWindowViewModel : ViewModelBase {
         SaveTraceCommand = CreateCommand(OnSaveTrace);
         InstallBrowserCommand = CreateCommand(OnInstallBrowser);
         ScreenshotCommand = CreateCommand(OnScreenshot);
+        RunPerfCommand = CreateCommand(OnRunPerf);
         var model = new ScriptTabModel();
         model.FromText("//Click the \"Open\" menu to select a *.csx script", "TODO");
         ScriptViewModel = new TabItemViewModel(model);
@@ -78,6 +80,7 @@ public class MainWindowViewModel : ViewModelBase {
     public ICommand ForceCloseCommand { get; }
     public ICommand StartCommand { get; }
     public ICommand InstallBrowserCommand { get; }
+    public ICommand RunPerfCommand { get; }
     public ICommand StopCommand { get; }
 
     public ICommand ScreenshotCommand { get; }
@@ -193,6 +196,10 @@ public class MainWindowViewModel : ViewModelBase {
         _runner.Resume();
     }
 
+    private async Task OnRunPerf() {
+        var w = new PerfWindow(this.ScriptViewModel.Model);
+        w.Show();
+    }
     private async Task OnScreenshot() {
         var ctx = _runner.RunContext;
         var page = ctx.TestEnv.CurrentPage;
