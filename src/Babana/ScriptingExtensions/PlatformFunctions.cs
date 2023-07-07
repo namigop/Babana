@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PlaywrightTest.Core;
@@ -59,7 +60,7 @@ public static class PlatformFunctions {
     public static async Task ShipmentUpdate(string riderUrl, string status, int statusId, string iccid, string refNum, Cancel cancel = null) {
         cancel?.TryCancel();
 
-        var today = "";
+        var today = DateTime.Today.ToString("yyyy-MM-dd");
         var req = new RiderUpdateStatusRequest() {
             AssignedDate = today,
             BookingDate = today,
