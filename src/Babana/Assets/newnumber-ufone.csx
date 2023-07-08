@@ -10,7 +10,7 @@ var BROWSER_WIDTH = 1512;
 var HEADLESS = false;
 
 var r = new Random();
-var email = $"{Environment.UserName}{r.Next(50, 1000)}@bar.com";
+var email = $"{System.IO.Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
 var deliveryDate = "08/07/2023";
 var deliveryTime = "4:30 PM - 11:59 PM"; 
 var plan = "10DaysVoice";

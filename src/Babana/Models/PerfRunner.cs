@@ -7,26 +7,30 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace PlaywrightTest.Models;
 
 public class PerfRunner {
+    private readonly PerfTraceRunData _perfTraceRunData;
     private readonly int _durationSec;
     private int _rampupSec;
     private readonly int _virtualUsers;
+    private readonly string _filter;
     private readonly ScriptTabModel _scriptTabModel;
-    private Timer _timer;
+    private Timer _stopTestTimer;
     private readonly List<PerfVirtualUser> _perfVirtualUsers;
 
-    public PerfRunner(int durationSec, int rampupSec, int virtualUsers, ScriptTabModel scriptTabModel) {
+    public PerfRunner(PerfTraceRunData perfTraceRunData, int durationSec, int rampupSec, int virtualUsers, string filter, ScriptTabModel scriptTabModel) {
         _perfVirtualUsers = new List<PerfVirtualUser>();
+        _perfTraceRunData = perfTraceRunData;
         _durationSec = durationSec;
         _rampupSec = rampupSec;
         _virtualUsers = virtualUsers;
+        _filter = filter;
         _scriptTabModel = scriptTabModel;
 
-        _timer = new System.Timers.Timer() {
+        _stopTestTimer = new System.Timers.Timer() {
             Enabled = false,
             AutoReset = false
         };
 
-        _timer.Elapsed += OnTimerElapsed;
+        _stopTestTimer.Elapsed += OnTimerElapsed;
 
     }
 
@@ -58,16 +62,18 @@ public class PerfRunner {
         Console.WriteLine($" Virtual users : {_virtualUsers}");
 
 
-        _timer.Interval = _durationSec;
-        _timer.Start();
+        _stopTestTimer.Interval = _durationSec;
+        _stopTestTimer.Start();
 
         //create and start each virtual user
         _perfVirtualUsers.Clear();
         for (int i = 0; i < _virtualUsers; i++) {
             var vu = new PerfVirtualUser(_scriptTabModel);
-            vu.Start();
+            _perfTraceRunData.VirtualUserCount += 1;
             _perfVirtualUsers.Add(vu);
-            await Task.Delay(_rampupSec);
+
+            vu.Start();
+            await Task.Delay(_rampupSec * 1000);
         }
 
     }

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -10,10 +11,17 @@ public partial class PerfWindow : Window {
     public PerfWindow(ScriptTabModel model) {
         InitializeComponent();
         this.DataContext = new PerfViewModel(model);
+
+        
 #if DEBUG
         this.AttachDevTools();
 #endif
     }
+
+    private void OnSelectionChanging(object? sender, CancelEventArgs e) {
+
+    }
+
     public PerfWindow() {
         InitializeComponent();
 #if DEBUG
