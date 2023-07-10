@@ -25,17 +25,16 @@ public class PerfRunner {
         _filter = filter;
         _scriptTabModel = scriptTabModel;
 
-        _stopTestTimer = new System.Timers.Timer() {
+        _stopTestTimer = new Timer() {
             Enabled = false,
             AutoReset = false
         };
 
         _stopTestTimer.Elapsed += OnTimerElapsed;
-
     }
 
     private void OnTimerElapsed(object? sender, ElapsedEventArgs e) {
-        this.Stop();
+        Stop();
     }
 
     public async Task Start() {
@@ -43,15 +42,15 @@ public class PerfRunner {
             Console.WriteLine($"Unable to start a test with {_virtualUsers} virtual users");
             return;
         }
+
         if (_durationSec <= 0) {
             Console.WriteLine($"Unable to start a test with {_durationSec} sec duration");
             return;
         }
-        if (_rampupSec <= 0) {
-            _rampupSec = 0;
-        }
 
-        if (String.IsNullOrWhiteSpace(_scriptTabModel.ScriptContent)) {
+        if (_rampupSec <= 0) _rampupSec = 0;
+
+        if (string.IsNullOrWhiteSpace(_scriptTabModel.ScriptContent)) {
             Console.WriteLine($"Unable to start a test with an empty script");
             return;
         }
@@ -62,12 +61,13 @@ public class PerfRunner {
         Console.WriteLine($" Virtual users : {_virtualUsers}");
 
 
-        _stopTestTimer.Interval = _durationSec;
+        _stopTestTimer.Interval = _durationSec * 1000;
+        _stopTestTimer.Stop();
         _stopTestTimer.Start();
 
         //create and start each virtual user
         _perfVirtualUsers.Clear();
-        for (int i = 0; i < _virtualUsers; i++) {
+        for (var i = 0; i < _virtualUsers; i++) {
             var vu = new PerfVirtualUser(_scriptTabModel);
             _perfTraceRunData.VirtualUserCount += 1;
             _perfVirtualUsers.Add(vu);
@@ -75,7 +75,6 @@ public class PerfRunner {
             vu.Start();
             await Task.Delay(_rampupSec * 1000);
         }
-
     }
 
     public async Task Stop() {

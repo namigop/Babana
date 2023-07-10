@@ -9,6 +9,7 @@ public class PerfTraceData {
     public string StatusCode { get; set; }
     public string RequestMethod { get; set; }
     public string RequestUriPath { get; private set; }
+
     public static PerfTraceData FromReqRespTrace(ReqRespTraceData trace) {
         if (string.IsNullOrWhiteSpace(trace.RequestUri))
             return null;
@@ -22,6 +23,4 @@ public class PerfTraceData {
             RequestUriPath = new Uri(trace.RequestUri).AbsolutePath
         };
     }
-
-
 }

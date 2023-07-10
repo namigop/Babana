@@ -56,16 +56,15 @@ public static class ScriptFunctions {
         cancel?.TryCancel();
         return locator?.SetCheckedAsync(true);
     }
+
     public static Task Uncheck(this ILocator? locator, Cancel cancel = null) {
         cancel?.TryCancel();
         return locator?.SetCheckedAsync(false);
-
     }
 
-    public static async Task MouseWheel(this IPage? page, float deltaX, float deltaY ) {
+    public static async Task MouseWheel(this IPage? page, float deltaX, float deltaY) {
         await page.Mouse.WheelAsync(deltaX, deltaY);
     }
-
 
     #endregion
 
@@ -126,6 +125,7 @@ public static class ScriptFunctions {
         var ret = locator?.GetByTestId(arg);
         return ret;
     }
+
     public static ILocator? FindById(this IFrameLocator? locator, string arg, Cancel cancel = null) {
         cancel?.TryCancel();
         var ret = locator?.GetByTestId(arg);
@@ -161,6 +161,7 @@ public static class ScriptFunctions {
         var ret = locator?.GetByText(arg);
         return ret;
     }
+
     public static ILocator? FindByText(this IFrameLocator? locator, string arg, Cancel cancel = null) {
         cancel?.TryCancel();
         var ret = locator?.GetByText(arg);
@@ -253,6 +254,7 @@ public static class ScriptFunctions {
 
         return ret;
     }
+
     public static ILocator? FindByName(this IFrameLocator? frame, string name, Cancel cancel = null) {
         cancel?.TryCancel();
         var ret = frame?.Locator($"[name={name}]");

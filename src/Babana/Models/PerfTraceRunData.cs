@@ -13,16 +13,19 @@ public class PerfTraceRunData {
         "/v2/ufone/en_us-UFONE/webfront/numbers/{number}/lock"
     };
 
-    private static List<Tuple<string,Regex>> PathTemplatesRegex = PathTemplates.Select(t => ConvertToRegex(t)).ToList();
-    private static Tuple<string,Regex> ConvertToRegex(string template) {
+    private static List<Tuple<string, Regex>> PathTemplatesRegex = PathTemplates.Select(t => ConvertToRegex(t)).ToList();
+
+    private static Tuple<string, Regex> ConvertToRegex(string template) {
         var start = template.IndexOf("{");
         var end = template.IndexOf("}");
         var pattern = Regex.Replace(template, @"{\S+}", @"\S+");
         return Tuple.Create(template, new Regex(pattern));
     }
+
     public PerfTraceRunData() {
-        this.StartTime = DateTime.Now;
+        StartTime = DateTime.Now;
     }
+
     public string RunName { get; set; } = $"Run : {DateTime.Now}";
     public DateTime StartTime { get; }
     public DateTime EndTime { get; set; }
@@ -37,7 +40,7 @@ public class PerfTraceRunData {
         PerfPathData p;
         lock (this) {
             var templatedPath = GetTemplatedPath(data.RequestUriPath);
-            p = this.Traces.FirstOrDefault(t => t.Path == templatedPath);
+            p = Traces.FirstOrDefault(t => t.Path == templatedPath);
             if (p == null) {
                 p = new PerfPathData(templatedPath, new Uri(data.RequestUri).Host, StartTime);
                 Traces.Add(p);
@@ -61,7 +64,6 @@ public class PerfTraceRunData {
     public List<PathTraceSnapshot> TakeSnapshot(int userCount) {
         return
             Traces.Select(t => t.TakeSnapshot(userCount))
-            .ToList();
+                .ToList();
     }
-
 }

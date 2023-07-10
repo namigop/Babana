@@ -90,11 +90,9 @@ public static class PlatformFunctions {
         ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
     }
 
-    public static async Task DoKyc(string kycUrl, string kycStatus, string orderRef, string number, string cnic, Cancel cancel = null, int tries=0) {
+    public static async Task DoKyc(string kycUrl, string kycStatus, string orderRef, string number, string cnic, Cancel cancel = null, int tries = 0) {
         cancel?.TryCancel();
-        if (tries > 2) {
-            return;
-        }
+        if (tries > 2) return;
 
         await Task.Delay(500);
         var kycReq = new KycApprovalRequest() {
@@ -124,9 +122,7 @@ public static class PlatformFunctions {
             ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
-            if (response.StatusCode != HttpStatusCode.OK) {
-                throw new Exception($"Unable to perform KYC for {orderRef} to status {kycStatus}. {(int)response.StatusCode} {response.StatusCode}");
-            }
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception($"Unable to perform KYC for {orderRef} to status {kycStatus}. {(int)response.StatusCode} {response.StatusCode}");
         }
         catch (HttpRequestException exc) {
             //the kyc server sucks balls. flaky.

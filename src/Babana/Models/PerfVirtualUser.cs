@@ -1,21 +1,28 @@
 using System.Threading.Tasks;
+using Avalonia.Controls;
 
 namespace PlaywrightTest.Models;
 
 public class PerfVirtualUser {
     private readonly ScriptTabModel _scriptTabModel;
-    private readonly ScriptRunner _runner;
+    private ScriptRunner _runner;
+    private bool _canStart;
 
     public PerfVirtualUser(ScriptTabModel scriptTabModel) {
         _scriptTabModel = scriptTabModel;
-        _runner = new ScriptRunner(scriptTabModel);
+        _canStart = true;
     }
 
     public async Task Start() {
-       await _runner.Run();
+        while (_canStart) {
+            _runner = new ScriptRunner(_scriptTabModel);
+            await _runner.Run();
+            _runner.ForceClose();
+        }
     }
 
     public async Task Stop() {
+        _canStart = false;
         await _runner.ForceClose();
     }
 }

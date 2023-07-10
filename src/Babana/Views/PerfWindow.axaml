@@ -18,35 +18,50 @@
         <vm:PerfViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="*, Auto, *, Auto, Auto" ColumnDefinitions="*, Auto, 2*" Margin="4 40 4 4" Background="Transparent">
+    <Grid RowDefinitions="*, Auto, *, Auto, Auto" ColumnDefinitions="*, Auto, *" Margin="8 40 8 8" Background="Transparent">
         <Grid Grid.Row="0" Grid.Column="0">
             <!-- table -->
             <Border CornerRadius="4" Background="White">
-                <TreeDataGrid x:Name="TraceTree" Source="{Binding PathTracesTree}" alternatecolor>
+                <TreeDataGrid x:Name="TraceTree" Source="{Binding PathTracesTree}">
+                    <TreeDataGrid.Styles>
+                        <Style Selector="TreeDataGrid TreeDataGridRow:nth-child(2n)">
+                            <Setter Property="Background" Value="WhiteSmoke" />
+                        </Style>
+                    </TreeDataGrid.Styles>
 
                 </TreeDataGrid>
             </Border>
         </Grid>
-        <GridSplitter Grid.Row="0" Grid.Column="1" Width="8" Background="Transparent"></GridSplitter>
+        <GridSplitter Grid.Row="0" Grid.Column="1" Width="8" Background="Transparent" />
         <Grid Grid.Row="0" Grid.Column="2">
             <!-- Graph -->
             <Border CornerRadius="4" Background="White">
 
-                <lvc:CartesianChart Grid.Row="1" Series="{Binding Series}"></lvc:CartesianChart>
+                <lvc:CartesianChart Grid.Row="1" Series="{Binding Series}" YAxes="{Binding YAxes}" />
 
             </Border>
         </Grid>
-        <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Height="8" Background="Transparent"></GridSplitter>
+        <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Height="8" Background="Transparent" />
         <Grid Grid.Row="2" Grid.ColumnSpan="3">
             <!-- overall chart -->
             <Border CornerRadius="4" Background="White">
+                <TabControl TabStripPlacement="Bottom">
+                    <TabItem Header="Overall">
 
-                <lvc:CartesianChart Grid.Row="1" Series="{Binding AllSeries}" XAxes="{Binding XAxes}"></lvc:CartesianChart>
+                        <lvc:CartesianChart ZoomMode="Both"
+                                            YAxes="{Binding YAxes}"
+                                            Grid.Row="1" Series="{Binding AllSeries}" XAxes="{Binding XAxes}" />
+
+                    </TabItem>
+                    <TabItem Header="Errors">
+                        <TreeDataGrid Source="{Binding Errors.Tree}"></TreeDataGrid>
+                    </TabItem>
+                </TabControl>
 
             </Border>
         </Grid>
 
-        <GridSplitter Grid.Row="3" Grid.ColumnSpan="3" Height="8" Background="Transparent"></GridSplitter>
+        <GridSplitter Grid.Row="3" Grid.ColumnSpan="3" Height="8" Background="Transparent" />
         <!-- Bottom controls -->
         <Grid Grid.Row="4" Grid.ColumnSpan="3" Margin="0 10 0 10">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -55,7 +70,7 @@
                         <Setter Property="Foreground" Value="LightGray" />
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="HorizontalAlignment" Value="Center" />
-                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontSize" Value="14" />
                         <Setter Property="FontWeight" Value="Light" />
                         <Setter Property="Margin" Value="4" />
 
@@ -64,28 +79,28 @@
 
                         <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="HorizontalAlignment" Value="Center" />
-                        <Setter Property="FontSize" Value="16" />
+                        <Setter Property="FontSize" Value="14" />
                         <Setter Property="FontWeight" Value="Light" />
                         <Setter Property="Margin" Value="4" />
 
                     </Style>
                 </StackPanel.Styles>
-                <TextBlock Text="Virtual Users :"></TextBlock>
-                <TextBox Text="{Binding VirtualUsers}"></TextBox>
-                <TextBlock Text="Duration (sec) :"></TextBlock>
-                <TextBox Text="{Binding DurationSec}"></TextBox>
-                <TextBlock Text="Rampup (sec) :"></TextBlock>
-                <TextBox Text="{Binding RampupSec}"></TextBox>
-                <TextBlock Text="Filter :"></TextBlock>
-                <TextBox Text="{Binding Filter}"></TextBox>
+                <TextBlock Text="Virtual Users :" />
+                <TextBox Text="{Binding VirtualUsers}" />
+                <TextBlock Text="Duration (sec) :" />
+                <TextBox Text="{Binding DurationSec}" />
+                <TextBlock Text="Rampup (sec) :" />
+                <TextBox Text="{Binding RampupSec}" />
+                <TextBlock Text="Filter :" />
+                <TextBox Text="{Binding Filter}" />
 
-                <Border Background="LightGray" Margin="4" Width="2"></Border>
+                <Border Background="LightGray" Margin="4" Width="2" />
 
-                <Button Command="{Binding StartCommand}" Margin="4">
-                    <TextBlock Text="Start"></TextBlock>
+                <Button Command="{Binding StartCommand}" Margin="4" BorderBrush="White" BorderThickness="1">
+                    <TextBlock Text="Start" />
                 </Button>
                 <Button Command="{Binding StopCommand}" Margin="4" BorderBrush="White" BorderThickness="1">
-                    <TextBlock Text="Stop"></TextBlock>
+                    <TextBlock Text="Stop" />
                 </Button>
             </StackPanel>
         </Grid>

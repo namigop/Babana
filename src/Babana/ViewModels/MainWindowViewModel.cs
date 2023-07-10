@@ -54,7 +54,7 @@ public class MainWindowViewModel : ViewModelBase {
             //throw new Exception("Unknown message");
         }
 
-        ;
+
     }
 
     private void HandleRunStates(RunStateMessage info) {
@@ -197,9 +197,10 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     private async Task OnRunPerf() {
-        var w = new PerfWindow(this.ScriptViewModel.Model);
+        var w = new PerfWindow(ScriptViewModel.Model);
         w.Show();
     }
+
     private async Task OnScreenshot() {
         var ctx = _runner.RunContext;
         var page = ctx.TestEnv.CurrentPage;

@@ -15,6 +15,7 @@ public class PerfPathData {
     private readonly DateTime _startTime;
 
     private PathTraceSnapshot _snapshot;
+
     public PerfPathData(string path, string host, DateTime startTime) {
         Path = path;
         Host = host;
@@ -34,7 +35,13 @@ public class PerfPathData {
 
         var span = (DateTime.Now - _startTime).TotalSeconds;
         _aveRespTime = newTotalTime / _traces.Count;
-        _throughput = (_traces.Count * 1.0) / span;
+        _throughput = _traces.Count * 1.0 / span;
+    }
+
+    private static uint CalculatePercentile(uint[] points, int percentile) {
+        var pt = points.Length * (percentile / 100.0);
+        var index = (int)Math.Round(pt, MidpointRounding.ToZero);
+        return points[index];
     }
 
     public PathTraceSnapshot TakeSnapshot(int userCount) {
@@ -44,7 +51,6 @@ public class PerfPathData {
         if (item != null) {
             item.AveRespTime = _aveRespTime;
             item.Throughput = _throughput;
-
         }
         else {
             item = new PathTraceSnapshotItem();
@@ -54,13 +60,17 @@ public class PerfPathData {
             _snapshot.Items.Add(item);
         }
 
+        _snapshot.P90RespTime = CalculatePercentile(_traces.Select(t => t.ElapsedMsec).Order().ToArray(), 90);
+        item.P90RespTime = _snapshot.P90RespTime;
+
         return _snapshot;
     }
 
     public uint[] GetTraceData() {
-        return this._traces.Select(t => t.ElapsedMsec).ToArray();
+        return _traces.Select(t => t.ElapsedMsec).ToArray();
     }
+
     public (TimeSpan, uint ElapsedMsec)[] GetTimestampedTraceData() {
-        return this._traces.Select(t => ((t.Timestamp - _startTime), t.ElapsedMsec)).ToArray();
+        return _traces.Select(t => (t.Timestamp - _startTime, t.ElapsedMsec)).ToArray();
     }
 }

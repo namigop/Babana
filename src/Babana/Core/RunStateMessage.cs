@@ -1,3 +1,5 @@
+using System;
+
 namespace PlaywrightTest.Core;
 
 public class RunStateMessage : IMessageContent {
@@ -6,6 +8,9 @@ public class RunStateMessage : IMessageContent {
     public bool IsFinished { get; set; }
 }
 
-public class PerfStatusMessage : IMessageContent{
+public class ScriptTimeoutMessage : IMessageContent {
+    public Exception Error { get; set; }
+}
+public class PerfStatusMessage : IMessageContent {
     public bool IsRunning { get; set; }
 }

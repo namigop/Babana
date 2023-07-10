@@ -20,7 +20,7 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,*" Margin="0 0 6 6" ColumnDefinitions="Auto, *" >
+    <Grid RowDefinitions="Auto,*" Margin="0 0 6 6" ColumnDefinitions="Auto, *">
         <Grid.Styles>
             <Style Selector="Border">
                 <Setter Property="BorderBrush" Value="LightGray" />
