@@ -18,52 +18,91 @@
         <vm:PerfViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="*, Auto, *, Auto, Auto" ColumnDefinitions="*, Auto, *" Margin="8 40 8 8" Background="Transparent">
-        <Grid Grid.Row="0" Grid.Column="0">
-            <!-- table -->
-            <Border CornerRadius="4" Background="White">
-                <TreeDataGrid x:Name="TraceTree" Source="{Binding PathTracesTree}">
-                    <TreeDataGrid.Styles>
-                        <Style Selector="TreeDataGrid TreeDataGridRow:nth-child(2n)">
-                            <Setter Property="Background" Value="WhiteSmoke" />
-                        </Style>
-                    </TreeDataGrid.Styles>
+    <Grid RowDefinitions="*, Auto" Margin="8 40 8 8" Background="Transparent">
+        <TabControl>
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel>
+                        <TextBlock Text="{Binding}" FontSize="14"
+                                   Foreground="LightGray" FontWeight="Normal" VerticalAlignment="Center" />
+                    </DockPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabItem Header="Responses">
+                <Grid ColumnDefinitions="*, Auto, *">
+                    <Grid Grid.Row="0" Grid.Column="0">
+                        <!-- table -->
+                        <Border CornerRadius="4" Background="White">
+                            <TreeDataGrid x:Name="TraceTree" Source="{Binding PerfResponsesViewModel.PathTracesTree}">
+                                <TreeDataGrid.Styles>
+                                    <Style Selector="TreeDataGrid TreeDataGridRow:nth-child(2n)">
+                                        <Setter Property="Background" Value="WhiteSmoke" />
+                                    </Style>
+                                </TreeDataGrid.Styles>
 
-                </TreeDataGrid>
-            </Border>
-        </Grid>
-        <GridSplitter Grid.Row="0" Grid.Column="1" Width="8" Background="Transparent" />
-        <Grid Grid.Row="0" Grid.Column="2">
-            <!-- Graph -->
-            <Border CornerRadius="4" Background="White">
+                            </TreeDataGrid>
+                        </Border>
+                    </Grid>
+                    <GridSplitter Grid.Column="1" Width="8" Background="Transparent" />
+                    <Grid Grid.Row="0" Grid.Column="2" RowDefinitions="*, Auto, *">
+                        <!-- Graph -->
+                        <Border Grid.Row="0" CornerRadius="4" Background="White">
+                            <Grid>
+                                <lvc:CartesianChart Series="{Binding PerfResponsesViewModel.Series}"
+                                                    YAxes="{Binding PerfResponsesViewModel.YAxes}" />
+                                <TextBlock Text="{Binding PerfResponsesViewModel.SelectedTracePath}"
+                                           FontSize="16"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Top"
+                                           Margin="0 10 0 0"
+                                           Foreground="DimGray">
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                        <GridSplitter Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"
+                                      Background="Transparent">
+                        </GridSplitter>
 
-                <lvc:CartesianChart Grid.Row="1" Series="{Binding Series}" YAxes="{Binding YAxes}" />
+                        <Border Grid.Row="2" CornerRadius="4" Background="White">
+                            <Grid>
+                                <lvc:CartesianChart Grid.Row="1" Series="{Binding PerfResponsesViewModel.BarSeries}"
+                                                    YAxes="{Binding PerfResponsesViewModel.BarYAxes}"
+                                                    XAxes="{Binding PerfResponsesViewModel.BarXAxes}" />
+                                <TextBlock Text="Top 5 Slowest Response Times (p90)"
+                                           FontSize="16"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Top"
+                                           Margin="0 10 0 0"
+                                           Foreground="DimGray"
+                                ></TextBlock>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
 
-            </Border>
-        </Grid>
-        <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Height="8" Background="Transparent" />
-        <Grid Grid.Row="2" Grid.ColumnSpan="3">
-            <!-- overall chart -->
-            <Border CornerRadius="4" Background="White">
-                <TabControl TabStripPlacement="Bottom">
-                    <TabItem Header="Overall">
+            </TabItem>
+            <TabItem Header="Overall">
+                <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                    <!-- overall chart -->
+                    <Border CornerRadius="4" Background="White">
+                        <lvc:CartesianChart ZoomMode="X"
+                                            YAxes="{Binding PerfOverallViewModel.YAxes}"
+                                            Grid.Row="1" Series="{Binding PerfOverallViewModel.AllSeries}"
+                                            XAxes="{Binding PerfOverallViewModel.XAxes}" />
 
-                        <lvc:CartesianChart ZoomMode="Both"
-                                            YAxes="{Binding YAxes}"
-                                            Grid.Row="1" Series="{Binding AllSeries}" XAxes="{Binding XAxes}" />
 
-                    </TabItem>
-                    <TabItem Header="Errors">
-                        <TreeDataGrid Source="{Binding Errors.Tree}"></TreeDataGrid>
-                    </TabItem>
-                </TabControl>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Errors">
+                <Border CornerRadius="4" Background="White">
+                    <TreeDataGrid Source="{Binding Errors.Tree}" />
+                </Border>
+            </TabItem>
+        </TabControl>
 
-            </Border>
-        </Grid>
-
-        <GridSplitter Grid.Row="3" Grid.ColumnSpan="3" Height="8" Background="Transparent" />
         <!-- Bottom controls -->
-        <Grid Grid.Row="4" Grid.ColumnSpan="3" Margin="0 10 0 10">
+        <Grid Grid.Row="1" Margin="0 10 0 10">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel.Styles>
                     <Style Selector="TextBlock">
@@ -85,23 +124,26 @@
 
                     </Style>
                 </StackPanel.Styles>
-                <TextBlock Text="Virtual Users :" />
+                <TextBlock Text="virtual Users :" />
                 <TextBox Text="{Binding VirtualUsers}" />
-                <TextBlock Text="Duration (sec) :" />
+                <TextBlock Text="duration (sec) :" />
                 <TextBox Text="{Binding DurationSec}" />
-                <TextBlock Text="Rampup (sec) :" />
+
+                <Button Height="50" Width="100" Command="{Binding StartCommand}" Margin="20 4 4 4" BorderBrush="LightGray"
+                        CornerRadius="4" BorderThickness="1">
+                    <TextBlock FontSize="22" Text="start" />
+                </Button>
+                <Button Command="{Binding StopCommand}" CornerRadius="4"
+                        BorderBrush="LightGray" BorderThickness="1" Margin="4 4 20 4">
+                    <TextBlock Text="stop" />
+                </Button>
+
+                <TextBlock Text="rampup (sec) :" />
                 <TextBox Text="{Binding RampupSec}" />
-                <TextBlock Text="Filter :" />
+                <TextBlock Text="filter :" />
                 <TextBox Text="{Binding Filter}" />
 
-                <Border Background="LightGray" Margin="4" Width="2" />
 
-                <Button Command="{Binding StartCommand}" Margin="4" BorderBrush="White" BorderThickness="1">
-                    <TextBlock Text="Start" />
-                </Button>
-                <Button Command="{Binding StopCommand}" Margin="4" BorderBrush="White" BorderThickness="1">
-                    <TextBlock Text="Stop" />
-                </Button>
             </StackPanel>
         </Grid>
 

@@ -53,8 +53,6 @@ public class MainWindowViewModel : ViewModelBase {
                 break;
             //throw new Exception("Unknown message");
         }
-
-
     }
 
     private void HandleRunStates(RunStateMessage info) {
@@ -134,6 +132,7 @@ public class MainWindowViewModel : ViewModelBase {
     private async Task OnStart() {
         await OnForceClose();
         CanStart = false;
+
         _runner = new ScriptRunner(ScriptViewModel.Model);
         await _runner.Run();
     }

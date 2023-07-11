@@ -47,13 +47,9 @@ public class ErrorViewModel : ViewModelBase {
         }
 
 
-        public bool HasChildren {
-            get => this.Children.Any();
-        }
+        public bool HasChildren => Children.Any();
 
-        public List<ErrorItemViewModel> Children {
-            get => _details;
-        }
+        public List<ErrorItemViewModel> Children => _details;
 
         public bool IsExpanded { get; set; } = false;
     }

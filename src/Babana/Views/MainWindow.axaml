@@ -127,7 +127,7 @@
                 </Button>
 
 
-                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
+                <Border Height="1" BorderBrush="DarkGray" Margin="14,4,14,4" BorderThickness="0.5" HorizontalAlignment="Stretch" />
 
                 <Button Click="OnOpenFileClick" ToolTip.Tip="Open a script file">
                     <StackPanel>
@@ -152,7 +152,7 @@
                     </StackPanel>
                 </Button>
 
-                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
+                <Border Height="1" Margin="14,4,14,4" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
 
                 <Button Command="{Binding  ClearTracesCommand}" ToolTip.Tip="Clear network traces">
                     <StackPanel>
@@ -181,7 +181,7 @@
                         <TextBlock Text="save trace" />
                     </StackPanel>
                 </Button>
-                <Border Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
+                <Border Height="1" Margin="14,4,14,4" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
 
                 <Button Command="{Binding  InstallBrowserCommand}" ToolTip.Tip="Install the browsers needed by playwright">
                     <StackPanel>
@@ -195,7 +195,7 @@
                         <TextBlock Text="install browser" />
                     </StackPanel>
                 </Button>
-                <Border Margin="5 0 5 0" Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
+                <Border Margin="14,4,14,4" Height="1" BorderBrush="DarkGray" BorderThickness="0.5" HorizontalAlignment="Stretch" />
 
                 <Button Command="{Binding  RunPerfCommand}" ToolTip.Tip="Clear network traces">
                     <StackPanel>

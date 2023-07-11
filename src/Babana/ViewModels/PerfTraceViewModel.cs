@@ -55,7 +55,22 @@ public class PerfTraceViewModel : ViewModelBase {
         get => _throughput;
         set => this.RaiseAndSetIfChanged(ref _throughput, value);
     }
+    public static int SortP90Ascending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
+        double ToDouble(string v) {
+            return v == "--" ? 0 : Convert.ToDouble(v);
+        }
 
+        return ToDouble(x.P90ResponseTime).CompareTo(ToDouble(y.P90ResponseTime));
+    }
+
+    public static int SortP90Descending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
+        double ToDouble(string v) {
+            return v == "--" ? 0 : Convert.ToDouble(v);
+        }
+
+        return ToDouble(y.P90ResponseTime)
+            .CompareTo(ToDouble(x.P90ResponseTime));
+    }
     public static int SortAveAscending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
         double ToDouble(string v) {
             return v == "--" ? 0 : Convert.ToDouble(v);

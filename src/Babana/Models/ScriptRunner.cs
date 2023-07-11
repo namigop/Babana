@@ -44,7 +44,7 @@ public class ScriptRunner {
             Console.WriteLine(compileErrors);
         }
         catch (TimeoutException exc) {
-            MessageHub.Publish(new ScriptTimeoutMessage(){ Error = exc});
+            MessageHub.Publish(new ScriptTimeoutMessage() { Error = exc });
             await ScriptFunctions.Screenshot(ctx.TestEnv.CurrentPage, "(timeout) screenshot");
             Console.WriteLine(exc.ToString());
         }

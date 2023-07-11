@@ -41,10 +41,14 @@ public partial class ReqRespTraceControl : UserControl {
             .Subscribe(t => DisplayReqResp());
     }
 
+    private bool _isPerfRunning = false;
     private void OnSubscribed(object? sender, Message msg) {
         switch (msg.Content) {
             case PerfStatusMessage info:
-                _canAddTrace = !info.IsRunning;
+                _isPerfRunning = info.IsRunning;
+                break;
+            case RunStateMessage info:
+                _canAddTrace = info.IsRunning;
                 break;
             //throw new Exception("Unknown message");
         }
@@ -69,7 +73,7 @@ public partial class ReqRespTraceControl : UserControl {
     }
 
     private void OnTraced(object sender, ReqRespTraceData e) {
-        if (!_canAddTrace)
+        if (_isPerfRunning)
             return;
 
         Dispatcher.UIThread.Post(() => {
