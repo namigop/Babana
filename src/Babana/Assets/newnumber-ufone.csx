@@ -11,9 +11,9 @@ var HEADLESS = false;
 
 var r = new Random();
 var email = $"{System.IO.Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
-var deliveryDate = "21/11/2023";
+var deliveryDate = "14/12/2023";
 var deliveryTime = "4:30 PM - 11:59 PM"; 
-var plan = "EPIC data UAT";
+var plan = "New Addon 12";
 var kycStatus = "109"; //Ok = 109, Failed = 110
 
 var cnic = GetRandomCnic();
@@ -106,8 +106,8 @@ await page.FindById(TEST_ID_PLANCARD)
           .FilterByText(page, plan)
           .FindButton()
           .Click();
-
-await Sleep(1000);
+return;
+//await Sleep(1000);
 
 //2. Addon Page
 await page.WaitFor("http.*/addon-selection");

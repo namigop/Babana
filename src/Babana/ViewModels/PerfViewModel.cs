@@ -1,24 +1,14 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
-using DynamicData;
-using LiveChartsCore;
-using LiveChartsCore.Kernel.Sketches;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using PlaywrightTest.Core;
 using PlaywrightTest.Models;
 using ReactiveUI;
-using SkiaSharp;
 
 namespace PlaywrightTest.ViewModels;
-
-public class PerfErrorsViewModel : ViewModelBase {
-}
 
 public class PerfViewModel : ViewModelBase {
     private readonly ScriptTabModel _scriptTabModel;
@@ -30,6 +20,7 @@ public class PerfViewModel : ViewModelBase {
     private PerfTraceRunData _runData;
 
     private int _virtualUsers = 1;
+    private PerfPageRequestRunData _runDataBrowser;
 
 
     public PerfViewModel(ScriptTabModel scriptTabModel) {
@@ -38,6 +29,7 @@ public class PerfViewModel : ViewModelBase {
         StopCommand = CreateCommand(OnStop);
         Errors = new ErrorViewModel();
         ReqRespTracer.Instance.Value.Traced += OnTraced;
+        PageTracer.Instance.Value.Traced += OnPageTraced;
         MessageHub.Sub += OnMesageReceived;
 
 
@@ -48,23 +40,12 @@ public class PerfViewModel : ViewModelBase {
 
         PerfResponsesViewModel = new PerfResponsesViewModel(PathTraces);
         PerfOverallViewModel = new PerfOverallViewModel(PathTraces);
+        BrowserTraceViewModel = new BrowserTraceViewModel();
     }
+
+    public BrowserTraceViewModel BrowserTraceViewModel { get; }
 
     public PerfResponsesViewModel PerfResponsesViewModel { get; }
-
-    private void OnMesageReceived(object? sender, Message msg) {
-        switch (msg.Content) {
-            case ScriptTimeoutMessage info:
-                Errors.Add(info.Error);
-                break;
-            case PerfStatusMessage info:
-                IsRunning = info.IsRunning;
-                if (!IsRunning)
-                    OnStopInternal();
-                break;
-            //throw new Exception("Unknown message");
-        }
-    }
 
     public PerfOverallViewModel PerfOverallViewModel { get; }
     public ErrorViewModel Errors { get; }
@@ -99,6 +80,24 @@ public class PerfViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _filter, value);
     }
 
+    private void OnPageTraced(object? sender, PerfPageRequestTraceData e) {
+        _runDataBrowser.Add(e);
+    }
+
+    private void OnMesageReceived(object? sender, Message msg) {
+        switch (msg.Content) {
+            case ScriptTimeoutMessage info:
+                Errors.Add(info.Error);
+                break;
+            case PerfStatusMessage info:
+                IsRunning = info.IsRunning;
+                if (!IsRunning)
+                    OnStopInternal();
+                break;
+            //throw new Exception("Unknown message");
+        }
+    }
+
 
     private void OnProcessPerfData(object? sender, EventArgs e) {
         string Format(double val) {
@@ -108,8 +107,11 @@ public class PerfViewModel : ViewModelBase {
         if (!IsRunning)
             return;
 
+        //Process browser data
+        BrowserTraceViewModel.Add(_runDataBrowser.TakeSnapshot());
+
         var snapshots = _runData.TakeSnapshot(_runData.VirtualUserCount);
-        Console.WriteLine($"");
+        Console.WriteLine("");
 
         foreach (var snap in snapshots) {
             var trace = PathTraces.FirstOrDefault(t => t.Title == snap.Path);
@@ -166,7 +168,7 @@ public class PerfViewModel : ViewModelBase {
         await OnStopInternal();
         await _perfRunner?.Stop();
 
-        MessageHub.Publish(new PerfStatusMessage() { IsRunning = false });
+        MessageHub.Publish(new PerfStatusMessage { IsRunning = false });
     }
 
     private async Task OnStopInternal() {
@@ -180,9 +182,10 @@ public class PerfViewModel : ViewModelBase {
         PathTraces.Clear();
         PerfOverallViewModel.AllSeries.Clear();
         _runData = new PerfTraceRunData();
+        _runDataBrowser = new PerfPageRequestRunData();
         PerfResponsesViewModel.RunData = _runData;
         PerfOverallViewModel.RunData = _runData;
-        MessageHub.Publish(new PerfStatusMessage() { IsRunning = true });
+        MessageHub.Publish(new PerfStatusMessage { IsRunning = true });
         _perfRunner = new PerfRunner(_runData, _durationSec, _rampupSec, _virtualUsers, _filter, _scriptTabModel);
         _timer.Start();
         await _perfRunner.Start();

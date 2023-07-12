@@ -171,10 +171,14 @@ public class ReqRespTracer {
         HttpStatusCode responseStatusCode,
         long swElapsedMilliseconds) {
         Dictionary<string, string> h = new();
-        foreach (var d in requestHeaders) h.Add(d.Key, string.Join(",", d.Value));
+        foreach (var d in requestHeaders) {
+            h.Add(d.Key, string.Join(",", d.Value));
+        }
 
         Dictionary<string, string> r = new();
-        foreach (var d in responseHeaders) r.Add(d.Key, string.Join(",", d.Value));
+        foreach (var d in responseHeaders) {
+            r.Add(d.Key, string.Join(",", d.Value));
+        }
 
         Trace(sourceUri, requestMethod, requestBody, respBody, h, r, (int)responseStatusCode, swElapsedMilliseconds);
     }

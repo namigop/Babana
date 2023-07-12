@@ -39,34 +39,36 @@ public class TestEnvironment {
     }
 
     private async void OnResponse(object? sender, IResponse resp) {
-        if (resp.Headers.TryGetValue("content-type", out var contentType)) {
-            var isJson = contentType.ToLower().Contains("/json") || contentType.ToLower().Contains("+json");
-            var isText = contentType.ToLower().Contains("/text") || contentType.ToLower().Contains("+text");
-            var isHtml = contentType.ToLower().Contains("/html");
-            var canTrace = isHtml || isJson || isText;
-            if (!canTrace)
-                return;
+        var req = resp.Request;
+        if (!resp.Headers.TryGetValue("content-type", out var contentType)) {
+            return;
         }
 
-        var uri = new Uri(resp.Request.Url);
-        var reqMethod = resp.Request.Method;
-        var reqBody = resp.Request.PostData ?? "";
+        var isJson = contentType.ToLower().Contains("/json") || contentType.ToLower().Contains("+json");
+        var isText = contentType.ToLower().Contains("/text") || contentType.ToLower().Contains("+text");
 
-        var respBody = "";
-        try {
-            respBody = resp.Status is >= 300 and < 400 ? "" : await resp.TextAsync();
-        }
-        catch (Exception exc) {
-            respBody = "";
+        if (isJson || isText) {
+            var uri = new Uri(resp.Request.Url);
+            var reqMethod = resp.Request.Method;
+            var reqBody = resp.Request.PostData ?? "";
+
+            var respBody = "";
+            try {
+                respBody = resp.Status is >= 300 and < 400 ? "" : await resp.TextAsync();
+            }
+            catch (Exception exc) {
+                respBody = "";
+            }
+
+            var elapsed = Convert.ToInt64(resp.Request.Timing.ResponseEnd);
+            ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, resp.Request.Headers, resp.Headers, resp.Status, elapsed);
+
+            if (resp.Status is >= 400 and < 600) {
+                await Task.Delay(1500); //wait 1 sec before taking a screenshot of the page to give it time to render
+                await ScriptFunctions.Screenshot(_page);
+            }
         }
 
-        var elapsed = Convert.ToInt64(resp.Request.Timing.ResponseEnd);
-        ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, resp.Request.Headers, resp.Headers, resp.Status, elapsed);
-
-        if (resp.Status is >= 400 and < 600) {
-            await Task.Delay(1500); //wait 1 sec before taking a screenshot of the page to give it time to render
-            await ScriptFunctions.Screenshot(_page);
-        }
     }
 
     public IPage CurrentPage => _page;
@@ -112,8 +114,30 @@ public class TestEnvironment {
         _page = await _browser.NewPageAsync();
         _page.Request += OnRequest;
         _page.Response += OnResponse;
+        _page.RequestFinished += OnRequestFinished;
+        _page.DOMContentLoaded += OnDOMLoaded;
+        //_page.Console += OnConsole;
+
         _page.SetViewportSizeAsync(setup.BrowserWidth2, setup.BrowserHeight2);
 
         return _page;
+    }
+
+    private void OnDOMLoaded(object? sender, IPage e) {
+
+    }
+
+    private async void OnRequestFinished(object? sender, IRequest req) {
+        if (req.ResourceType != "xhr") {
+           PageTracer.Instance.Value.Trace(req.Url, req.ResourceType, req.Timing);
+        }
+    }
+
+    private void OnLoad(object? sender, IPage e) {
+
+    }
+
+    private void OnConsole(object? sender, IConsoleMessage e) {
+       // Console.WriteLine(e.Text);
     }
 }

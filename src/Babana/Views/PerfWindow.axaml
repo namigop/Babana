@@ -28,7 +28,7 @@
                     </DockPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
-            <TabItem Header="Responses">
+            <TabItem Header="API Responses">
                 <Grid ColumnDefinitions="*, Auto, *">
                     <Grid Grid.Row="0" Grid.Column="0">
                         <!-- table -->
@@ -94,11 +94,23 @@
                     </Border>
                 </Grid>
             </TabItem>
+            <TabItem Header="Browser Page">
+                <Border CornerRadius="4" Background="White">
+                    <TreeDataGrid Source="{Binding BrowserTraceViewModel.PageTraceTree}" >
+                        <TreeDataGrid.Styles>
+                            <Style Selector="TreeDataGrid TreeDataGridRow:nth-child(2n)">
+                                <Setter Property="Background" Value="#F4F5F5" />
+                            </Style>
+                        </TreeDataGrid.Styles>
+                    </TreeDataGrid>
+                </Border>
+            </TabItem>
             <TabItem Header="Errors">
                 <Border CornerRadius="4" Background="White">
                     <TreeDataGrid Source="{Binding Errors.Tree}" />
                 </Border>
             </TabItem>
+
         </TabControl>
 
         <!-- Bottom controls -->

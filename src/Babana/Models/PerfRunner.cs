@@ -15,6 +15,7 @@ public class PerfRunner {
     private readonly ScriptTabModel _scriptTabModel;
     private Timer _stopTestTimer;
     private readonly List<PerfVirtualUser> _perfVirtualUsers;
+    private bool _canStart;
 
     public PerfRunner(PerfTraceRunData perfTraceRunData, int durationSec, int rampupSec, int virtualUsers, string filter, ScriptTabModel scriptTabModel) {
         _perfVirtualUsers = new List<PerfVirtualUser>();
@@ -30,6 +31,7 @@ public class PerfRunner {
             AutoReset = false
         };
 
+        _canStart = true;
         _stopTestTimer.Elapsed += OnTimerElapsed;
     }
 
@@ -55,6 +57,7 @@ public class PerfRunner {
             return;
         }
 
+        _canStart = true;
         Console.WriteLine("Starting performance test with the following parameters");
         Console.WriteLine($"Duration (sec) : {_durationSec}");
         Console.WriteLine($"  Rampup (sec) :{_rampupSec}");
@@ -68,6 +71,10 @@ public class PerfRunner {
         //create and start each virtual user
         _perfVirtualUsers.Clear();
         for (var i = 0; i < _virtualUsers; i++) {
+            if (!_canStart) {
+                break;
+            }
+
             var vu = new PerfVirtualUser(_scriptTabModel);
             _perfTraceRunData.VirtualUserCount += 1;
             _perfVirtualUsers.Add(vu);
@@ -78,6 +85,7 @@ public class PerfRunner {
     }
 
     public async Task Stop() {
+        _canStart = false;
         foreach (var v in _perfVirtualUsers)
             v.Stop();
     }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -22,6 +24,7 @@ public static class ScriptFunctions {
 
     public static async Task Refresh(this IPage? page, Cancel cancel = null) {
         cancel?.TryCancel();
+
         await page.ReloadAsync();
     }
 
@@ -40,7 +43,25 @@ public static class ScriptFunctions {
     public static async Task WaitFor(this IPage? page, string pattern, Cancel cancel = null) {
         cancel?.TryCancel();
         var regex = new Regex(pattern);
-        await page?.WaitForURLAsync(regex, new PageWaitForURLOptions() { Timeout = 60 * 1000 });
+        var sw = Stopwatch.StartNew();
+        await page?.WaitForURLAsync(
+            regex,
+            new PageWaitForURLOptions() {
+                WaitUntil = WaitUntilState.DOMContentLoaded ,
+                Timeout = 60 * 1000
+            });
+        sw.Stop();
+
+        PageTracer.Instance.Value.Trace(pattern, "document",
+            new RequestTimingResult() {
+                ConnectEnd = -1,
+                ConnectStart = -1,
+                DomainLookupStart = -1,
+                SecureConnectionStart = -1,
+                DomainLookupEnd = -1,
+                RequestStart = -1,
+                ResponseEnd = sw.ElapsedMilliseconds
+            });
     }
 
     #endregion

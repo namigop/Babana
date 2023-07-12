@@ -28,7 +28,7 @@ public class PerfResponsesViewModel : ViewModelBase {
         PathTracesTree = new HierarchicalTreeDataGridSource<PerfTraceViewModel>(pathTraces) {
             Columns = {
                 new HierarchicalExpanderColumn<PerfTraceViewModel>(
-                    new TextColumn<PerfTraceViewModel, string>("", x => x.Title),
+                    new TextColumn<PerfTraceViewModel, string>("", x => x.Title, new GridLength(400, GridUnitType.Pixel)),
                     x => x.Children,
                     x => x.HasChildren,
                     x => x.IsExpanded),
