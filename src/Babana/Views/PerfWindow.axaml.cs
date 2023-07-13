@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,8 +19,6 @@ public partial class PerfWindow : Window {
 #endif
     }
 
-    private void OnSelectionChanging(object? sender, CancelEventArgs e) {
-    }
 
     public PerfWindow() {
         InitializeComponent();
@@ -30,5 +29,11 @@ public partial class PerfWindow : Window {
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
+        //this.Closed += OnClosed
+    }
+
+    protected override void OnClosed(EventArgs e) {
+        base.OnClosed(e);
+        ((PerfViewModel)this.DataContext).Close();
     }
 }

@@ -7,7 +7,7 @@
 //modify these settings to match your screen resolution
 var BROWSER_HEIGHT = 880;
 var BROWSER_WIDTH = 1512;
-var HEADLESS = false;
+var HEADLESS = true;
 
 var r = new Random();
 var email = $"{System.IO.Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
@@ -106,7 +106,7 @@ await page.FindById(TEST_ID_PLANCARD)
           .FilterByText(page, plan)
           .FindButton()
           .Click();
-return;
+
 //await Sleep(1000);
 
 //2. Addon Page
@@ -114,6 +114,8 @@ await page.WaitFor("http.*/addon-selection");
 await page.FindButton()
           .FilterByText(page, NEXT)
           .Click();
+
+return;
 
 //3. Signup page
 await page.FindTextBox()

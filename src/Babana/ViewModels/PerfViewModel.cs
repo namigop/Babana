@@ -43,13 +43,20 @@ public class PerfViewModel : ViewModelBase {
         BrowserTraceViewModel = new BrowserTraceViewModel();
     }
 
+    public void Close() {
+        ReqRespTracer.Instance.Value.Traced -= OnTraced;
+        PageTracer.Instance.Value.Traced -= OnPageTraced;
+        MessageHub.Sub -= OnMesageReceived;
+        _timer.Tick -= OnProcessPerfData;
+        _perfRunner?.Close();
+    }
+
     public BrowserTraceViewModel BrowserTraceViewModel { get; }
 
     public PerfResponsesViewModel PerfResponsesViewModel { get; }
 
     public PerfOverallViewModel PerfOverallViewModel { get; }
     public ErrorViewModel Errors { get; }
-
 
     public bool IsRunning { get; set; }
 

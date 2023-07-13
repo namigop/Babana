@@ -35,6 +35,9 @@ public class PerfRunner {
         _stopTestTimer.Elapsed += OnTimerElapsed;
     }
 
+    public void Close() {
+        _stopTestTimer.Elapsed -= OnTimerElapsed;
+    }
     private void OnTimerElapsed(object? sender, ElapsedEventArgs e) {
         Stop();
     }
