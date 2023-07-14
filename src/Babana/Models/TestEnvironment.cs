@@ -60,7 +60,7 @@ public class TestEnvironment {
                 respBody = "";
             }
 
-            var elapsed = Convert.ToInt64(resp.Request.Timing.ResponseEnd);
+            var elapsed = Convert.ToInt64(resp.Request.Timing.ResponseStart);
             ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, resp.Request.Headers, resp.Headers, resp.Status, elapsed);
 
             if (resp.Status is >= 400 and < 600) {

@@ -11,10 +11,10 @@ var HEADLESS = false;
 var SLOMO_MSEC = 300;
 
 var r = new Random();
-var email = $"t{Environment.UserName}{r.Next(50, 1000)}@bar.com";
+var email = $"t{Environment.UserName}{r.Next(50, 100000)}@bar.com";
 var deliveryDate = "We/07/2023";
 var deliveryTime = "10:00 AM - 10:00 PM"; 
-var plan = "Get 200 SMS and 1000MB Data";
+var plan = "NR Bundle with rollover product";
 var cnic = getRandomCnic();
 var contactNumber = getRandomMobile("03");
 var nationality = "pakistani";
@@ -43,13 +43,13 @@ var kycStatus = "109";
 // ---------------------------------
 
 //--- Constants ------------------
-var CHECKOUT_URL = "https://scl-webfrontek.cxos.tech/web/pre-checkout?reset=true"; 
-var OTP_URL = "http://scl-notify.cxos.tech/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=10";
-var KYC_URL = "http://scl-kyc-bvs.cxos.tech/mno/conn/v1/kyc/notif";
-var LAAS_URL = "http://scl-logistics-singpost.cxos.tech/v1/internal/shipments?orderReference={{orderRef}}";
-var RIDER_URL = "http://scl-logistics-riders.cxos.tech/v1/internal/shipments/{{shipmentReference}}/refnum";
-var IMS_URL = "http://scl-inventory.cxos.tech/v2/internal/product-variant-identifiers?pviType=physicalSim&limit=10&page=1&status=available";
-var RIDER_NOTIF_URL = "http://scl-logistics-riders.cxos.tech/v1/external/notification";
+var CHECKOUT_URL = "https://qcl-webfrontek.cxos.tech/web/pre-checkout?reset=true"; 
+var OTP_URL = "http://qcl-notify.cxos.tech/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=10";
+var KYC_URL = "http://qcl-kyc-bvs.cxos.tech/mno/conn/v1/kyc/notif";
+var LAAS_URL = "http://qcl-logistics-singpost.cxos.tech/v1/internal/shipments?orderReference={{orderRef}}";
+var RIDER_URL = "http://qcl-logistics-riders.cxos.tech/v1/internal/shipments/{{shipmentReference}}/refnum";
+var IMS_URL = "http://qcl-inventory.cxos.tech/v2/internal/product-variant-identifiers?pviType=physicalSim&limit=10&page=1&status=available";
+var RIDER_NOTIF_URL = "http://qcl-logistics-riders.cxos.tech/v1/external/notification";
 
 var NEXT ="Next";
 var CONTINUE = "Continue";
@@ -100,12 +100,16 @@ var run = Setup()
 
 var page = await run.Begin(TestEnv);
 
+await Pause();
+
 //1. Checkout Page
 await page.Open(CHECKOUT_URL);
 await page.FindById(TEST_ID_PLANCARD)
           .FilterByText(page, plan)
           .FindButton()
           .Click();
+          
+return;
 
 await Sleep(1000);
 

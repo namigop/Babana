@@ -7,7 +7,7 @@
 //modify these settings to match your screen resolution
 var BROWSER_HEIGHT = 880;
 var BROWSER_WIDTH = 1512;
-var HEADLESS = true;
+var HEADLESS = false;
 
 var r = new Random();
 var email = $"{System.IO.Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
@@ -102,6 +102,8 @@ var page = await run.Begin(TestEnv);
 
 //1. Checkout Page
 await page.Open(CHECKOUT_URL);
+
+
 await page.FindById(TEST_ID_PLANCARD)
           .FilterByText(page, plan)
           .FindButton()
@@ -124,6 +126,7 @@ await page.FindButton()
           .FilterByText(page, CONTINUE)
           .Click();
 
+return;
 
 //4. OTP page
 await Sleep(300);

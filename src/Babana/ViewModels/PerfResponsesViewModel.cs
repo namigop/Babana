@@ -135,13 +135,14 @@ public class PerfResponsesViewModel : ViewModelBase {
         }
     }
 
+    private static object key = new object();
     public void UpdateBarSeries(int count) {
 
         var top = _pathTraces
             .Where(t => t.P90ResponseTime != "--")
             .OrderByDescending(t => Convert.ToDouble(t.P90ResponseTime)).Take(count).ToArray();
 
-        //remove ones that are no longer in the top 5
+        //remove ones that are no longer in the top {count}
         var seriesNames = BarSeries.Select(t => t.Name).ToArray();
         foreach (var title in seriesNames) {
             if (top.FirstOrDefault(x => x.Title == title) == null) {
@@ -149,39 +150,41 @@ public class PerfResponsesViewModel : ViewModelBase {
             }
         }
 
-        var pos = 0;
-        foreach (var s in top) {
-            var existing = BarSeries.FirstOrDefault(t => t.Name == s.Title);
-            if (existing == null) {
-                var r = new RowSeries<ObservableValue> {
-                    Values = new[] { new ObservableValue(Convert.ToDouble(s.P90ResponseTime)) },
-                    Tag = s.Title,
-                    Name = s.Title,
-                    Stroke = null,
-                    //MaxBarWidth = 25,
-                    Fill = new SolidColorPaint(DefaultChartColors.Colors[pos]),
-                    DataLabelsPaint = new SolidColorPaint(new SKColor(245, 245, 245)),
-                    DataLabelsSize = 11,
-                    //DataLabelsPaint = new SolidColorPaint(SKColors.DimGray),
-                    DataLabelsPosition = DataLabelsPosition.End,
-                    DataLabelsTranslate = new LvcPoint(-1, 0),
-                    DataLabelsFormatter = point => $"{point.Context.Series.Name} {point.PrimaryValue}"
-                };
-                this.BarSeries.Add(r);
-                pos++;
-            }
-            else {
-                existing.Values.First().Value = Convert.ToDouble(s.P90ResponseTime);
+        lock (key) {
+            var pos = BarSeries.Count == DefaultChartColors.Colors.Length ? 0 : BarSeries.Count;
+            foreach (var s in top) {
+                var existing = BarSeries.FirstOrDefault(t => t.Name == s.Title);
+                if (existing == null) {
+                    var r = new RowSeries<ObservableValue> {
+                        Values = new[] { new ObservableValue(Convert.ToDouble(s.P90ResponseTime)) },
+                        Tag = s.Title,
+                        Name = s.Title,
+                        Stroke = null,
+                        //MaxBarWidth = 25,
+                        Fill = new SolidColorPaint(DefaultChartColors.Colors[pos]),
+                        DataLabelsPaint = new SolidColorPaint(new SKColor(245, 245, 245)),
+                        DataLabelsSize = 11,
+                        //DataLabelsPaint = new SolidColorPaint(SKColors.DimGray),
+                        DataLabelsPosition = DataLabelsPosition.End,
+                        DataLabelsTranslate = new LvcPoint(-1, 0),
+                        DataLabelsFormatter = point => $"{point.Context.Series.Name} {point.PrimaryValue}"
+                    };
+                    this.BarSeries.Add(r);
+                    pos = pos < (DefaultChartColors.Colors.Length - 1) ? pos + 1 : 0;
+                }
+                else {
+                    existing.Values.First().Value = Convert.ToDouble(s.P90ResponseTime);
+                }
             }
         }
 
         //re-sort the bars
         var sorted = BarSeries.OrderByDescending(t => t.Values.First().Value).ToArray();
-        pos = 0;
+        var pos2 = 0;
         foreach (var s in sorted) {
             BarSeries.Remove(s);
-            BarSeries.Insert(pos, s);
-            pos += 1;
+            BarSeries.Insert(pos2, s);
+            pos2 += 1;
         }
     }
 }
