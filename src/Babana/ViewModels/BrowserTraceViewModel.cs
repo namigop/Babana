@@ -58,7 +58,7 @@ public class BrowserTraceViewModel : ViewModelBase {
         this.PageTraces.Add(BrowserPageTraceViewModel.From(perfPageRequestData));
     }
 
-    public void Add(List<PerfPageRequestPathData> pathData) {
+    public void Add(List<PerfPageRequestPathData> pathData, int topItemsCount) {
         foreach (var p in pathData) {
             var vm = PageTraces.FirstOrDefault(t => t.Name == p.Path);
             if (vm == null) {
@@ -69,6 +69,12 @@ public class BrowserTraceViewModel : ViewModelBase {
                 BrowserPageTraceViewModel.UpdateValues(p, vm);
                 //update the values
             }
+        }
+
+        int count = 0;
+        foreach (var t in PageTraces.OrderByDescending(t => t.Children.FirstOrDefault(x => x.Name == "P90").DurationMsec).ToArray()) {
+            t.IsVisible = count < topItemsCount;
+            count++;
         }
     }
 }

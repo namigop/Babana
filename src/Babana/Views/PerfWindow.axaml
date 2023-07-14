@@ -9,9 +9,11 @@
         Background="#071222"
         WindowState="Normal"
         TransparencyLevelHint="AcrylicBlur"
+        x:CompileBindings="True"
         Width="1024"
         Title="Perf test"
         Height="800"
+        x:DataType="vm:PerfViewModel"
         ExtendClientAreaToDecorationsHint="True">
 
     <Design.DataContext>
@@ -23,34 +25,42 @@
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <TextBlock Text="{Binding}" FontSize="14"
+                        <TextBlock Text="{Binding}" x:CompileBindings="False" FontSize="14"
                                    Foreground="LightGray" FontWeight="Normal" VerticalAlignment="Center" />
                     </DockPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabItem Header="API Responses">
-                <Grid ColumnDefinitions="*, Auto, *">
-                    <Grid Grid.Row="0" Grid.Column="0">
+                <Grid>
+                    <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="*, Auto, *" RowDefinitions="*, Auto, *">
+
                         <!-- table -->
-                        <Border CornerRadius="4" Background="White">
-                            <TreeDataGrid x:Name="TraceTree" Source="{Binding PerfResponsesViewModel.PathTracesTree}">
+                        <Border CornerRadius="4" Background="White" Grid.Row="2" Grid.Column="0">
+                            <TreeDataGrid x:Name="ApiTree" Source="{Binding PerfResponsesViewModel.PathTracesTree}" x:DataType="vm:PerfViewModel">
                                 <TreeDataGrid.Styles>
                                     <Style Selector="TreeDataGrid TreeDataGridRow:nth-child(2n)">
                                         <Setter Property="Background" Value="WhiteSmoke" />
                                     </Style>
+                                    <Style Selector="TreeDataGrid TreeDataGridColumnHeader">
+                                        <Setter Property="TextBlock.FontWeight" Value="Light" />
+                                        <Setter Property="FontSize" Value="16"></Setter>
+                                        <Setter Property="Background" Value="WhiteSmoke"></Setter>
+                                    </Style>
+
                                 </TreeDataGrid.Styles>
 
                             </TreeDataGrid>
                         </Border>
-                    </Grid>
-                    <GridSplitter Grid.Column="1" Width="8" Background="Transparent" />
-                    <Grid Grid.Row="0" Grid.Column="2" RowDefinitions="*, Auto, *">
-                        <!-- Graph -->
-                        <Border Grid.Row="0" CornerRadius="4" Background="White">
+                        <GridSplitter Grid.Row="2" Grid.Column="1" Width="8"
+                                      Background="Transparent"
+                                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        </GridSplitter>
+                        <Border Grid.Row="2" Grid.Column="2" CornerRadius="4" Background="White">
                             <Grid>
-                                <lvc:CartesianChart Series="{Binding PerfResponsesViewModel.Series}"
-                                                    YAxes="{Binding PerfResponsesViewModel.YAxes}" />
-                                <TextBlock Text="{Binding PerfResponsesViewModel.SelectedTracePath}"
+                                <lvc:CartesianChart Grid.Row="1" Series="{Binding PerfResponsesViewModel.BarSeries}"
+                                                    YAxes="{Binding PerfResponsesViewModel.BarYAxes}"
+                                                    XAxes="{Binding PerfResponsesViewModel.BarXAxes}" />
+                                <TextBlock Text="Slowest Response Times (p90)"
                                            FontSize="16"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Top"
@@ -59,47 +69,33 @@
                                 </TextBlock>
                             </Grid>
                         </Border>
-                        <GridSplitter Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"
-                                      Background="Transparent">
-                        </GridSplitter>
+                        <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter>
+                        <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                            <Border CornerRadius="4" Background="White">
+                                <lvc:CartesianChart ZoomMode="X"
+                                                    YAxes="{Binding PerfOverallViewModel.YAxes}"
+                                                    Grid.Row="1" Series="{Binding PerfOverallViewModel.AllSeries}"
+                                                    XAxes="{Binding PerfOverallViewModel.XAxes}" />
 
-                        <Border Grid.Row="2" CornerRadius="4" Background="White">
-                            <Grid>
-                                <lvc:CartesianChart Grid.Row="1" Series="{Binding PerfResponsesViewModel.BarSeries}"
-                                                    YAxes="{Binding PerfResponsesViewModel.BarYAxes}"
-                                                    XAxes="{Binding PerfResponsesViewModel.BarXAxes}" />
-                                <TextBlock Text="Top 5 Slowest Response Times (p90)"
-                                           FontSize="16"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Top"
-                                           Margin="0 10 0 0"
-                                           Foreground="DimGray"
-                                ></TextBlock>
-                            </Grid>
-                        </Border>
+
+                            </Border>
+                        </Grid>
                     </Grid>
                 </Grid>
 
             </TabItem>
-            <TabItem Header="Overall">
-                <Grid Grid.Row="2" Grid.ColumnSpan="3">
-                    <!-- overall chart -->
-                    <Border CornerRadius="4" Background="White">
-                        <lvc:CartesianChart ZoomMode="X"
-                                            YAxes="{Binding PerfOverallViewModel.YAxes}"
-                                            Grid.Row="1" Series="{Binding PerfOverallViewModel.AllSeries}"
-                                            XAxes="{Binding PerfOverallViewModel.XAxes}" />
 
-
-                    </Border>
-                </Grid>
-            </TabItem>
             <TabItem Header="Browser Page">
                 <Border CornerRadius="4" Background="White">
-                    <TreeDataGrid Source="{Binding BrowserTraceViewModel.PageTraceTree}" >
+                    <TreeDataGrid x:Name="BrowserTree" Source="{Binding BrowserTraceViewModel.PageTraceTree}">
                         <TreeDataGrid.Styles>
                             <Style Selector="TreeDataGrid TreeDataGridRow:nth-child(2n)">
                                 <Setter Property="Background" Value="#F4F5F5" />
+                            </Style>
+                            <Style Selector="TreeDataGrid TreeDataGridColumnHeader">
+                                <Setter Property="TextBlock.FontWeight" Value="Normal" />
+                                <Setter Property="FontSize" Value="16"></Setter>
+                                <Setter Property="Background" Value="WhiteSmoke"></Setter>
                             </Style>
                         </TreeDataGrid.Styles>
                     </TreeDataGrid>
@@ -112,6 +108,12 @@
             </TabItem>
 
         </TabControl>
+
+        <!-- will show at upper right corner -->
+        <StackPanel Orientation="Horizontal" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="4 4 14 4">
+            <TextBlock Text="Show top" VerticalAlignment="Center" Foreground="LightGray"></TextBlock>
+            <NumericUpDown Margin="6 0 0 0" Foreground="LightGray" Width="140" VerticalAlignment="Center" Value="{Binding TopItemsCount}" Minimum="1" Maximum="50"></NumericUpDown>
+        </StackPanel>
 
         <!-- Bottom controls -->
         <Grid Grid.Row="1" Margin="0 10 0 10">

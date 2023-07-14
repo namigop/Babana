@@ -14,10 +14,17 @@ public class PerfTraceViewModel : ViewModelBase {
     private string _throughput;
     private bool _isExpanded;
     private string _host;
+    private bool _isVisible;
 
     public PerfTraceViewModel(bool isPath) {
         _isPath = isPath;
         _isExpanded = false;
+        _isVisible = false;
+    }
+
+    public bool IsVisible {
+        get => _isVisible;
+        set => this.RaiseAndSetIfChanged(ref _isVisible ,value);
     }
 
     public bool IsPath => _isPath;

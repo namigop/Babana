@@ -5,6 +5,7 @@ using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using PlaywrightTest.Models;
+using SkiaSharp;
 
 namespace PlaywrightTest.ViewModels;
 
@@ -38,15 +39,21 @@ public class PerfOverallViewModel : ViewModelBase {
         }
     };
 
-    public void UpdateOverallChart() {
+    public void UpdateOverallChart(string[] traces) {
         //build the overall chart
+
         foreach (var vm in _pathTraces) {
             var tag = $"{vm.Host}/{vm.Title}";
             var series = AllSeries.FirstOrDefault(s => s.Tag.ToString() == tag);
+
             if (series == null) {
                 series = CreateLineSeries(tag, AllSeries.Count);
                 AllSeries.Add(series);
+                series.IsVisible = true;
             }
+
+            vm.IsVisible = traces.Contains(tag);
+            series.IsVisible = vm.IsVisible;
 
             var tracePoints = RunData.Traces.FirstOrDefault(t => t.Path == vm.Title).GetTimestampedTraceData();
             var colxn = (ObservableCollection<TimeSpanPoint>)series.Values;
@@ -57,6 +64,7 @@ public class PerfOverallViewModel : ViewModelBase {
                     colxn.Add(new TimeSpanPoint(timeSpan, elapsedMsec));
                 }
         }
+
     }
 
     private LineSeries<TimeSpanPoint> CreateLineSeries(string tag, int index) {
@@ -64,7 +72,7 @@ public class PerfOverallViewModel : ViewModelBase {
         return new LineSeries<TimeSpanPoint> {
             Tag = tag,
             Name = tag,
-            Fill = null,
+            Fill = new SolidColorPaint(DefaultChartColors.Colors[pos].WithAlpha(50)),
             GeometrySize = 4,
             Values = new ObservableCollection<TimeSpanPoint>(),
             Stroke = new SolidColorPaint(DefaultChartColors.Colors[pos], 1.5f),

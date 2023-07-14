@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.CodeAnalysis.CSharp;
+using PlaywrightTest.Core;
 
 namespace PlaywrightTest.Models;
 
@@ -91,5 +92,7 @@ public class PerfRunner {
         _canStart = false;
         foreach (var v in _perfVirtualUsers)
             v.Stop();
+
+        MessageHub.Publish(new PerfStatusMessage(){ IsRunning = false});
     }
 }

@@ -115,7 +115,7 @@ await page.FindButton()
           .FilterByText(page, NEXT)
           .Click();
 
-return;
+
 
 //3. Signup page
 await page.FindTextBox()
@@ -145,6 +145,8 @@ await page.FindById("number-select-button").First.Click();
 await page.FindButton()
           .FilterByText(page, NEXT)
           .Click();
+
+return;
 
 //6. Personal Details page
 await page.WaitFor("http.*web/personal-details", CancelToken);

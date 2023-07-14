@@ -135,9 +135,8 @@ public class PerfResponsesViewModel : ViewModelBase {
         }
     }
 
-    public void UpdateBarSeries() {
+    public void UpdateBarSeries(int count) {
 
-        var count = _pathTraces.Count >= 5 ? 5 : _pathTraces.Count;
         var top = _pathTraces
             .Where(t => t.P90ResponseTime != "--")
             .OrderByDescending(t => Convert.ToDouble(t.P90ResponseTime)).Take(count).ToArray();
@@ -150,6 +149,7 @@ public class PerfResponsesViewModel : ViewModelBase {
             }
         }
 
+        var pos = 0;
         foreach (var s in top) {
             var existing = BarSeries.FirstOrDefault(t => t.Name == s.Title);
             if (existing == null) {
@@ -159,6 +159,7 @@ public class PerfResponsesViewModel : ViewModelBase {
                     Name = s.Title,
                     Stroke = null,
                     //MaxBarWidth = 25,
+                    Fill = new SolidColorPaint(DefaultChartColors.Colors[pos]),
                     DataLabelsPaint = new SolidColorPaint(new SKColor(245, 245, 245)),
                     DataLabelsSize = 11,
                     //DataLabelsPaint = new SolidColorPaint(SKColors.DimGray),
@@ -167,6 +168,7 @@ public class PerfResponsesViewModel : ViewModelBase {
                     DataLabelsFormatter = point => $"{point.Context.Series.Name} {point.PrimaryValue}"
                 };
                 this.BarSeries.Add(r);
+                pos++;
             }
             else {
                 existing.Values.First().Value = Convert.ToDouble(s.P90ResponseTime);
@@ -175,8 +177,7 @@ public class PerfResponsesViewModel : ViewModelBase {
 
         //re-sort the bars
         var sorted = BarSeries.OrderByDescending(t => t.Values.First().Value).ToArray();
-        //BarSeries.Clear();
-        int pos = 0;
+        pos = 0;
         foreach (var s in sorted) {
             BarSeries.Remove(s);
             BarSeries.Insert(pos, s);

@@ -72,6 +72,8 @@ public class BrowserPageTraceViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _isExpanded, value);
     }
 
+    public bool IsVisible { get; set; }
+
     public static BrowserPageTraceViewModel From(PerfPageRequestTraceData data) {
         return new BrowserPageTraceViewModel() {
             Name = data.Url,

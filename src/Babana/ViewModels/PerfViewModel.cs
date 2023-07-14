@@ -12,6 +12,8 @@ namespace PlaywrightTest.ViewModels;
 
 public class PerfViewModel : ViewModelBase {
     private readonly ScriptTabModel _scriptTabModel;
+    private readonly Action _updateRowVisibilityBrowser;
+    private readonly Action _updateRowVisibilityApi;
     private readonly DispatcherTimer _timer;
     private int _durationSec = 60;
     private string _filter = "qpkvc";
@@ -21,10 +23,13 @@ public class PerfViewModel : ViewModelBase {
 
     private int _virtualUsers = 1;
     private PerfPageRequestRunData _runDataBrowser;
+    private int _topItemsCount = 10;
 
 
-    public PerfViewModel(ScriptTabModel scriptTabModel) {
+    public PerfViewModel(ScriptTabModel scriptTabModel, Action updateRowVisibilityBrowser, Action updateRowVisibilityApi) {
         _scriptTabModel = scriptTabModel;
+        _updateRowVisibilityBrowser = updateRowVisibilityBrowser;
+        _updateRowVisibilityApi = updateRowVisibilityApi;
         StartCommand = CreateCommand(OnStart);
         StopCommand = CreateCommand(OnStop);
         Errors = new ErrorViewModel();
@@ -42,6 +47,7 @@ public class PerfViewModel : ViewModelBase {
         PerfOverallViewModel = new PerfOverallViewModel(PathTraces);
         BrowserTraceViewModel = new BrowserTraceViewModel();
     }
+
 
     public void Close() {
         ReqRespTracer.Instance.Value.Traced -= OnTraced;
@@ -87,6 +93,16 @@ public class PerfViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _filter, value);
     }
 
+    public int TopItemsCount {
+        get => _topItemsCount;
+        set {
+            this.RaiseAndSetIfChanged(ref _topItemsCount, value);
+            if (!IsRunning) {
+                UpdateChartsAndTables();
+            }
+        }
+    }
+
     private void OnPageTraced(object? sender, PerfPageRequestTraceData e) {
         _runDataBrowser.Add(e);
     }
@@ -115,7 +131,7 @@ public class PerfViewModel : ViewModelBase {
             return;
 
         //Process browser data
-        BrowserTraceViewModel.Add(_runDataBrowser.TakeSnapshot());
+        BrowserTraceViewModel.Add(_runDataBrowser.TakeSnapshot(), TopItemsCount);
 
         var snapshots = _runData.TakeSnapshot(_runData.VirtualUserCount);
         Console.WriteLine("");
@@ -147,9 +163,22 @@ public class PerfViewModel : ViewModelBase {
             }
         }
 
-        PerfResponsesViewModel.UpdateChartOfSelectedPath();
-        PerfResponsesViewModel.UpdateBarSeries();
-        PerfOverallViewModel.UpdateOverallChart();
+       UpdateChartsAndTables();
+    }
+
+    private void UpdateChartsAndTables() {
+        //top slowest APIs
+        var top = PathTraces
+            .Where(t => t.P90ResponseTime != "--")
+            .OrderByDescending(t => Convert.ToDouble(t.P90ResponseTime)).Take(TopItemsCount)
+            .Select(vm =>  $"{vm.Host}/{vm.Title}")
+            .ToArray();
+
+        PerfResponsesViewModel.UpdateBarSeries(TopItemsCount);
+        PerfOverallViewModel.UpdateOverallChart(top);
+
+        _updateRowVisibilityApi();
+        _updateRowVisibilityBrowser();
     }
 
 
