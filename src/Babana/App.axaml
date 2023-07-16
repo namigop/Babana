@@ -1,11 +1,16 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:PlaywrightTest"
+             xmlns:views="clr-namespace:Babana.Views"
              Name="Babana"
              x:Class="PlaywrightTest.App">
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
+    <Application.Resources>
+        <views:MsecConverter x:Key="MsecConverter" />
+        <views:RoundingConverter x:Key="RoundingConverter" />
+    </Application.Resources>
     <NativeMenu.Menu>
         <NativeMenu>
             <NativeMenuItem Header="About BeeRock" Click="AboutMenuItem_OnClick" />

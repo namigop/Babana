@@ -14,4 +14,5 @@ public class ScriptTimeoutMessage : IMessageContent {
 
 public class PerfStatusMessage : IMessageContent {
     public bool IsRunning { get; set; }
+    public int CurrentVirtualUsers { get; set; }
 }

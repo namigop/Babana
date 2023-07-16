@@ -7,11 +7,11 @@
 //modify these settings to match your screen resolution
 var BROWSER_HEIGHT = 880;
 var BROWSER_WIDTH = 1512;
-var HEADLESS = false;
+var HEADLESS = true;
 
 var r = new Random();
 var email = $"{System.IO.Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
-var deliveryDate = "14/12/2023";
+var deliveryDate = "`16/01/2024";
 var deliveryTime = "4:30 PM - 11:59 PM"; 
 var plan = "New Addon 12";
 var kycStatus = "109"; //Ok = 109, Failed = 110
@@ -109,6 +109,7 @@ await page.FindById(TEST_ID_PLANCARD)
           .FindButton()
           .Click();
 
+
 //await Sleep(1000);
 
 //2. Addon Page
@@ -117,6 +118,7 @@ await page.FindButton()
           .FilterByText(page, NEXT)
           .Click();
 
+return;
 
 
 //3. Signup page
@@ -125,8 +127,6 @@ await page.FindTextBox()
 await page.FindButton()
           .FilterByText(page, CONTINUE)
           .Click();
-
-return;
 
 //4. OTP page
 await Sleep(300);
@@ -148,8 +148,6 @@ await page.FindById("number-select-button").First.Click();
 await page.FindButton()
           .FilterByText(page, NEXT)
           .Click();
-
-return;
 
 //6. Personal Details page
 await page.WaitFor("http.*web/personal-details", CancelToken);

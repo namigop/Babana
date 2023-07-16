@@ -15,7 +15,9 @@ public class BrowserTraceViewModel : ViewModelBase {
         PageTraceTree = new HierarchicalTreeDataGridSource<BrowserPageTraceViewModel>(PageTraces) {
             Columns = {
                 new HierarchicalExpanderColumn<BrowserPageTraceViewModel>(
-                    new TextColumn<BrowserPageTraceViewModel, string>("Url", x => x.Name, new GridLength(400, GridUnitType.Pixel)),
+                    new TemplateColumn<BrowserPageTraceViewModel>("Url",
+                        "UrlTemplate",
+                        new GridLength(400, GridUnitType.Pixel)),
                     x => x.Children,
                     x => x.HasChildren,
                     x => x.IsExpanded
@@ -24,39 +26,41 @@ public class BrowserTraceViewModel : ViewModelBase {
                 //  "Url",
                 //  x => x.Url,
                 //  new GridLength(400, GridUnitType.Pixel)),
-                new TextColumn<BrowserPageTraceViewModel, string>(
+                new TemplateColumn<BrowserPageTraceViewModel>(
                     "Type",
-                    x => x.ResourceType),
-                new TextColumn<BrowserPageTraceViewModel, float>(
-                    "Duration (msec)",
-                    x => x.DurationMsec),
-                new TextColumn<BrowserPageTraceViewModel, float>(
-                    "Dns Lookup (msec)",
-                    x => x.DnsLookupMsec),
-                new TextColumn<BrowserPageTraceViewModel, float>(
-                    "Tcp Handshake (msec)",
-                    x => x.TcpHandshakeMsec),
-                new TextColumn<BrowserPageTraceViewModel, float>(
-                    "TLS Negotiation (msec)",
-                    x => x.TlsNegotiationMsec
+                    "ResourceTypeTemplate"),
+                new TemplateColumn<BrowserPageTraceViewModel>(
+                    "Duration",
+                    "DurationTemplate",
+                    new GridLength(1, GridUnitType.Auto),
+                    new TextColumnOptions<BrowserPageTraceViewModel> {
+                        CompareAscending = BrowserPageTraceViewModel.SortDurationAscending,
+                        CompareDescending = BrowserPageTraceViewModel.SortDurationDescending
+                    }),
+                new TemplateColumn<BrowserPageTraceViewModel>(
+                    "Dns Lookup",
+                    "DnsLookupTemplate",
+                    new GridLength(1, GridUnitType.Auto)),
+                new TemplateColumn<BrowserPageTraceViewModel>(
+                    "Tcp Handshake",
+                    "TcpHandshakeTemplate"),
+                new TemplateColumn<BrowserPageTraceViewModel>(
+                    "TLS Negotiation",
+                    "TlsNegotiationTemplate"
                 ),
-                new TextColumn<BrowserPageTraceViewModel, float>(
-                    "Request (msec)",
-                    x => x.RequestTimeMsec
+                new TemplateColumn<BrowserPageTraceViewModel>(
+                    "Request",
+                    "RequestTimeTemplate"
                 ),
-                new TextColumn<BrowserPageTraceViewModel, float>(
-                    "Response (msec)",
-                    x => x.ResponseTimeMsec
+                new TemplateColumn<BrowserPageTraceViewModel>(
+                    "Response",
+                    "ResponseTimeTemplate"
                 )
             }
         };
     }
 
     public HierarchicalTreeDataGridSource<BrowserPageTraceViewModel> PageTraceTree { get; set; }
-
-    public void Add(PerfPageRequestTraceData perfPageRequestData) {
-        this.PageTraces.Add(BrowserPageTraceViewModel.From(perfPageRequestData));
-    }
 
     public void Add(List<PerfPageRequestPathData> pathData, int topItemsCount) {
         foreach (var p in pathData) {
@@ -76,5 +80,9 @@ public class BrowserTraceViewModel : ViewModelBase {
             t.IsVisible = count < topItemsCount;
             count++;
         }
+    }
+
+    public void Clear() {
+        PageTraces.Clear();
     }
 }

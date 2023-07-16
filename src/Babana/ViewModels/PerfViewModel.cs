@@ -24,6 +24,8 @@ public class PerfViewModel : ViewModelBase {
     private int _virtualUsers = 1;
     private PerfPageRequestRunData _runDataBrowser;
     private int _topItemsCount = 10;
+    private bool _isRunning;
+    private int _currentVirtualUsers;
 
 
     public PerfViewModel(ScriptTabModel scriptTabModel, Action updateRowVisibilityBrowser, Action updateRowVisibilityApi) {
@@ -64,7 +66,10 @@ public class PerfViewModel : ViewModelBase {
     public PerfOverallViewModel PerfOverallViewModel { get; }
     public ErrorViewModel Errors { get; }
 
-    public bool IsRunning { get; set; }
+    public bool IsRunning {
+        get => _isRunning;
+        set => this.RaiseAndSetIfChanged(ref _isRunning, value);
+    }
 
     public ObservableCollection<PerfTraceViewModel> PathTraces { get; } = new();
 
@@ -103,6 +108,11 @@ public class PerfViewModel : ViewModelBase {
         }
     }
 
+    public int CurrentVirtualUsers {
+        get => _currentVirtualUsers;
+        set => this.RaiseAndSetIfChanged(ref _currentVirtualUsers, value);
+    }
+
     private void OnPageTraced(object? sender, PerfPageRequestTraceData e) {
         _runDataBrowser.Add(e);
     }
@@ -114,6 +124,7 @@ public class PerfViewModel : ViewModelBase {
                 break;
             case PerfStatusMessage info:
                 IsRunning = info.IsRunning;
+                CurrentVirtualUsers = info.CurrentVirtualUsers;
                 if (!IsRunning)
                     OnStopInternal();
                 break;
@@ -123,10 +134,6 @@ public class PerfViewModel : ViewModelBase {
 
 
     private void OnProcessPerfData(object? sender, EventArgs e) {
-        string Format(double val) {
-            return val <= 0 ? "--" : $"{val:0.0}";
-        }
-
         if (!IsRunning)
             return;
 
@@ -144,10 +151,10 @@ public class PerfViewModel : ViewModelBase {
             }
 
             trace.Host = snap.Host;
-            trace.Throughput = Format(snap.Throughput);
+            trace.Throughput = snap.Throughput;
             trace.Title = snap.Path;
-            trace.AverageResponseTime = Format(snap.AveRespTime);
-            trace.P90ResponseTime = Format(snap.P90RespTime);
+            trace.AverageResponseTime = snap.AveRespTime;
+            trace.P90ResponseTime = snap.P90RespTime;
 
             foreach (var item in snap.Items) {
                 var title = $"#Users : {item.VirtualUserCount}";
@@ -157,25 +164,25 @@ public class PerfViewModel : ViewModelBase {
                     trace.Children.Add(traceItem);
                 }
 
-                traceItem.Throughput = Format(item.Throughput);
-                traceItem.AverageResponseTime = Format(item.AveRespTime);
-                traceItem.P90ResponseTime = Format(item.P90RespTime);
+                traceItem.Throughput = item.Throughput;
+                traceItem.AverageResponseTime = item.AveRespTime;
+                traceItem.P90ResponseTime = item.P90RespTime;
             }
         }
 
-       UpdateChartsAndTables();
+        UpdateChartsAndTables();
     }
 
     private void UpdateChartsAndTables() {
         //top slowest APIs
         var top = PathTraces
-            .Where(t => t.P90ResponseTime != "--")
-            .OrderByDescending(t => Convert.ToDouble(t.P90ResponseTime)).Take(TopItemsCount)
-            .Select(vm =>  $"{vm.Host}/{vm.Title}")
+            .OrderByDescending(t => t.P90ResponseTime)
+            .Take(TopItemsCount)
+            .Select(vm => $"{vm.Host}/{vm.Title}")
             .ToArray();
 
-        PerfResponsesViewModel.UpdateBarSeries(TopItemsCount);
         PerfOverallViewModel.UpdateOverallChart(top);
+        PerfResponsesViewModel.UpdateBarSeries(TopItemsCount);
 
         _updateRowVisibilityApi();
         _updateRowVisibilityBrowser();
@@ -217,6 +224,7 @@ public class PerfViewModel : ViewModelBase {
         Errors.Clear();
         PathTraces.Clear();
         PerfOverallViewModel.AllSeries.Clear();
+        BrowserTraceViewModel.Clear();
         _runData = new PerfTraceRunData();
         _runDataBrowser = new PerfPageRequestRunData();
         PerfResponsesViewModel.RunData = _runData;

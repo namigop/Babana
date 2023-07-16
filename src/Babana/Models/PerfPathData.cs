@@ -8,9 +8,9 @@ namespace PlaywrightTest.Models;
 public class PerfPathData {
     public string Path { get; }
     private readonly List<PerfTraceData> _traces;
-    private double _aveRespTime;
-    private double _throughput;
-    private double _p90RespTime; //todo
+    private float _aveRespTime;
+    private float _throughput;
+    private float _p90RespTime;
 
     private readonly DateTime _startTime;
 
@@ -20,8 +20,8 @@ public class PerfPathData {
         Path = path;
         Host = host;
         _traces = new List<PerfTraceData>();
-        _aveRespTime = 0.0;
-        _throughput = 0.0;
+        _aveRespTime = 0.0f;
+        _throughput = 0.0f;
         _startTime = startTime;
         _snapshot = new PathTraceSnapshot() { Path = path, Host = host };
     }
@@ -35,7 +35,7 @@ public class PerfPathData {
 
         var span = (DateTime.Now - _startTime).TotalSeconds;
         _aveRespTime = newTotalTime / _traces.Count;
-        _throughput = _traces.Count * 1.0 / span;
+        _throughput = Convert.ToSingle( _traces.Count * 1.0 / span);
     }
 
     private static uint CalculatePercentile(uint[] points, int percentile) {

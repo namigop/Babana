@@ -160,4 +160,12 @@ public class BrowserPageTraceViewModel : ViewModelBase {
             Name = data.Name, //Duration/ResponseTime etc.
         };
     }
+
+    public static int SortDurationAscending(BrowserPageTraceViewModel? x, BrowserPageTraceViewModel? y) {
+        return x.DurationMsec.CompareTo(y.DurationMsec);
+    }
+
+    public static int SortDurationDescending(BrowserPageTraceViewModel? x, BrowserPageTraceViewModel? y) {
+        return y.DurationMsec.CompareTo(x.DurationMsec);
+    }
 }

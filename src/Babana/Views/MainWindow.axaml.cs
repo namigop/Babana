@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Diagnostics;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Highlighting;
@@ -28,7 +29,7 @@ public partial class MainWindow : Window {
 #if DEBUG
         this.AttachDevTools(new DevToolsOptions());
 #endif
-        MessageHub.Sub += (sender, arg) => { LogEditor.ScrollToEnd(); };
+        MessageHub.Sub += (_, _) => { Dispatcher.UIThread.Post(LogEditor.ScrollToEnd); };
         if (Util.IsWindows()) ExtendClientAreaToDecorationsHint = false;
     }
 

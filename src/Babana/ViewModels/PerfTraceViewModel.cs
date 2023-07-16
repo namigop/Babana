@@ -9,12 +9,14 @@ namespace PlaywrightTest.ViewModels;
 public class PerfTraceViewModel : ViewModelBase {
     private readonly bool _isPath;
     private string _title;
-    private string _averageResponseTime;
-    private string _p90ResponseTime;
-    private string _throughput;
+    private float _averageResponseTime;
+    private float _p90ResponseTime;
+    private float _throughput;
     private bool _isExpanded;
     private string _host;
     private bool _isVisible;
+    private int _p90ProgressValue;
+    private string _p90Background;
 
     public PerfTraceViewModel(bool isPath) {
         _isPath = isPath;
@@ -48,60 +50,51 @@ public class PerfTraceViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _title, value);
     }
 
-    public string AverageResponseTime {
+    public float AverageResponseTime {
         get => _averageResponseTime;
         set => this.RaiseAndSetIfChanged(ref _averageResponseTime, value);
     }
 
-    public string P90ResponseTime {
+    public float P90ResponseTime {
         get => _p90ResponseTime;
         set => this.RaiseAndSetIfChanged(ref _p90ResponseTime, value);
     }
 
-    public string Throughput {
+    public float Throughput {
         get => _throughput;
         set => this.RaiseAndSetIfChanged(ref _throughput, value);
     }
-    public static int SortP90Ascending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
-        double ToDouble(string v) {
-            return v == "--" ? 0 : Convert.ToDouble(v);
-        }
 
-        return ToDouble(x.P90ResponseTime).CompareTo(ToDouble(y.P90ResponseTime));
+    public int P90ProgressValue {
+        get => _p90ProgressValue;
+        set => this.RaiseAndSetIfChanged(ref _p90ProgressValue , value);
+    }
+
+    public string P90Background {
+        get => _p90Background;
+        set => this.RaiseAndSetIfChanged(ref _p90Background, value);
+    }
+
+    public static int SortP90Ascending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
+        return x.P90ResponseTime.CompareTo(y.P90ResponseTime);
     }
 
     public static int SortP90Descending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
-        double ToDouble(string v) {
-            return v == "--" ? 0 : Convert.ToDouble(v);
-        }
-
-        return ToDouble(y.P90ResponseTime)
-            .CompareTo(ToDouble(x.P90ResponseTime));
+        return y.P90ResponseTime.CompareTo(x.P90ResponseTime);
     }
     public static int SortAveAscending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
-        double ToDouble(string v) {
-            return v == "--" ? 0 : Convert.ToDouble(v);
-        }
-
-        return ToDouble(x.AverageResponseTime).CompareTo(ToDouble(y.AverageResponseTime));
+        return x.AverageResponseTime.CompareTo(y.AverageResponseTime);
     }
 
     public static int SortAveDescending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
-        double ToDouble(string v) {
-            return v == "--" ? 0 : Convert.ToDouble(v);
-        }
-
-        return ToDouble(y.AverageResponseTime)
-            .CompareTo(ToDouble(x.AverageResponseTime));
+        return y.AverageResponseTime.CompareTo(x.AverageResponseTime);
     }
 
     public static int SortThroughputAscending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
-        return Convert.ToDouble(x.Throughput)
-            .CompareTo(Convert.ToDouble(y.Throughput));
+        return x.Throughput.CompareTo(y.Throughput);
     }
 
     public static int SortThroughputDescending(PerfTraceViewModel? x, PerfTraceViewModel? y) {
-        return Convert.ToDouble(y.Throughput)
-            .CompareTo(Convert.ToDouble(x.Throughput));
+        return y.Throughput.CompareTo(x.Throughput);
     }
 }

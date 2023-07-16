@@ -84,15 +84,18 @@ public class PerfRunner {
             _perfVirtualUsers.Add(vu);
 
             vu.Start();
+            MessageHub.Publish(new PerfStatusMessage(){ IsRunning = true, CurrentVirtualUsers = _perfVirtualUsers.Count});
             await Task.Delay(_rampupSec * 1000);
         }
     }
 
     public async Task Stop() {
         _canStart = false;
+        MessageHub.Publish(new PerfStatusMessage(){ IsRunning = false});
         foreach (var v in _perfVirtualUsers)
             v.Stop();
 
-        MessageHub.Publish(new PerfStatusMessage(){ IsRunning = false});
+        MessageHub.Publish(new PerfStatusMessage(){ IsRunning = false, CurrentVirtualUsers = 0});
+
     }
 }

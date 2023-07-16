@@ -100,7 +100,7 @@ var run = Setup()
 
 var page = await run.Begin(TestEnv);
 
-await Pause();
+
 
 //1. Checkout Page
 await page.Open(CHECKOUT_URL);

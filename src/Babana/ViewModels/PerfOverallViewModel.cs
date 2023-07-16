@@ -34,7 +34,7 @@ public class PerfOverallViewModel : ViewModelBase {
         new() {
             UnitWidth = 2,
             MinStep = 2,
-            Name = "Response (msec)",
+            Name = "Response (ms)",
             MinLimit = 0
         }
     };
@@ -47,7 +47,7 @@ public class PerfOverallViewModel : ViewModelBase {
             var series = AllSeries.FirstOrDefault(s => s.Tag.ToString() == tag);
 
             if (series == null) {
-                series = CreateLineSeries(tag, AllSeries.Count);
+                series = CreateLineSeries(tag, AllSeries.Count, vm);
                 AllSeries.Add(series);
                 series.IsVisible = true;
             }
@@ -67,8 +67,9 @@ public class PerfOverallViewModel : ViewModelBase {
 
     }
 
-    private LineSeries<TimeSpanPoint> CreateLineSeries(string tag, int index) {
+    private LineSeries<TimeSpanPoint> CreateLineSeries(string tag, int index, PerfTraceViewModel perfTraceViewModel) {
         var pos = index < DefaultChartColors.Colors.Length ? index : (index + 1) % DefaultChartColors.Colors.Length;
+        perfTraceViewModel.P90Background = DefaultChartColors.ColorsRaw[pos];
         return new LineSeries<TimeSpanPoint> {
             Tag = tag,
             Name = tag,

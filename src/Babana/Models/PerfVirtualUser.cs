@@ -18,6 +18,7 @@ public class PerfVirtualUser {
             _runner = new ScriptRunner(_scriptTabModel);
             await _runner.Run();
             _runner.ForceClose();
+            await Task.Delay(10);
         }
     }
 
