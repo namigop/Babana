@@ -6,6 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
+
+using PlaywrightTest.Core;
 using PlaywrightTest.Models;
 using PlaywrightTest.ViewModels;
 
@@ -15,7 +17,7 @@ public partial class PerfWindow : Window {
     public PerfWindow(ScriptTabModel model) {
         InitializeComponent();
         DataContext = new PerfViewModel(model, UpdateRowVisibilityBrowser, UpdateRowVisibilityAPI);
-
+        if (Util.IsWindows()) ExtendClientAreaToDecorationsHint = false;
 
 #if DEBUG
         this.AttachDevTools();
@@ -45,7 +47,10 @@ public partial class PerfWindow : Window {
         if (presenter != null) {
             var rows = presenter.GetVisualChildren().Cast<TreeDataGridRow>();
             foreach (var r in rows.Where(t => t.Model != null)) {
-                r.IsVisible = ((PerfTraceViewModel)r.Model).IsVisible;
+                var isVisible = ((PerfTraceViewModel)r.Model).IsVisible;
+                if (r.IsVisible != isVisible) {
+                    r.IsVisible = isVisible;
+                }
             }
         }
     }
@@ -54,7 +59,10 @@ public partial class PerfWindow : Window {
         if (presenter != null) {
             var rows = presenter.GetVisualChildren().Cast<TreeDataGridRow>();
             foreach (var r in rows.Where(t => t.Model != null)) {
-                r.IsVisible = ((BrowserPageTraceViewModel)r.Model).IsVisible;
+                var isVisible = ((BrowserPageTraceViewModel)r.Model).IsVisible;
+                if (r.IsVisible != isVisible) {
+                    r.IsVisible = isVisible;
+                }
             }
         }
 
