@@ -38,6 +38,16 @@
             <TabItem Header="API Responses">
                 <Grid>
                     <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="*, Auto, *" RowDefinitions="*, Auto, *">
+                        <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                            <Border CornerRadius="4" Background="White">
+                                <lvc:CartesianChart ZoomMode="X"
+                                                    YAxes="{Binding PerfOverallViewModel.YAxes}"
+                                                    Grid.Row="1" Series="{Binding PerfOverallViewModel.AllSeries}"
+                                                    XAxes="{Binding PerfOverallViewModel.XAxes}" />
+                            </Border>
+                        </Grid>
+
+                        <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter>
 
                         <!-- table -->
                         <Border CornerRadius="4" Background="White" Grid.Row="2" Grid.ColumnSpan="3" Padding="2">
@@ -55,7 +65,7 @@
                                 </TreeDataGrid.Styles>
                                 <TreeDataGrid.Resources>
                                     <DataTemplate x:Key="NameTemplate" DataType="vm:PerfTraceViewModel">
-                                        <TextBox Text="{Binding  Title}" IsReadOnly="True" BorderThickness="0" ></TextBox>
+                                        <TextBox Text="{Binding  Title}" IsReadOnly="True" BorderThickness="0"></TextBox>
                                     </DataTemplate>
                                     <DataTemplate x:Key="P90Template" DataType="vm:PerfTraceViewModel">
                                         <Grid ColumnDefinitions="Auto, *">
@@ -65,7 +75,8 @@
                                                      IsReadOnly="True"
                                                      BorderThickness="0"
                                                      HorizontalAlignment="Stretch"
-                                                     Width="100"></TextBox>
+                                                     Width="100">
+                                            </TextBox>
                                             <ProgressBar
                                                 Grid.Column="1" Margin="5 0 5 0"
                                                 Height="20"
@@ -80,11 +91,12 @@
                                     <DataTemplate x:Key="AverageTemplate" DataType="vm:PerfTraceViewModel">
                                         <StackPanel>
                                             <TextBox Text="{Binding AverageResponseTime, Converter={StaticResource MsecConverter}}"
-                                                       VerticalAlignment="Center"
-                                                       Foreground="#373A3C"
-                                                       IsReadOnly="True"
-                                                       BorderThickness="0"
-                                                       HorizontalAlignment="Stretch"></TextBox>
+                                                     VerticalAlignment="Center"
+                                                     Foreground="#373A3C"
+                                                     IsReadOnly="True"
+                                                     BorderThickness="0"
+                                                     HorizontalAlignment="Stretch">
+                                            </TextBox>
                                         </StackPanel>
                                     </DataTemplate>
                                     <DataTemplate x:Key="ThroughputTemplate" DataType="vm:PerfTraceViewModel">
@@ -94,7 +106,8 @@
                                                      Foreground="#373A3C"
                                                      IsReadOnly="True"
                                                      BorderThickness="0"
-                                                     HorizontalAlignment="Stretch"></TextBox>
+                                                     HorizontalAlignment="Stretch">
+                                            </TextBox>
                                         </StackPanel>
                                     </DataTemplate>
                                     <DataTemplate x:Key="HostTemplate" DataType="vm:PerfTraceViewModel">
@@ -103,43 +116,16 @@
                                                      VerticalAlignment="Center"
                                                      IsReadOnly="True"
                                                      BorderThickness="0"
-                                                     HorizontalAlignment="Stretch"></TextBox>
+                                                     HorizontalAlignment="Stretch">
+                                            </TextBox>
                                         </StackPanel>
                                     </DataTemplate>
                                 </TreeDataGrid.Resources>
 
                             </TreeDataGrid>
                         </Border>
-                        <!-- <GridSplitter Grid.Row="2" Grid.Column="1" Width="8" -->
-                        <!--               Background="Transparent" -->
-                        <!--               VerticalAlignment="Stretch" HorizontalAlignment="Stretch"> -->
-                        <!-- </GridSplitter> -->
-                        <!-- <Border Grid.Row="2" Grid.Column="2" CornerRadius="4" Background="White"> -->
-                        <!--     <Grid> -->
-                        <!--         <lvc:CartesianChart Grid.Row="1" Series="{Binding PerfResponsesViewModel.BarSeries}" -->
-                        <!--                             YAxes="{Binding PerfResponsesViewModel.BarYAxes}" -->
-                        <!--                             XAxes="{Binding PerfResponsesViewModel.BarXAxes}" /> -->
-                        <!--         <TextBlock Text="Slowest Response Times (p90)" -->
-                        <!--                    FontSize="16" -->
-                        <!--                    HorizontalAlignment="Center" -->
-                        <!--                    VerticalAlignment="Top" -->
-                        <!--                    Margin="0 10 0 0" -->
-                        <!--                    Foreground="#373A3C"> -->
-                        <!--         </TextBlock> -->
-                        <!--     </Grid> -->
-                        <!-- </Border> -->
-                        <GridSplitter Grid.Row="1" Grid.ColumnSpan="3" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="8"></GridSplitter>
-
-                        <Grid Grid.Row="0" Grid.ColumnSpan="3">
-                            <Border CornerRadius="4" Background="White">
-                                <lvc:CartesianChart ZoomMode="X"
-                                                    YAxes="{Binding PerfOverallViewModel.YAxes}"
-                                                    Grid.Row="1" Series="{Binding PerfOverallViewModel.AllSeries}"
-                                                    XAxes="{Binding PerfOverallViewModel.XAxes}" />
 
 
-                            </Border>
-                        </Grid>
                     </Grid>
                 </Grid>
 
@@ -166,7 +152,8 @@
                                              Foreground="#373A3C"
                                              IsReadOnly="True"
                                              BorderThickness="0"
-                                             HorizontalAlignment="Stretch"></TextBox>
+                                             HorizontalAlignment="Stretch">
+                                    </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate x:Key="RequestTimeTemplate" DataType="vm:BrowserPageTraceViewModel">
@@ -176,7 +163,8 @@
                                              Foreground="#373A3C"
                                              IsReadOnly="True"
                                              BorderThickness="0"
-                                             HorizontalAlignment="Stretch"></TextBox>
+                                             HorizontalAlignment="Stretch">
+                                    </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate x:Key="ResponseTimeTemplate" DataType="vm:BrowserPageTraceViewModel">
@@ -186,7 +174,8 @@
                                              Foreground="#373A3C"
                                              IsReadOnly="True"
                                              BorderThickness="0"
-                                             HorizontalAlignment="Stretch"></TextBox>
+                                             HorizontalAlignment="Stretch">
+                                    </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate x:Key="TlsNegotiationTemplate" DataType="vm:BrowserPageTraceViewModel">
@@ -196,7 +185,8 @@
                                              Foreground="#373A3C"
                                              IsReadOnly="True"
                                              BorderThickness="0"
-                                             HorizontalAlignment="Stretch"></TextBox>
+                                             HorizontalAlignment="Stretch">
+                                    </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate x:Key="TcpHandshakeTemplate" DataType="vm:BrowserPageTraceViewModel">
@@ -206,7 +196,8 @@
                                              Foreground="#373A3C"
                                              IsReadOnly="True"
                                              BorderThickness="0"
-                                             HorizontalAlignment="Stretch"></TextBox>
+                                             HorizontalAlignment="Stretch">
+                                    </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate x:Key="DnsLookupTemplate" DataType="vm:BrowserPageTraceViewModel">
@@ -216,7 +207,8 @@
                                              Foreground="#373A3C"
                                              IsReadOnly="True"
                                              BorderThickness="0"
-                                             HorizontalAlignment="Stretch"></TextBox>
+                                             HorizontalAlignment="Stretch">
+                                    </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate x:Key="ResourceTypeTemplate" DataType="vm:BrowserPageTraceViewModel">
@@ -225,7 +217,8 @@
                                              VerticalAlignment="Center"
                                              IsReadOnly="True"
                                              BorderThickness="0"
-                                             HorizontalAlignment="Stretch"></TextBox>
+                                             HorizontalAlignment="Stretch">
+                                    </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate x:Key="UrlTemplate" DataType="vm:BrowserPageTraceViewModel">
@@ -234,7 +227,8 @@
                                              VerticalAlignment="Center"
                                              IsReadOnly="True"
                                              BorderThickness="0"
-                                             HorizontalAlignment="Stretch"></TextBox>
+                                             HorizontalAlignment="Stretch">
+                                    </TextBox>
                                 </StackPanel>
                             </DataTemplate>
                         </TreeDataGrid.Resources>
@@ -256,8 +250,61 @@
         </StackPanel>
 
         <!-- Bottom controls -->
-        <Grid Grid.Row="1" Margin="0 10 0 10">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid Grid.Row="1" Margin="0 10 0 10" RowDefinitions="Auto, *">
+            <Grid Grid.Row="0" Grid.ColumnSpan="3" IsVisible="{Binding HasData}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel.Styles>
+                        <Style Selector="Border">
+                            <Setter Property="Width" Value="104"></Setter>
+                            <Setter Property="Height" Value="70"></Setter>
+                            <Setter Property="CornerRadius" Value="6"></Setter>
+                            <Setter Property="BorderBrush" Value="Gray"></Setter>
+                            <Setter Property="BorderThickness" Value="1"></Setter>
+                            <Setter Property="Margin" Value="8"></Setter>
+                        </Style>
+                        <Style Selector="TextBlock.head">
+                            <Setter Property="Foreground" Value="Gray"></Setter>
+                            <Setter Property="FontSize" Value="13"></Setter>
+                            <Setter Property="VerticalAlignment" Value="Top"></Setter>
+                            <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+                            <Setter Property="Margin" Value="6 4 4 4"></Setter>
+                        </Style>
+                        <Style Selector="TextBlock.value">
+                            <Setter Property="Foreground" Value="LightBlue"></Setter>
+                            <Setter Property="FontSize" Value="24"></Setter>
+                            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                            <Setter Property="Margin" Value="4"></Setter>
+                        </Style>
+                    </StackPanel.Styles>
+                    <Border>
+                        <Grid>
+                            <TextBlock Text="Response" Classes="head"></TextBlock>
+                            <TextBlock Text="{Binding PanelViewModel.ResponseCount}" Classes="value"></TextBlock>
+                        </Grid>
+                    </Border>
+                    <Border>
+                        <Grid>
+                            <TextBlock Text="Virtual Users" Classes="head"></TextBlock>
+                            <TextBlock Text="{Binding PanelViewModel.VirtualUserStatus}" Classes="value"></TextBlock>
+                        </Grid>
+                    </Border>
+                    <Border Background="FireBrick">
+                        <Grid>
+                            <TextBlock Text="Errors" Classes="head"></TextBlock>
+                            <TextBlock Text="{Binding PanelViewModel.ErrorCount}" Classes="value" Foreground="White"></TextBlock>
+                        </Grid>
+                    </Border>
+                    <Border>
+                        <Grid>
+                            <TextBlock Text="Time" Classes="head"></TextBlock>
+                            <TextBlock Text="{Binding PanelViewModel.TestTimerDisplay}" Classes="value" ></TextBlock>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel.Styles>
                     <Style Selector="TextBlock">
                         <Setter Property="Foreground" Value="LightGray" />
@@ -321,7 +368,7 @@
         <ProgressBar Grid.Row="1" Width="250"
                      IsVisible="{Binding IsRunning}"
                      VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="2" IsIndeterminate="True"
-                     Background="Transparent"
-                     ></ProgressBar>
+                     Background="Transparent">
+        </ProgressBar>
     </Grid>
 </Window>

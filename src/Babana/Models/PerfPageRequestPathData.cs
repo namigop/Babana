@@ -32,12 +32,15 @@ public class PerfPageRequestPathData {
                 m.Add(get());
             }
         }
-        TryCreate(nameof(data.DurationMsec), () => data.DurationMsec);
-        TryCreate(nameof(data.DnsLookupMsec), () => data.DnsLookupMsec);
-        TryCreate(nameof(data.ResponseTimeMsec), () => data.ResponseTimeMsec);
-        TryCreate(nameof(data.RequestTimeMsec), () => data.RequestTimeMsec);
-        TryCreate(nameof(data.TcpHandshakeMsec), () => data.TcpHandshakeMsec);
-        TryCreate(nameof(data.TlsNegotiationMsec), () => data.TlsNegotiationMsec);
+
+        lock (this) {
+            TryCreate(nameof(data.DurationMsec), () => data.DurationMsec);
+            TryCreate(nameof(data.DnsLookupMsec), () => data.DnsLookupMsec);
+            TryCreate(nameof(data.ResponseTimeMsec), () => data.ResponseTimeMsec);
+            TryCreate(nameof(data.RequestTimeMsec), () => data.RequestTimeMsec);
+            TryCreate(nameof(data.TcpHandshakeMsec), () => data.TcpHandshakeMsec);
+            TryCreate(nameof(data.TlsNegotiationMsec), () => data.TlsNegotiationMsec);
+        }
     }
 
 }

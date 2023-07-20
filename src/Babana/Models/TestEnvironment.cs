@@ -25,7 +25,7 @@ public class TestEnvironment {
     private void OnTraced(object? sender, ReqRespTraceData e) {
         if (e.RequestUri.EndsWith("/manage_order")) {
             var resp = Util.Deserialize<ManageOrderResponse>(e.ResponseBody);
-            if (resp.Success && resp.Result.Any()) {
+            if (resp != null && resp.Success && resp.Result.Any()) {
                 TestOrder.IdentificationNumber = resp.Result[0].OrderUserDetail.IdentificationNumber;
                 TestOrder.PhoneNumber = resp.Result[0].SelectedNumber;
                 TestOrder.OrderRef = resp.Result[0].OrderRef;

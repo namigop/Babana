@@ -26,15 +26,24 @@ public class PerfViewModel : ViewModelBase {
     private int _topItemsCount = 10;
     private bool _isRunning;
     private int _currentVirtualUsers;
+    private readonly PanelViewModel _panelViewModel;
+    private readonly BrowserTraceViewModel _browserTraceViewModel;
+    private readonly PerfResponsesViewModel _perfResponsesViewModel;
+    private readonly PerfOverallViewModel _perfOverallViewModel;
+    private readonly ErrorViewModel _errors;
+    private readonly ObservableCollection<PerfTraceViewModel> _pathTraces = new();
+    private readonly ICommand _startCommand;
+    private readonly ICommand _stopCommand;
+    private bool _hasData;
 
 
     public PerfViewModel(ScriptTabModel scriptTabModel, Action updateRowVisibilityBrowser, Action updateRowVisibilityApi) {
         _scriptTabModel = scriptTabModel;
         _updateRowVisibilityBrowser = updateRowVisibilityBrowser;
         _updateRowVisibilityApi = updateRowVisibilityApi;
-        StartCommand = CreateCommand(OnStart);
-        StopCommand = CreateCommand(OnStop);
-        Errors = new ErrorViewModel();
+        _startCommand = CreateCommand(OnStart);
+        _stopCommand = CreateCommand(OnStop);
+        _errors = new ErrorViewModel();
         ReqRespTracer.Instance.Value.Traced += OnTraced;
         PageTracer.Instance.Value.Traced += OnPageTraced;
         MessageHub.Sub += OnMesageReceived;
@@ -45,10 +54,13 @@ public class PerfViewModel : ViewModelBase {
         _timer.IsEnabled = false;
         _timer.Tick += OnProcessPerfData;
 
-        PerfResponsesViewModel = new PerfResponsesViewModel(PathTraces);
-        PerfOverallViewModel = new PerfOverallViewModel(PathTraces);
-        BrowserTraceViewModel = new BrowserTraceViewModel();
+        _perfResponsesViewModel = new PerfResponsesViewModel(PathTraces);
+        _perfOverallViewModel = new PerfOverallViewModel(PathTraces);
+        _browserTraceViewModel = new BrowserTraceViewModel();
+        _panelViewModel = new PanelViewModel();
     }
+
+    public PanelViewModel PanelViewModel => _panelViewModel;
 
 
     public void Close() {
@@ -59,19 +71,20 @@ public class PerfViewModel : ViewModelBase {
         _perfRunner?.Close();
     }
 
-    public BrowserTraceViewModel BrowserTraceViewModel { get; }
+    public BrowserTraceViewModel BrowserTraceViewModel => _browserTraceViewModel;
 
-    public PerfResponsesViewModel PerfResponsesViewModel { get; }
+    public PerfResponsesViewModel PerfResponsesViewModel => _perfResponsesViewModel;
 
-    public PerfOverallViewModel PerfOverallViewModel { get; }
-    public ErrorViewModel Errors { get; }
+    public PerfOverallViewModel PerfOverallViewModel => _perfOverallViewModel;
+
+    public ErrorViewModel Errors => _errors;
 
     public bool IsRunning {
         get => _isRunning;
         set => this.RaiseAndSetIfChanged(ref _isRunning, value);
     }
 
-    public ObservableCollection<PerfTraceViewModel> PathTraces { get; } = new();
+    public ObservableCollection<PerfTraceViewModel> PathTraces => _pathTraces;
 
     public int VirtualUsers {
         get => _virtualUsers;
@@ -88,10 +101,10 @@ public class PerfViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _durationSec, value);
     }
 
-    public ICommand StartCommand { get; }
+    public ICommand StartCommand => _startCommand;
 
 
-    public ICommand StopCommand { get; }
+    public ICommand StopCommand => _stopCommand;
 
     public string Filter {
         get => _filter;
@@ -113,8 +126,13 @@ public class PerfViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _currentVirtualUsers, value);
     }
 
+    public bool HasData {
+        get => _hasData;
+        private set => this.RaiseAndSetIfChanged(ref _hasData, value);
+    }
+
     private void OnPageTraced(object? sender, PerfPageRequestTraceData e) {
-        _runDataBrowser.Add(e);
+        _runDataBrowser?.Add(e);
     }
 
     private void OnMesageReceived(object? sender, Message msg) {
@@ -170,7 +188,16 @@ public class PerfViewModel : ViewModelBase {
             }
         }
 
+
+        UpdatePanels();
         UpdateChartsAndTables();
+    }
+
+    private void UpdatePanels() {
+        PanelViewModel.ErrorCount = Errors.Errors.Count;
+        PanelViewModel.VirtualUserStatus = $"{CurrentVirtualUsers} / {VirtualUsers}";
+        PanelViewModel.ResponseCount = _runData.GetResponseCount();
+        this.HasData = !string.IsNullOrWhiteSpace(PanelViewModel.TestTimerDisplay);
     }
 
     private void UpdateChartsAndTables() {
@@ -208,6 +235,7 @@ public class PerfViewModel : ViewModelBase {
     }
 
     private async Task OnStop() {
+
         await OnStopInternal();
         await _perfRunner?.Stop();
 
@@ -216,6 +244,7 @@ public class PerfViewModel : ViewModelBase {
 
     private async Task OnStopInternal() {
         IsRunning = false;
+        PanelViewModel.Stop();
         _timer.Stop();
     }
 
@@ -225,6 +254,8 @@ public class PerfViewModel : ViewModelBase {
         PathTraces.Clear();
         PerfOverallViewModel.AllSeries.Clear();
         BrowserTraceViewModel.Clear();
+        PanelViewModel.Start();
+
         _runData = new PerfTraceRunData();
         _runDataBrowser = new PerfPageRequestRunData();
         PerfResponsesViewModel.RunData = _runData;

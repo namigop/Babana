@@ -12,9 +12,9 @@ var SLOMO_MSEC = 300;
 
 var r = new Random();
 var email = $"t{Environment.UserName}{r.Next(50, 100000)}@bar.com";
-var deliveryDate = "We/07/2023";
-var deliveryTime = "10:00 AM - 10:00 PM"; 
-var plan = "NR Bundle with rollover product";
+var deliveryDate = "18/07/2023";
+var deliveryTime = "10:00 AM - 4:00 PM"; 
+var plan = "OCTFVbzpGi";
 var cnic = getRandomCnic();
 var contactNumber = getRandomMobile("03");
 var nationality = "pakistani";
@@ -109,7 +109,7 @@ await page.FindById(TEST_ID_PLANCARD)
           .FindButton()
           .Click();
           
-return;
+
 
 await Sleep(1000);
 

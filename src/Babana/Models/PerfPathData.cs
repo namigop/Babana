@@ -66,6 +66,9 @@ public class PerfPathData {
         return _snapshot;
     }
 
+    public int GetTraceDataCount() {
+        return _traces.Count;
+    }
     public uint[] GetTraceData() {
         return _traces.Select(t => t.ElapsedMsec).ToArray();
     }

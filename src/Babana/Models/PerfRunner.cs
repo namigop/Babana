@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.CodeAnalysis.CSharp;
@@ -39,6 +41,7 @@ public class PerfRunner {
     public void Close() {
         _stopTestTimer.Elapsed -= OnTimerElapsed;
     }
+
     private void OnTimerElapsed(object? sender, ElapsedEventArgs e) {
         Stop();
     }
@@ -60,6 +63,20 @@ public class PerfRunner {
             Console.WriteLine($"Unable to start a test with an empty script");
             return;
         }
+
+        var reader = new StringReader(_scriptTabModel.ScriptContent);
+        var hasCode = false;
+        while (await reader.ReadLineAsync() is { } line) {
+            if (line != null && !line.Trim().StartsWith("//")) {
+                hasCode = true;
+            }
+        }
+
+        if (!hasCode) {
+            Console.WriteLine($"Unable to start a test with a script containing only comments");
+            return;
+        }
+
 
         _canStart = true;
         Console.WriteLine("Starting performance test with the following parameters");
@@ -84,18 +101,17 @@ public class PerfRunner {
             _perfVirtualUsers.Add(vu);
 
             vu.Start();
-            MessageHub.Publish(new PerfStatusMessage(){ IsRunning = true, CurrentVirtualUsers = _perfVirtualUsers.Count});
+            MessageHub.Publish(new PerfStatusMessage() { IsRunning = true, CurrentVirtualUsers = _perfVirtualUsers.Count });
             await Task.Delay(_rampupSec * 1000);
         }
     }
 
     public async Task Stop() {
         _canStart = false;
-        MessageHub.Publish(new PerfStatusMessage(){ IsRunning = false});
+        MessageHub.Publish(new PerfStatusMessage() { IsRunning = false });
         foreach (var v in _perfVirtualUsers)
             v.Stop();
 
-        MessageHub.Publish(new PerfStatusMessage(){ IsRunning = false, CurrentVirtualUsers = 0});
-
+        MessageHub.Publish(new PerfStatusMessage() { IsRunning = false, CurrentVirtualUsers = 0 });
     }
 }

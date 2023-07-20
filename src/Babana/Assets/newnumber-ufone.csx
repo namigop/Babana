@@ -7,13 +7,13 @@
 //modify these settings to match your screen resolution
 var BROWSER_HEIGHT = 880;
 var BROWSER_WIDTH = 1512;
-var HEADLESS = true;
+var HEADLESS = false;
 
 var r = new Random();
 var email = $"{System.IO.Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
-var deliveryDate = "`16/01/2024";
+var deliveryDate = "18/03/2024";
 var deliveryTime = "4:30 PM - 11:59 PM"; 
-var plan = "New Addon 12";
+var plan = "Voice add-on 18th July";
 var kycStatus = "109"; //Ok = 109, Failed = 110
 
 var cnic = GetRandomCnic();
@@ -102,8 +102,6 @@ var page = await run.Begin(TestEnv);
 
 //1. Checkout Page
 await page.Open(CHECKOUT_URL);
-
-
 await page.FindById(TEST_ID_PLANCARD)
           .FilterByText(page, plan)
           .FindButton()
@@ -117,8 +115,6 @@ await page.WaitFor("http.*/addon-selection");
 await page.FindButton()
           .FilterByText(page, NEXT)
           .Click();
-
-return;
 
 
 //3. Signup page
@@ -143,7 +139,7 @@ await Sleep(1000);
 await page.FindById("modal-button")
           .FilterByText(page, OK)
           .Click();
-await page.FindByText("Standard").Click();
+await page.FindByText("Gold").Click();
 await page.FindById("number-select-button").First.Click();
 await page.FindButton()
           .FilterByText(page, NEXT)
@@ -199,6 +195,7 @@ await page.FindButton().FilterByText(page, NEXT).Click();
 
 //7. Order Summary Page
 await page.WaitFor("http.*web/order-summary", CancelToken);
+
 await page.FindButton().FilterByText(page, PLACE_ORDER).Click();
 
 //8. Payfast Page

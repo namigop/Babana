@@ -234,8 +234,10 @@
                            ToolTip.Tip="{Binding MyFortuneCookie}"
                            VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-                <Border Margin="6" Padding="6" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="4" BorderThickness="0" Background="{Binding ToastBackground}">
-                    <TextBlock Classes="callout" FontWeight="Light" Text="{Binding ToastMessage}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" />
+                <Border Margin="6" Padding="6" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="4" BorderThickness="0"
+                        Background="{Binding ToastBackground}">
+                    <TextBlock Classes="callout" FontWeight="Light" Text="{Binding ToastMessage}" FontSize="30"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Red" />
                 </Border>
             </Grid>
         </Grid>

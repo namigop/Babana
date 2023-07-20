@@ -66,4 +66,8 @@ public class PerfTraceRunData {
             Traces.Select(t => t.TakeSnapshot(userCount))
                 .ToList();
     }
+
+    public int GetResponseCount() {
+        return Traces.Select(t => t.GetTraceDataCount()).Sum();
+    }
 }
