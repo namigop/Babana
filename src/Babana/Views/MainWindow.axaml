@@ -218,6 +218,7 @@
             <Grid Height="36">
                 <Grid.Styles>
                     <Style Selector="TextBlock.callout">
+                        <Setter Property="Foreground" Value="White"></Setter>
                         <Style.Animations>
                             <Animation Duration="0:0:2" IterationCount="INFINITE">
                                 <KeyFrame Cue="0%">
@@ -236,8 +237,8 @@
 
                 <Border Margin="6" Padding="6" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="4" BorderThickness="0"
                         Background="{Binding ToastBackground}">
-                    <TextBlock Classes="callout" FontWeight="Light" Text="{Binding ToastMessage}" FontSize="30"
-                               VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Red" />
+                    <TextBlock Classes="callout" FontWeight="Light" Text="{Binding ToastMessage}"
+                               VerticalAlignment="Center" HorizontalAlignment="Center"  />
                 </Border>
             </Grid>
         </Grid>

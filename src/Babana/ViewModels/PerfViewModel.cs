@@ -230,7 +230,7 @@ public class PerfViewModel : ViewModelBase {
                 return;
             }
 
-            _runData.Add(PerfTraceData.FromReqRespTrace(trace));
+            _runData?.Add(PerfTraceData.FromReqRespTrace(trace));
         }
     }
 

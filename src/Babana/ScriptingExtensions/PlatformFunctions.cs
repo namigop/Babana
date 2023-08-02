@@ -60,6 +60,7 @@ public static class PlatformFunctions {
     public static async Task ShipmentUpdate(string riderUrl, string status, int statusId, string iccid, string refNum, Cancel cancel = null) {
         cancel?.TryCancel();
 
+
         var today = DateTime.Today.ToString("yyyy-MM-dd");
         var req = new RiderUpdateStatusRequest() {
             AssignedDate = today,

@@ -107,10 +107,6 @@ public class TestEnvironment {
             ViewportSize = ViewportSize.NoViewport
         });
 
-
-        //_context = await _browser.NewContextAsync();
-
-
         _page = await _browser.NewPageAsync();
         _page.Request += OnRequest;
         _page.Response += OnResponse;
@@ -129,6 +125,14 @@ public class TestEnvironment {
 
     private async void OnRequestFinished(object? sender, IRequest req) {
         if (req.ResourceType != "xhr") {
+
+            //ignore payfast stuff
+            if (req.Url.ToLower().Contains("/payfast") ||
+                req.Url.Contains("ipguat.apps.net.pk" ) ||
+                req.Url.Contains("mtf.gateway.mastercard" )) {
+                return;
+            }
+
            PageTracer.Instance.Value.Trace(req.Url, req.ResourceType, req.Timing);
         }
     }

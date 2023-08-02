@@ -11,11 +11,17 @@ var HEADLESS = false;
 
 var r = new Random();
 var email = $"{System.IO.Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
-var deliveryDate = "18/03/2024";
-var deliveryTime = "4:30 PM - 11:59 PM"; 
-var plan = "Voice add-on 18th July";
-var kycStatus = "109"; //Ok = 109, Failed = 110
+var autoSelectPlans = true;
+var autoSelectDeliverySlots = true;
 
+//These will be used if autoSelectDeliverySlots = false
+var deliveryDate = "17/05/2024";
+var deliveryTime = "4:30 PM - 11:59 PM"; 
+
+//This will be used if autoSelectPlans = false
+var plan = "DataRollover7";
+
+var kycStatus = "109"; //Ok = 109, Failed = 110
 var cnic = GetRandomCnic();
 var contactNumber = GetRandomMobile("03");
 var nationality = "Pakistani";
@@ -45,7 +51,7 @@ var deliveryInstruction = "Ring the doorbell and sing";
 
 //--- Constants ------------------
 var CHECKOUT_URL = "https://qpkvc-webfront.onic.com.pk/web/pre-checkout?reset=true"; 
-var OTP_URL = "http://qpkvc-notify.onic.com.pk/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=10";
+var OTP_URL = "http://qpkvc-notify.onic.com.pk/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=50";
 var KYC_URL = "http://qpkvc-kyc-bvs.onic.com.pk/mno/conn/v1/kyc/notif";
 var LAAS_URL = "http://qpkvc-logistics-singpost.onic.com.pk/v1/internal/shipments?orderReference={{orderRef}}";
 var RIDER_URL = "http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum";
@@ -96,17 +102,25 @@ var run = Setup()
           .Headless(HEADLESS)
           .BrowserHeight(BROWSER_HEIGHT)
           .BrowserWidth(BROWSER_WIDTH)
-          .Chromium();
+          .Firefox();
 
 var page = await run.Begin(TestEnv);
 
 //1. Checkout Page
 await page.Open(CHECKOUT_URL);
-await page.FindById(TEST_ID_PLANCARD)
+
+if (autoSelectPlans){
+    await page.FindById(TEST_ID_PLANCARD)
+          .First //use the first plan in the list
+          .FindButton()
+          .Click();
+}
+else{
+     await page.FindById(TEST_ID_PLANCARD)
           .FilterByText(page, plan)
           .FindButton()
           .Click();
-
+}
 
 //await Sleep(1000);
 
@@ -136,11 +150,13 @@ await page.FindButton()
 
 //5. New Number page
 await Sleep(1000);
-await page.FindById("modal-button")
-          .FilterByText(page, OK)
-          .Click();
-await page.FindByText("Gold").Click();
-await page.FindById("number-select-button").First.Click();
+//await page.FindById("modal-button")
+//          .FilterByText(page, OK)
+//          .Click();
+
+
+//await page.FindByText("Standard").Click();
+await page.FindById("number-select-button").Last.Click();
 await page.FindButton()
           .FilterByText(page, NEXT)
           .Click();
@@ -163,6 +179,10 @@ await page.FindById(TEST_ID_NATIONALITY).Click();
 await page.Keyboard(nationality);   
 await page.FindById(TEST_ID_CNIC).FindTextBox().Fill(cnic);
 await page.FindById(TEST_ID_CNIC_RECONFIRM).FindTextBox().Fill(cnic);
+await page.FindById("modal-button")
+          .FilterByText(page, OK)
+          .Click();
+
 
 await page.FindById(TEST_ID_CNIC_DOB_DAY).Click();
 await page.Keyboard(cnic_dobDay);   
@@ -181,16 +201,33 @@ await page.FindById(TEST_ID_AREA).Click();
 await page.Keyboard(area);
 await page.FindById(TEST_ID_LANDMARK).FindTextBox().Fill(landmark);
 await page.FindById(TEST_ID_DELIVERY_INSTRUCTION).FindTextBox().Fill(deliveryInstruction);
-await page.FindById(TEST_ID_DELIVERY_SLOTS)
+
+if (autoSelectDeliverySlots){
+    await page.FindById(TEST_ID_DELIVERY_SLOTS)
           .FindButton()
-          .FilterByText(page, deliveryDate)
+          .Last
+          //.FilterByText(page, deliveryDate)
           .Click();
           
 
-await page.FindById(TEST_ID_DELIVERY_SLOTS)
+    await page.FindById(TEST_ID_DELIVERY_SLOTS)
+          .FindButton()
+          .Last
+          //.FilterByText(page, deliveryTime)
+          .Click();
+}
+else {
+    await page.FindById(TEST_ID_DELIVERY_SLOTS)
+          .FindButton()
+          .FilterByText(page, deliveryDate)
+          .Click();
+         
+    await page.FindById(TEST_ID_DELIVERY_SLOTS)
           .FindButton()
           .FilterByText(page, deliveryTime)
           .Click();
+}
+
 await page.FindButton().FilterByText(page, NEXT).Click();
 
 //7. Order Summary Page
@@ -235,6 +272,11 @@ await Sleep(1000);
 var riderUrl = RIDER_URL.Replace("{{shipmentReference}}", shipmentRef);
 var refNum = await GetRefNum(riderUrl,  shipmentRef);
 Print($"RefNum : {refNum}");
+if (string.IsNullOrWhiteSpace(refNum)){
+   Print($"refnum is empty! ");
+   return;
+}
+
 TestEnv.TestOrder.RefNum = refNum;
 
 await Sleep(1000);
