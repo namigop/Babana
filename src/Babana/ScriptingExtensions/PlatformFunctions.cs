@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -36,13 +37,46 @@ public static class PlatformFunctions {
         throw new Exception("MNP : OTP not found");
     }
 
-    public static async Task<string> GetOtp(string url, string email, Cancel cancel = null) {
+    public static async Task<CookieContainer> GenerateToken(string url, string username, string password) {
+        // Create Handler
+        var handler = new HttpClientHandler();
+
+        // Cookies
+        var cc = new CookieContainer();
+        handler.CookieContainer = cc;
+        using var client = new HttpClient(handler);
+
+        // Form Data clientId=cl&clientSecret=secret&username=erik.araojo%40circles.asia&grantType=password&password=Z%40q12wsxzaq1
+        var dict4 = new Dictionary<string, string> {
+            { "clientId", "cl" },
+            { "clientSecret", "secret" },
+            { "username", username },
+            { "grantType", "password" },
+            { "password", password },
+        }; // dict
+
+        using var response4 = await client.PostAsync(url, new FormUrlEncodedContent(dict4));
+        response4.EnsureSuccessStatusCode();
+        string responseBody4 = await response4.Content.ReadAsStringAsync();
+        return cc;
+    }
+
+    public static async Task<string> GetOtp(string url, string email, CookieContainer cookies, Cancel cancel = null) {
         cancel?.TryCancel();
 
-        using var client = new HttpClient();
+        var handler = new HttpClientHandler() {
+            CookieContainer = cookies
+        };
+
+        using var client = new HttpClient(handler);
+
         var sw = Stopwatch.StartNew();
-        using var response = await client.GetAsync(url);
+        var msg = new HttpRequestMessage(HttpMethod.Get, url);
+
+        //msg.Headers.Add("Cookie", "cmsuser=erik.araojo%40circles.asia; cmscookie=7e7350fb2c2b1e4a14a2795eedafc5b8%7Cerik.araojo%40circles.asia");
+        using var response = await client.SendAsync(msg);
         sw.Stop();
+        response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         var root = JsonConvert.DeserializeObject<NotificationRoot>(responseContent);
 
@@ -59,7 +93,6 @@ public static class PlatformFunctions {
 
     public static async Task ShipmentUpdate(string riderUrl, string status, int statusId, string iccid, string refNum, Cancel cancel = null) {
         cancel?.TryCancel();
-
 
         var today = DateTime.Today.ToString("yyyy-MM-dd");
         var req = new RiderUpdateStatusRequest() {
@@ -83,6 +116,7 @@ public static class PlatformFunctions {
         var sw = Stopwatch.StartNew();
         using var response = await client.PostAsJsonAsync(riderUrl, req);
         sw.Stop();
+        response.EnsureSuccessStatusCode();
         var uri = new Uri(riderUrl);
         var reqMethod = "POST";
         var reqBody = Util.Serialize(req);
@@ -140,6 +174,7 @@ public static class PlatformFunctions {
         client.DefaultRequestHeaders.Add("Service-ID", "CXOMS");
         var sw = Stopwatch.StartNew();
         using var response = await client.GetAsync(laasUrl);
+        response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         var root = JsonConvert.DeserializeObject<GetShipmentByOrderRefResponse>(responseContent);
         sw.Stop();
@@ -152,7 +187,9 @@ public static class PlatformFunctions {
         ReqRespTracer.Trace(uri, reqMethod, reqBody, respBody, response.RequestMessage.Headers, response.Headers, response.StatusCode, sw.ElapsedMilliseconds);
 
 
-        if (root.Success) return root.Result.Shipments[0].ShipmentReference;
+        if (root.Success) {
+            return root.Result.Shipments[0].ShipmentReference;
+        }
 
         throw new Exception($"Unable to retrieve the shipment reference for order {orderRef}. {(int)response.StatusCode} {response.StatusCode}");
     }
@@ -164,6 +201,7 @@ public static class PlatformFunctions {
 
         var sw = Stopwatch.StartNew();
         using var response = await client.GetAsync(imsUrl);
+        response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         var root = JsonConvert.DeserializeObject<GetIccIdsResponse>(responseContent);
 
@@ -183,16 +221,19 @@ public static class PlatformFunctions {
         throw new Exception($"Unable to retrieve the ICCId. {(int)response.StatusCode} {response.StatusCode}");
     }
 
-    public static async Task<string> GetRefNum(string riderUrl, string shipmentRef, Cancel cancel = null) {
+    public static async Task<string> GetRefNum(string riderUrl, string shipmentRef, string apiKey, Cancel cancel = null) {
         // http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum
         cancel?.TryCancel();
         using var client = new HttpClient();
 
         var sw = Stopwatch.StartNew();
+        client.DefaultRequestHeaders.Add("Api-key", apiKey);
         using var response = await client.GetAsync(riderUrl);
+        response.EnsureSuccessStatusCode();
         var responseContent = await response.Content.ReadAsStringAsync();
         var root = JsonConvert.DeserializeObject<GetRiderRefnumResponse>(responseContent);
 
+        //silgpm4hqi0nuwfsdkr97ldaw5jq2ghm
         var uri = new Uri(riderUrl);
         var reqMethod = "GET";
         var reqBody = "";

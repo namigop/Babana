@@ -19,6 +19,7 @@ public static class ScriptFunctions {
 
     public static async Task Open(this IPage? page, string url, Cancel cancel = null) {
         cancel?.TryCancel();
+
         await page.GotoAsync(url, new PageGotoOptions() { Timeout = 60 * 1000 });
     }
 
@@ -75,6 +76,7 @@ public static class ScriptFunctions {
 
     public static Task Check(this ILocator? locator, Cancel cancel = null) {
         cancel?.TryCancel();
+
         return locator?.SetCheckedAsync(true);
     }
 

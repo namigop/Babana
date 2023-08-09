@@ -22,6 +22,7 @@ public class ScriptRunner {
                 })
                 .WithImports(
                     typeof(ScriptFunctions).FullName,
+                    typeof(Assert).Namespace,
                     typeof(PlatformFunctions).FullName,
                     "System",
                     "System.Text",

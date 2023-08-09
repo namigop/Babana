@@ -4,13 +4,15 @@
 // automatically doing KYC, and sim activation
 //********************************************
 
+using System.IO;
+
 //modify these settings to match your screen resolution
 var BROWSER_HEIGHT = 880;
 var BROWSER_WIDTH = 1512;
 var HEADLESS = false;
 
 var r = new Random();
-var email = $"{System.IO.Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
+var email = $"{Path.GetRandomFileName()}{r.Next(50, 1000)}@bar.com";
 var autoSelectPlans = true;
 var autoSelectDeliverySlots = true;
 
@@ -50,13 +52,14 @@ var deliveryInstruction = "Ring the doorbell and sing";
 // ---------------------------------
 
 //--- Constants ------------------
-var CHECKOUT_URL = "https://qpkvc-webfront.onic.com.pk/web/pre-checkout?reset=true"; 
-var OTP_URL = "http://qpkvc-notify.onic.com.pk/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=50";
-var KYC_URL = "http://qpkvc-kyc-bvs.onic.com.pk/mno/conn/v1/kyc/notif";
-var LAAS_URL = "http://qpkvc-logistics-singpost.onic.com.pk/v1/internal/shipments?orderReference={{orderRef}}";
-var RIDER_URL = "http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum";
-var IMS_URL = "http://qpkvc-inventory.onic.com.pk/v2/internal/product-variant-identifiers?pviType=physicalSim&limit=10&page=1&status=available";
+var CHECKOUT_URL   = "https://qpkvc-webfront.onic.com.pk/web/pre-checkout?reset=true"; 
+var OTP_URL                = "http://qpkvc-notify.onic.com.pk/api/v1/unified_ui/notification/admin/logs?idisplayStart=0&idisplayLength=50";
+var KYC_URL                = "http://qpkvc-kyc-bvs.onic.com.pk/mno/conn/v1/kyc/notif";
+var LAAS_URL              = "http://qpkvc-logistics-singpost.onic.com.pk/v1/internal/shipments?orderReference={{orderRef}}";
+var RIDER_URL             = "http://qpkvc-logistics-riders.onic.com.pk/v1/internal/shipments/{{shipmentReference}}/refnum";
+var IMS_URL                 = "http://qpkvc-inventory.onic.com.pk/v2/internal/product-variant-identifiers?pviType=physicalSim&limit=10&page=1&status=available";
 var RIDER_NOTIF_URL = "http://qpkvc-logistics-riders.onic.com.pk/v1/external/notification";
+var GENAUTH_URL      = "https://qpkvc-apigateway.onic.com.pk/v2/cl/en/cmsui/web/oauth/generate_token";
 
 var NEXT ="Next";
 var CONTINUE = "Continue";
@@ -106,6 +109,12 @@ var run = Setup()
 
 var page = await run.Begin(TestEnv);
 
+
+//0. Authenticate 
+var cmsui_username= "erik.araojo@circles.asia";
+var cmsui_password = "Z@q12wsxzaq1";
+var authCookies = await GenerateToken(GENAUTH_URL, cmsui_username, cmsui_password);
+
 //1. Checkout Page
 await page.Open(CHECKOUT_URL);
 
@@ -113,10 +122,10 @@ if (autoSelectPlans){
     await page.FindById(TEST_ID_PLANCARD)
           .First //use the first plan in the list
           .FindButton()
-          .Click();
+          .Click();      
 }
 else{
-     await page.FindById(TEST_ID_PLANCARD)
+     page.FindById(TEST_ID_PLANCARD)
           .FilterByText(page, plan)
           .FindButton()
           .Click();
@@ -140,7 +149,7 @@ await page.FindButton()
 
 //4. OTP page
 await Sleep(300);
-var otp = await GetOtp(OTP_URL, email);
+var otp = await GetOtp(OTP_URL, email, authCookies);
 page.FindTextBox()
     .FillMany(otp);
 await page.FindButton()
@@ -270,7 +279,8 @@ Print($"Shipment reference : {shipmentRef}");
 
 await Sleep(1000);
 var riderUrl = RIDER_URL.Replace("{{shipmentReference}}", shipmentRef);
-var refNum = await GetRefNum(riderUrl,  shipmentRef);
+var apiKey = "silgpm4hqi0nuwfsdkr97ldaw5jq2ghm";
+var refNum = await GetRefNum(riderUrl,  shipmentRef, apiKey);
 Print($"RefNum : {refNum}");
 if (string.IsNullOrWhiteSpace(refNum)){
    Print($"refnum is empty! ");
