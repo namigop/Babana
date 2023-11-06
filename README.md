@@ -3,3 +3,7 @@ This is sample repo to showing an editor that can run a C# script that interacts
 
 
 ![image](https://github.com/namigop/Babana/blob/main/src/Babana/Assets/Babana.png) 
+
+![image](https://github.com/namigop/Babana/blob/main/src/Babana/Assets/Perf.png) 
+
+
